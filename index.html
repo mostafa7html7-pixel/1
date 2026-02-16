@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>عبقريينو Ultra Board</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    
+    <header id="toolsPanel" class="main-header">
+        <div class="header-content">
+            <div class="logo-area">
+                <span class="app-title">Ultra Board</span>
+                <span id="connectionStatus" class="status-dot online"></span>
+            </div>
+
+            <div class="tools-scroll-area">
+                <div class="tool-group">
+                    <label>🖊️ القلم</label>
+                    <div id="penColors" class="color-row"></div>
+                    <input type="color" id="customColor" class="mini-picker" title="لون مخصص">
+                </div>
+
+                <div class="tool-group">
+                    <label>🎨 الخلفية</label>
+                    <div id="bgColors" class="color-row"></div>
+                </div>
+
+                <div class="tool-group">
+                    <label>📏 الحجم (<span id="sizeDisplay">3</span>)</label>
+                    <input type="range" id="brushSize" min="1" max="20" value="3">
+                </div>
+
+                <div class="tool-group">
+                    <label>✨ نيون</label>
+                    <div id="neonColors" class="color-row"></div>
+                </div>
+
+                <div class="tool-group">
+                    <label>👆 المؤشر</label>
+                    <div class="cursor-options">
+                        <button class="cursor-btn active" data-cursor="crosshair">🎯</button>
+                        <button class="cursor-btn" data-cursor="default">👆</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button id="modeBtn" class="btn btn-primary">مستر</button>
+                <button id="clearBtn" class="btn btn-danger">مسح</button>
+            </div>
+        </div>
+        
+        <button id="toggleMenuBtn" class="toggle-handle">
+            <span class="arrow">▲</span>
+        </button>
+    </header>
+
+    <main class="main-stage">
+        <div id="canvasWrapper" class="canvas-wrapper">
+            <canvas id="whiteboard"></canvas>
+        </div>
+    </main>
+
+    <script type="module" src="main.js"></script>
+</body>
+</html>
