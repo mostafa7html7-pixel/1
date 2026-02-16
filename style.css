@@ -17,6 +17,58 @@ body {
     touch-action: none; /* منع التكبير باللمس */
 }
 
+/* شاشة القفل */
+.login-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: #0f172a; z-index: 9999;
+    display: flex; justify-content: center; align-items: center;
+}
+.login-box {
+    background: rgba(20, 0, 0, 0.95); padding: 30px; border-radius: 16px;
+    text-align: center; 
+    border: 2px solid #ffd700; /* ذهبي */
+    box-shadow: 0 0 20px #ffd700, inset 0 0 20px #ffd700;
+    backdrop-filter: blur(10px);
+    min-width: 300px;
+}
+.login-box h2 {
+    color: #ffd700;
+    text-shadow: 0 0 10px #ff0033;
+    margin-bottom: 20px;
+}
+
+.login-input {
+    padding: 12px; border-radius: 8px; margin: 10px auto;
+    width: 85%; text-align: center; font-size: 1.1rem; display: block;
+    font-family: inherit;
+    border: 1px solid #ff0033; /* أحمر نيون */
+    color: #ffd700;
+    background: rgba(50, 0, 0, 0.6);
+    box-shadow: 0 0 5px #ff0033;
+    transition: 0.3s;
+}
+.login-input:focus {
+    outline: none;
+    box-shadow: 0 0 15px #ff0033;
+    background: rgba(80, 0, 0, 0.8);
+}
+
+#loginBtn {
+    background: linear-gradient(45deg, #ff0033, #990000);
+    color: #ffd700;
+    font-weight: bold;
+    box-shadow: 0 0 15px #ff0033;
+    text-shadow: 0 0 5px #ffd700;
+    border: 1px solid #ffd700;
+    width: 90%;
+    margin-top: 15px;
+}
+#loginBtn:hover {
+    background: #cc0000;
+    box-shadow: 0 0 25px #ff0033;
+    transform: scale(1.05);
+}
+
 /* الهيدر الرئيسي */
 .main-header {
     position: fixed;
@@ -42,7 +94,7 @@ body {
     justify-content: space-between;
     padding: 10px 20px;
     gap: 20px;
-    height: 80px; /* ارتفاع ثابت */
+    min-height: 60px; /* ارتفاع أقل */
 }
 
 /* زر الفتح والإغلاق */
@@ -78,7 +130,7 @@ body {
 .tools-scroll-area {
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 10px; /* تقليل المسافات */
     flex: 1;
     overflow-x: auto;
     padding-bottom: 5px; /* لشريط التمرير */
@@ -90,22 +142,24 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    min-width: max-content;
-    border-left: 1px solid rgba(255,255,255,0.1);
-    padding-left: 15px;
+    justify-content: center;
+    min-width: auto; /* عرض تلقائي */
+    background: rgba(255, 255, 255, 0.03);
+    padding: 4px 8px; /* تقليل الحواف */
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
 }
-.tool-group:first-child { border-left: none; padding-left: 0; }
 
 .tool-group label {
-    font-size: 0.75rem;
+    font-size: 0.65rem; /* تصغير الخط */
     color: #94a3b8;
-    margin-bottom: 5px;
+    margin-bottom: 3px;
 }
 
 /* صفوف الألوان */
 .color-row { display: flex; gap: 6px; }
 .color-dot {
-    width: 24px; height: 24px;
+    width: 20px; height: 20px; /* تصغير النقاط */
     border-radius: 50%;
     cursor: pointer;
     border: 2px solid rgba(255,255,255,0.1);
@@ -114,7 +168,7 @@ body {
 .color-dot:hover, .color-dot.active { transform: scale(1.2); border-color: white; box-shadow: 0 0 10px rgba(255,255,255,0.3); }
 
 .mini-picker {
-    width: 24px; height: 24px;
+    width: 20px; height: 20px;
     border: none;
     padding: 0;
     background: none;
@@ -122,6 +176,19 @@ body {
     border-radius: 50%;
     overflow: hidden;
 }
+
+.icon-btn {
+    background: none; border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 50%; width: 24px; height: 24px; cursor: pointer;
+    color: white; display: flex; align-items: center; justify-content: center;
+}
+.icon-btn:hover { background: rgba(255,255,255,0.1); }
+
+.user-count-btn {
+    background: rgba(255,255,255,0.1); padding: 4px 12px; border-radius: 12px; font-size: 0.9rem;
+    border: 1px solid rgba(255,255,255,0.2); color: white; cursor: pointer;
+}
+.user-count-btn:hover { background: rgba(255,255,255,0.2); }
 
 .status-dot {
     width: 10px;
@@ -136,10 +203,10 @@ body {
 .cursor-btn {
     background: rgba(255,255,255,0.1);
     border: none;
-    border-radius: 6px;
-    padding: 5px 10px;
+    border-radius: 4px;
+    padding: 4px 8px;
     cursor: pointer;
-    font-size: 1rem;
+    font-size: 0.9rem;
     transition: 0.2s;
 }
 .cursor-btn.active { background: var(--primary); color: white; }
@@ -147,7 +214,7 @@ body {
 /* الأزرار الرئيسية */
 .action-buttons { display: flex; gap: 8px; }
 .btn {
-    padding: 8px 16px;
+    padding: 6px 12px;
     border: none;
     border-radius: 8px;
     font-weight: bold;
@@ -158,8 +225,28 @@ body {
     white-space: nowrap;
 }
 .btn-primary { background: linear-gradient(to right, #3b82f6, #2563eb); }
+
+/* تخصيص شريط التمرير */
+input[type=range] {
+    -webkit-appearance: none; width: 80px; height: 4px;
+    background: rgba(255,255,255,0.2); border-radius: 2px; outline: none; margin: 0 5px;
+}
+input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 12px; height: 12px;
+    border-radius: 50%; background: var(--primary); cursor: pointer; border: 2px solid white;
+}
+
+.btn-secondary { background: rgba(255,255,255,0.1); }
 .btn-danger { background: linear-gradient(to right, #ef4444, #dc2626); }
 .btn:hover { opacity: 0.9; transform: translateY(-1px); }
+
+/* وضع الطالب (إخفاء الأدوات) */
+body.student-mode .tools-scroll-area { display: none !important; }
+body.student-mode #clearBtn { display: none !important; }
+body.student-mode #undoBtn { display: none !important; }
+body.student-mode #uploadImgBtn { display: none !important; }
+body.student-mode #createPollBtn { display: none !important; }
+body.student-mode .toggle-handle { display: none !important; }
 
 /* مسرح الرسم والنيون */
 .main-stage {
@@ -169,11 +256,11 @@ body {
     align-items: center;
     padding: 0; /* ملء الشاشة */
     box-sizing: border-box;
+    background-color: var(--bg-color); /* لون الخلفية للأجزاء الفارغة */
 }
 
 .canvas-wrapper {
-    width: 100%;
-    height: 100%;
+    /* سيتم تحديد الأبعاد عبر JS للحفاظ على النسبة */
     background: white;
     border-radius: 0;
     position: relative;
@@ -181,18 +268,148 @@ body {
     /* تأثير النيون الافتراضي */
     box-shadow: 0 0 0px transparent; 
     border: none;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    touch-action: none; /* ضروري للتحكم اليدوي في اللمس */
     transition: box-shadow 0.5s ease, border-color 0.5s ease;
+    box-shadow: 0 0 30px #00eaff, 0 0 60px #00eaff; /* نيون قوي افتراضي */
+    border: 2px solid #00eaff;
 }
 
 canvas { display: block; width: 100%; height: 100%; touch-action: none; }
 
+/* الشات */
+.chat-container {
+    position: fixed; bottom: 20px; right: 20px; width: 300px; height: 400px;
+    background: var(--panel-bg); backdrop-filter: blur(15px);
+    border-radius: 16px; border: 1px solid rgba(255,255,255,0.1);
+    display: flex; flex-direction: column; z-index: 2000;
+    transition: transform 0.3s;
+}
+.chat-container.closed { transform: translateX(120%); }
+.chat-header {
+    padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1);
+    display: flex; justify-content: space-between; font-weight: bold;
+}
+.chat-messages {
+    flex: 1; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; gap: 8px;
+}
+.chat-input-area {
+    padding: 10px; display: flex; gap: 5px; border-top: 1px solid rgba(255,255,255,0.1);
+    align-items: center;
+}
+.chat-input-area input {
+    flex: 1; padding: 8px; border-radius: 20px; border: none; outline: none;
+}
+.icon-btn-small { background: none; border: none; cursor: pointer; font-size: 1.2rem; padding: 0 5px; transition: 0.2s; }
+.icon-btn-small:hover { transform: scale(1.1); }
+
+/* فقاعات الشات */
+.msg {
+    max-width: 80%; padding: 8px 12px; border-radius: 12px; font-size: 0.9rem; word-wrap: break-word;
+}
+.msg.self {
+    align-self: flex-end; /* يمين للشخص الأول (أنا) */
+    background: var(--primary); color: white;
+    border-bottom-left-radius: 2px;
+}
+.msg.other {
+    align-self: flex-start; /* يسار للشخص الآخر */
+    background: rgba(255,255,255,0.1); color: var(--text);
+    border-bottom-right-radius: 2px;
+}
+.chat-msg-img { max-width: 100%; border-radius: 8px; margin-top: 5px; display: block; }
+
+/* إشعار الرسائل */
+.notification-toast {
+    position: fixed; top: 90px; left: 50%; transform: translateX(-50%) translateY(-150%);
+    background: var(--primary); color: white; padding: 10px 20px; border-radius: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3); z-index: 3000;
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s;
+    font-weight: bold;
+    pointer-events: none;
+    opacity: 0;
+}
+.notification-toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+/* قائمة الحذف */
+.context-menu {
+    position: fixed; background: rgba(15, 23, 42, 0.95); border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px; display: none; flex-direction: column; z-index: 4000;
+    backdrop-filter: blur(10px); overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    min-width: 150px;
+}
+.context-menu div {
+    padding: 12px 15px; cursor: pointer; color: var(--text); font-size: 0.9rem; border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.context-menu div:last-child { border-bottom: none; }
+.context-menu div:hover { background: rgba(255,255,255,0.1); }
+}
+
+/* قائمة المتصلين */
+.users-panel {
+    position: fixed; top: 90px; left: 20px; width: 200px; max-height: 400px;
+    background: var(--panel-bg); backdrop-filter: blur(15px);
+    border-radius: 16px; border: 1px solid rgba(255,255,255,0.1);
+    display: flex; flex-direction: column; z-index: 2000;
+    transition: transform 0.3s, opacity 0.3s;
+    transform: translateX(0); opacity: 1;
+}
+.users-panel.closed { transform: translateX(-120%); opacity: 0; pointer-events: none; }
+.users-list { padding: 10px; overflow-y: auto; }
+.user-item { 
+    padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.05); 
+    font-size: 0.9rem; display: flex; align-items: center; gap: 8px;
+}
+.user-item:before { content: '👤'; font-size: 0.8rem; }
+.user-item:last-child { border-bottom: none; }
+
 /* تحسينات للموبايل */
 @media (max-width: 768px) {
-    .header-content { padding: 10px; gap: 10px; }
+    .header-content { padding: 5px 10px; gap: 5px; flex-wrap: wrap; min-height: auto; }
     .app-title { display: none; } /* اخفاء الاسم لتوفير مساحة */
-    .tool-group label { display: none; } /* اخفاء التسميات */
-    .color-dot { width: 20px; height: 20px; }
-    .btn { padding: 6px 12px; font-size: 0.9rem; }
-    .action-buttons { flex-direction: column; gap: 4px; }
-    .tools-scroll-area { padding-bottom: 0; }
+    .tool-group label { display: none; } /* إخفاء التسميات في الموبايل */
+    .color-dot { width: 18px; height: 18px; }
+    .btn { padding: 5px 10px; font-size: 0.8rem; }
+    .action-buttons { flex-direction: row; gap: 8px; margin-left: auto; }
+    
+    /* تحسين شريط الأدوات للموبايل */
+    .tools-scroll-area { 
+        order: 3; 
+        width: 100%; 
+        padding-top: 10px; 
+        border-top: 1px solid rgba(255,255,255,0.05);
+    }
+}
+
+/* واجهة التصويت */
+.modal {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.85); z-index: 5000;
+    display: flex; justify-content: center; align-items: center;
+}
+.modal.closed { display: none; }
+.modal-content {
+    background: var(--panel-bg); padding: 25px; border-radius: 16px;
+    border: 1px solid var(--primary); width: 320px; text-align: center;
+    backdrop-filter: blur(10px); box-shadow: 0 0 30px rgba(0,0,0,0.5);
+}
+.poll-panel {
+    position: fixed; top: 100px; right: 20px; width: 260px;
+    background: rgba(15, 23, 42, 0.95); padding: 15px; border-radius: 12px;
+    border: 1px solid #ffd700; z-index: 1500;
+    color: white; backdrop-filter: blur(10px);
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);
+}
+.poll-panel.closed { display: none; }
+.poll-option-btn {
+    display: block; width: 100%; margin: 8px 0; padding: 10px;
+    background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+    color: white; cursor: pointer; border-radius: 8px; transition: 0.2s;
+}
+.poll-option-btn:hover { background: rgba(255,255,255,0.2); transform: translateX(-5px); }
+.poll-bar {
+    height: 6px; background: linear-gradient(to right, #3b82f6, #2563eb);
+    margin-top: 4px; border-radius: 3px; transition: width 0.5s;
 }

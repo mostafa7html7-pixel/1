@@ -9,11 +9,42 @@
 </head>
 <body>
     
+    <!-- شاشة القفل -->
+    <div id="loginOverlay" class="login-overlay">
+        <div class="login-box">
+            <h2>🚀 اختر غرفة</h2>
+            <select id="roomIdInput" class="login-input">
+                <option value="1">غرفة 1</option>
+                <option value="2">غرفة 2</option>
+                <option value="3">غرفة 3</option>
+                <option value="4">غرفة 4</option>
+            </select>
+            <input type="text" id="usernameInput" placeholder="اسمك" class="login-input">
+            <select id="roleInput" class="login-input">
+                <option value="student">👨‍🎓 طالب</option>
+                <option value="teacher">👨‍🏫 مستر</option>
+            </select>
+            <input type="password" id="teacherPasswordInput" placeholder="كلمة سر المستر" class="login-input" style="display:none;">
+            <button id="loginBtn" class="btn btn-primary">دخول</button>
+            <p id="loginError" style="color: #ef4444; display: none; margin-top: 10px;"></p>
+        </div>
+    </div>
+
+    <!-- إشعار -->
+    <div id="notificationToast" class="notification-toast">💬 رسالة جديدة</div>
+
+    <!-- قائمة السياق (الحذف) -->
+    <div id="contextMenu" class="context-menu">
+        <div id="deleteForMe">🗑️ حذف لدي</div>
+        <div id="deleteForEveryone">🔥 حذف للجميع</div>
+    </div>
+
     <header id="toolsPanel" class="main-header">
         <div class="header-content">
             <div class="logo-area">
                 <span class="app-title">Ultra Board</span>
                 <span id="connectionStatus" class="status-dot online"></span>
+                <button id="userCountBtn" class="user-count-btn">👥 0</button>
             </div>
 
             <div class="tools-scroll-area">
@@ -24,13 +55,16 @@
                 </div>
 
                 <div class="tool-group">
-                    <label>🎨 الخلفية</label>
+                    <label>🎨/🖼️ خلفية</label>
                     <div id="bgColors" class="color-row"></div>
+                    <button id="createPollBtn" class="icon-btn" title="إنشاء تصويت" style="display:none;">📊</button>
+                    <button id="uploadImgBtn" class="icon-btn" title="رفع صورة">📂</button>
+                    <input type="file" id="imgInput" accept="image/*" hidden>
                 </div>
 
                 <div class="tool-group">
                     <label>📏 الحجم (<span id="sizeDisplay">3</span>)</label>
-                    <input type="range" id="brushSize" min="1" max="20" value="3">
+                    <input type="range" id="brushSize" min="1" max="100" value="3">
                 </div>
 
                 <div class="tool-group">
@@ -39,16 +73,19 @@
                 </div>
 
                 <div class="tool-group">
-                    <label>👆 المؤشر</label>
+                    <label>أدوات</label>
                     <div class="cursor-options">
                         <button class="cursor-btn active" data-cursor="crosshair">🎯</button>
                         <button class="cursor-btn" data-cursor="default">👆</button>
+                        <button class="cursor-btn" data-cursor="grab" id="panBtn" title="تحريك">✋</button>
+                        <button id="eraserBtn" class="cursor-btn" title="ممحاة">🧽</button>
                     </div>
                 </div>
             </div>
 
             <div class="action-buttons">
-                <button id="modeBtn" class="btn btn-primary">مستر</button>
+                <button id="toggleChatBtn" class="btn btn-secondary">💬</button>
+                <button id="undoBtn" class="btn btn-secondary" title="تراجع عن آخر رسمة">↩️ تراجع</button>
                 <button id="clearBtn" class="btn btn-danger">مسح</button>
             </div>
         </div>
@@ -63,6 +100,50 @@
             <canvas id="whiteboard"></canvas>
         </div>
     </main>
+
+    <!-- قائمة المتصلين -->
+    <div id="usersPanel" class="users-panel closed">
+        <div class="panel-header">
+            <span>المتصلين</span>
+            <button id="closeUsersBtn">×</button>
+        </div>
+        <div id="usersList" class="users-list"></div>
+    </div>
+
+    <!-- واجهة الشات -->
+    <div id="chatContainer" class="chat-container closed">
+        <div class="chat-header">
+            <span>الدردشة الحية</span>
+            <button id="closeChat">×</button>
+        </div>
+        <div id="chatMessages" class="chat-messages"></div>
+        <div class="chat-input-area">
+            <button id="chatImgBtn" class="icon-btn-small">📷</button>
+            <input type="file" id="chatImgInput" accept="image/*" hidden>
+            <input type="text" id="chatInput" placeholder="اكتب رسالة...">
+            <button id="sendChatBtn">➤</button>
+        </div>
+    </div>
+
+    <!-- نافذة إنشاء التصويت -->
+    <div id="pollModal" class="modal closed">
+        <div class="modal-content">
+            <h3 style="color: #ffd700; margin-bottom: 15px;">📊 سؤال سريع</h3>
+            <input type="text" id="pollQuestionInput" class="login-input" placeholder="اكتب السؤال هنا..." style="width:90%; margin-bottom: 20px;">
+            <div style="display: flex; gap: 10px; justify-content: center; margin-bottom: 15px;">
+                <button id="startPollYesNo" class="btn btn-primary">نعم / لا</button>
+                <button id="startPollABCD" class="btn btn-secondary">A / B / C / D</button>
+            </div>
+            <button id="closePollModal" class="btn btn-danger">إلغاء</button>
+        </div>
+    </div>
+
+    <!-- لوحة التصويت النشط -->
+    <div id="activePollPanel" class="poll-panel closed">
+        <h4 id="pollQuestionDisplay" style="margin:0 0 15px 0; color:#ffd700; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;"></h4>
+        <div id="pollOptionsContainer"></div>
+        <button id="endPollBtn" class="btn btn-danger" style="width:100%; margin-top:15px; display:none;">إنهاء التصويت</button>
+    </div>
 
     <script type="module" src="main.js"></script>
 </body>
