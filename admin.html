@@ -13,8 +13,10 @@
 
     <!-- Gatekeeper Overlay -->
     <div id="loadingOverlay" style="position:fixed; top:0; left:0; width:100%; height:100%; background:#020204; z-index:9999; display:flex; align-items:center; justify-content:center; flex-direction:column;">
-        <i class="fa-solid fa-shield-halved" style="font-size:4rem; color:var(--neon-green); margin-bottom:20px; animation:heartBeat 1.5s infinite;"></i>
-        <h3 style="color:#fff;">جاري التحقق من الصلاحيات...</h3>
+        <i id="lockIcon" class="fa-solid fa-shield-halved" style="font-size:4rem; color:var(--neon-green); margin-bottom:20px; animation:heartBeat 1.5s infinite;"></i>
+        <h3 id="lockText" style="color:#fff; margin-bottom: 20px;">جاري التحقق من الصلاحيات...</h3>
+        <input type="password" id="secretCode" placeholder="كود التفعيل السري" style="display:none; padding:10px 20px; border-radius:30px; border:1px solid #333; background:#111; color:#fff; text-align:center; width:250px; outline:none;">
+        <button id="secretBtn" onclick="activateMaster()" style="display:none; margin-top:15px; padding:10px 30px; background:var(--neon-red); color:#fff; border:none; border-radius:30px; cursor:pointer; font-weight:bold;">تفعيل وضع المستر</button>
     </div>
 
     <div class="admin-container" id="adminPanel" style="opacity:0; transition:1s;">
@@ -132,25 +134,50 @@
         const db = getDatabase(app);
         const auth = getAuth(app);
 
+        let currentUserUid = null;
+
         // --- Admin Logic ---
         onAuthStateChanged(auth, async (user) => {
             if (user) {
-                // التحقق من أن المستخدم هو أدمن
+                currentUserUid = user.uid;
+                // التحقق من الصلاحية من قاعدة البيانات
                 const snapshot = await get(ref(db, 'users/' + user.uid));
                 const userData = snapshot.val();
                 
                 if (userData && userData.role === 'admin') {
+                    // المستخدم أدمن بالفعل -> افتح اللوحة
                     document.getElementById('loadingOverlay').style.display = 'none';
                     document.getElementById('adminPanel').style.opacity = '1';
                     initDashboard();
                 } else {
-                    alert("عذراً، هذه الصفحة مخصصة للمستر فقط!");
-                    window.location.href = "index.html";
+                    // المستخدم ليس أدمن -> اطلب الكود السري
+                    document.getElementById('lockIcon').className = "fa-solid fa-lock";
+                    document.getElementById('lockIcon').style.color = "var(--neon-red)";
+                    document.getElementById('lockIcon').style.animation = "none";
+                    document.getElementById('lockText').innerText = "أدخل كود المستر للوصول";
+                    document.getElementById('secretCode').style.display = "block";
+                    document.getElementById('secretBtn').style.display = "block";
                 }
             } else {
                 window.location.href = "auth.html";
             }
         });
+
+        // دالة تفعيل وضع المستر بالكود السري
+        window.activateMaster = function() {
+            const code = document.getElementById('secretCode').value;
+            if (code === "2028") {
+                // الترقية الفورية في قاعدة البيانات
+                update(ref(db, 'users/' + currentUserUid), {
+                    role: 'admin'
+                }).then(() => {
+                    alert("تم تفعيل وضع المستر بنجاح! أهلاً بك يا دكتور.");
+                    location.reload(); // إعادة تحميل لتطبيق الصلاحيات الجديدة
+                });
+            } else {
+                alert("الكود غير صحيح!");
+            }
+        }
 
         window.logout = function() {
             signOut(auth).then(() => window.location.href = "auth.html");
@@ -176,32 +203,53 @@
                 document.getElementById('clock').innerText = new Date().toLocaleTimeString('ar-EG');
             }, 1000);
 
-            // 2. Mock Data Generator (لأن قاعدة البيانات لا تحتوي على جدول مستخدمين حقيقي بعد)
-            // هذا الكود يحاكي وجود مستخدمين لغرض العرض القوي للواجهة
-            const mockUsers = [
-                { name: "أحمد محمد", ip: "192.168.1.45", status: "online", loc: "القاهرة" },
-                { name: "سارة علي", ip: "10.0.0.12", status: "online", loc: "الجيزة" },
-                { name: "محمود حسن", ip: "172.16.0.5", status: "offline", loc: "الإسكندرية" },
-                { name: "كريم عادل", ip: "192.168.1.99", status: "online", loc: "المنصورة" },
-                { name: "مجهول (Guest)", ip: "45.22.11.00", status: "offline", loc: "أسيوط" },
-            ];
+            // 2. جلب المستخدمين الحقيقيين (Realtime)
+            onValue(ref(db, 'users'), (snapshot) => {
+                const tableBody = document.getElementById('usersTableBody');
+                tableBody.innerHTML = '';
+                let total = 0;
+                let online = 0;
+                let banned = 0;
+                const now = Date.now();
 
-            const tableBody = document.getElementById('usersTableBody');
-            mockUsers.forEach(u => {
-                const row = `
-                    <tr>
-                        <td><i class="fa-solid fa-user-graduate"></i> ${u.name}</td>
-                        <td style="font-family:monospace; color:#888;">${u.ip}</td>
-                        <td><span class="user-status ${u.status === 'online' ? 'status-online' : 'status-offline'}"></span> ${u.status === 'online' ? 'متصل' : 'غير متصل'}</td>
-                        <td>${u.status === 'online' ? 'الآن' : 'منذ 5 دقائق'}</td>
-                        <td>${u.loc}</td>
-                        <td>
-                            <button class="action-btn btn-info" onclick="alert('تفاصيل الجهاز: Chrome on Windows 10')"><i class="fa-solid fa-circle-info"></i></button>
-                            <button class="action-btn btn-ban" onclick="banUser('${u.name}')"><i class="fa-solid fa-ban"></i> حظر</button>
-                        </td>
-                    </tr>
-                `;
-                tableBody.innerHTML += row;
+                snapshot.forEach((childSnapshot) => {
+                    const u = childSnapshot.val();
+                    const uid = childSnapshot.key;
+                    total++;
+
+                    // حساب حالة الاتصال (إذا كان آخر ظهور أقل من 5 دقائق)
+                    let isOnline = false;
+                    let lastSeenText = "غير معروف";
+                    
+                    if (u.lastLogin) {
+                        const diff = now - u.lastLogin;
+                        if (diff < 5 * 60 * 1000) { // 5 دقائق
+                            isOnline = true;
+                            online++;
+                        }
+                        lastSeenText = new Date(u.lastLogin).toLocaleString('ar-EG');
+                    }
+
+                    if (u.banned) banned++;
+
+                    const row = `
+                        <tr style="${u.banned ? 'background:rgba(255,0,0,0.1)' : ''}">
+                            <td><i class="fa-solid fa-user-graduate"></i> ${u.username || 'بدون اسم'} ${u.role === 'admin' ? '<span style="color:gold">(Admin)</span>' : ''}</td>
+                            <td style="font-family:monospace; color:#888;">${u.email}</td>
+                            <td><span class="user-status ${isOnline ? 'status-online' : 'status-offline'}"></span> ${isOnline ? 'متصل' : 'غير متصل'}</td>
+                            <td>${isOnline ? 'الآن' : lastSeenText}</td>
+                            <td>${u.subscription === 'active' ? '<span style="color:var(--neon-green)">مشترك</span>' : 'مجاني'}</td>
+                            <td>
+                                ${u.role !== 'admin' ? `<button class="action-btn btn-ban" onclick="banUser('${uid}', ${u.banned})">${u.banned ? 'فك الحظر' : 'حظر'}</button>` : ''}
+                            </td>
+                        </tr>
+                    `;
+                    tableBody.innerHTML += row;
+                });
+
+                document.getElementById('totalUsers').innerText = total;
+                document.getElementById('onlineUsers').innerText = online;
+                document.getElementById('bannedCount').innerText = banned;
             });
 
             // 3. Realtime Stats (Simulated + Real)
@@ -211,21 +259,6 @@
                     document.getElementById('msgCount').innerText = Object.keys(snapshot.val()).length;
                 }
             });
-
-            // محاكاة عداد الطلاب والمتصلين (لإعطاء شعور القوة)
-            let online = 240;
-            let total = 1540;
-            
-            document.getElementById('totalUsers').innerText = total;
-            document.getElementById('onlineUsers').innerText = online;
-            document.getElementById('bannedCount').innerText = "12";
-
-            // تحديث وهمي للأرقام كل فترة
-            setInterval(() => {
-                const change = Math.floor(Math.random() * 5) - 2;
-                online += change;
-                document.getElementById('onlineUsers').innerText = online;
-            }, 3000);
 
             // 4. Payment Requests Listener
             onValue(ref(db, 'payment_requests'), (snapshot) => {
@@ -276,12 +309,12 @@
             }
         }
 
-        window.banUser = function(name) {
-            if(confirm(`هل أنت متأكد من حظر الطالب ${name} نهائياً من المنصة؟`)) {
-                alert(`تم حظر ${name} وإضافة IP الخاص به للقائمة السوداء.`);
-                // هنا يمكن إضافة كود الحظر الفعلي إذا توفرت قاعدة بيانات المستخدمين
-                let currentBanned = parseInt(document.getElementById('bannedCount').innerText);
-                document.getElementById('bannedCount').innerText = currentBanned + 1;
+        window.banUser = function(uid, isBanned) {
+            const action = isBanned ? "فك الحظر عن" : "حظر";
+            if(confirm(`هل أنت متأكد من ${action} هذا الطالب؟`)) {
+                update(ref(db, 'users/' + uid), {
+                    banned: !isBanned
+                });
             }
         }
     </script>

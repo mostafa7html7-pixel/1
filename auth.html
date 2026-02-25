@@ -181,6 +181,12 @@
             const snapshot = await get(ref(db, 'users/' + uid));
             if (snapshot.exists()) {
                 const userData = snapshot.val();
+                
+                if (userData.banned) {
+                    alert("تم حظر حسابك من قبل الإدارة. تواصل مع الدعم الفني.");
+                    return; // منع الدخول
+                }
+
                 if (userData.role === 'admin') {
                     window.location.href = "admin.html";
                 } else {
