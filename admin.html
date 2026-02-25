@@ -41,13 +41,17 @@
         <main class="admin-content">
             <!-- Top Navigation for Quick Access -->
             <nav class="admin-top-nav">
-                <a href="index.html" class="home-btn"><i class="fa-solid fa-house"></i> الرئيسية</a>
-                <a href="library.html"><i class="fa-solid fa-book"></i> المكتبة</a>
-                <a href="videos.html"><i class="fa-solid fa-play"></i> الفيديوهات</a>
-                <a href="schedule.html"><i class="fa-solid fa-calendar-days"></i> الجدول</a>
-                <a href="reviews.html"><i class="fa-solid fa-file-lines"></i> ورق الشرح</a>
-                <a href="contact.html"><i class="fa-solid fa-comments"></i> الشات</a>
-                <a href="scientific-books.html"><i class="fa-solid fa-flask"></i> الكتب العلمية</a>
+                <div class="logo" style="margin-left: auto;">
+                    <i class="fa-solid fa-heart-pulse" style="color:var(--neon-red)"></i>
+                    <span style="font-weight:bold; color:#fff; margin-right:5px;">لوحة التحكم</span>
+                </div>
+                <div class="menu-btn" style="display:block; font-size:1.5rem; cursor:pointer;"><i class="fa-solid fa-bars"></i></div>
+                <ul class="nav-links">
+                    <li><a href="index.html"><i class="fa-solid fa-house"></i> الرئيسية</a></li>
+                    <li><a href="contact.html"><i class="fa-solid fa-comments"></i> الشات</a></li>
+                    <li><a href="profile.html"><i class="fa-solid fa-user"></i> الملف الشخصي</a></li>
+                    <li><a href="#" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> خروج</a></li>
+                </ul>
             </nav>
 
             <header style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px;">
@@ -135,6 +139,11 @@
                             <button onclick="sendBroadcast()" style="background:var(--neon-green); color:#000; padding:10px 30px; border:none; border-radius:8px; font-weight:bold; cursor:pointer;"><i class="fa-solid fa-paper-plane"></i> إرسال الآن</button>
                         </div>
                     </div>
+                    
+                    <h3 style="color:#fff; margin: 20px 0 10px; border-bottom:1px solid #333; padding-bottom:10px;">الرسائل المرسلة سابقاً</h3>
+                    <div id="activeBroadcastsList">
+                        <p style="color:#888; text-align:center;">جاري تحميل الرسائل...</p>
+                    </div>
                 </div>
             </div>
 
@@ -214,6 +223,14 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
         const auth = getAuth(app);
+
+        // Menu Toggle Logic
+        const menuBtn = document.querySelector('.menu-btn');
+        const navLinks = document.querySelector('.nav-links');
+        menuBtn.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            menuBtn.innerHTML = navLinks.classList.contains('active') ? '<i class="fa-solid fa-xmark"></i>' : '<i class="fa-solid fa-bars"></i>';
+        });
 
         let currentUserUid = null;
         let usersChartInstance = null;
@@ -418,6 +435,31 @@
                     badge.style.display = 'none';
                 }
             });
+
+            // 5. Broadcasts List Listener (For Deletion)
+            onValue(ref(db, 'broadcasts'), (snapshot) => {
+                const list = document.getElementById('activeBroadcastsList');
+                list.innerHTML = '';
+                if(snapshot.exists()) {
+                    snapshot.forEach((child) => {
+                        const msg = child.val();
+                        const key = child.key;
+                        const date = new Date(msg.timestamp).toLocaleString('ar-EG');
+                        const html = `
+                            <div class="msg-list-item">
+                                <div class="msg-list-content">
+                                    <span class="msg-list-date">${date}</span>
+                                    <div class="msg-list-text">${msg.text}</div>
+                                </div>
+                                <button class="msg-delete-btn" onclick="deleteBroadcast('${key}')"><i class="fa-solid fa-trash"></i> حذف</button>
+                            </div>
+                        `;
+                        list.insertAdjacentHTML('afterbegin', html);
+                    });
+                } else {
+                    list.innerHTML = '<p style="text-align:center; color:#666;">لا توجد رسائل</p>';
+                }
+            });
         }
 
         function updateChart(data) {
@@ -491,6 +533,12 @@
         window.deleteUser = function(uid) {
             if(confirm("تحذير هام: هل أنت متأكد من حذف بيانات هذا الطالب نهائياً من قاعدة البيانات؟ لا يمكن التراجع عن هذا الإجراء.")) {
                 remove(ref(db, 'users/' + uid));
+            }
+        }
+
+        window.deleteBroadcast = function(key) {
+            if(confirm("هل أنت متأكد من حذف هذه الرسالة؟ ستختفي من عند جميع الطلاب.")) {
+                remove(ref(db, 'broadcasts/' + key));
             }
         }
 
