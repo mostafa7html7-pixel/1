@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="شاهد أقوى شروحات الأحياء مع الدكتور. فيديوهات بجودة عالية تغطي الوراثة، المناعة، البيولوجيا الجزيئية والمزيد.">
+    <meta name="keywords" content="فيديوهات أحياء, شرح يوتيوب, وراثه, مناعة, هرمونات, دكتور أحياء, شرح ثانوية عامة, بيولوجيا">
+    <title>الفيديوهات - الدكتور | الجيل القادم</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700;900&family=Reem+Kufi:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="manifest" href="manifest.json">
+    <!-- Structured Data for SEO -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      "name": "قائمة فيديوهات الأحياء",
+      "description": "شروحات الدكتور في مادة الأحياء لطلاب الثانوية العامة.",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "item": {
+            "@type": "VideoObject",
+            "name": "قصة اكتشاف الحمض النووي (DNA)",
+            "description": "فيديو يشرح تاريخ وتفاصيل اكتشاف الحمض النووي DNA.",
+            "thumbnailUrl": "https://img.youtube.com/vi/v0FAN5ieUPc/maxresdefault.jpg",
+            "uploadDate": "2024-01-01",
+            "embedUrl": "https://www.youtube.com/embed/v0FAN5ieUPc"
+          }
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "item": {
+            "@type": "VideoObject",
+            "name": "الأنزيمات وكيف تعمل داخل أجسامنا",
+            "description": "شرح تفصيلي لآلية عمل الأنزيمات وأهميتها في الكيمياء الحيوية.",
+            "thumbnailUrl": "https://img.youtube.com/vi/DVryY-MqMSM/maxresdefault.jpg",
+            "uploadDate": "2024-01-01",
+            "embedUrl": "https://www.youtube.com/embed/DVryY-MqMSM"
+          }
+        }
+      ]
+    }
+    </script>
+    
+    <style>
+        /* --- ستايلات الهوية البصرية (Cyber-Biology) --- */
+        :root {
+            --cyber-green: #00ff88;
+            --cyber-glow: rgba(0, 255, 136, 0.4);
+            --card-bg: rgba(15, 15, 20, 0.7);
+            --danger-red: #ff3366;
+            --ocean-blue: #00b3ff;
+        }
+
+        body {
+            background-color: #050508; 
+            color: #fff;
+            font-family: 'Cairo', sans-serif;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        /* Light Mode Overrides */
+        body.light-mode {
+            background-color: #f0f2f5;
+            color: #333;
+        }
+        body.light-mode .video-card {
+            background: #fff;
+            border-color: #ddd;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        body.light-mode .main-title {
+            background: linear-gradient(to bottom, #333 30%, #000 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .page-header {
+            text-align: center;
+            padding: 6rem 1rem 3rem;
+            background: radial-gradient(circle at top, rgba(0, 255, 136, 0.1) 0%, transparent 70%);
+        }
+
+        .subtitle {
+            color: var(--cyber-green);
+            letter-spacing: 4px;
+            font-weight: 900;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            text-shadow: 0 0 10px var(--cyber-glow);
+            margin-bottom: 10px;
+        }
+
+        .main-title {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 900;
+            margin: 0;
+            background: linear-gradient(to bottom, #fff 30%, #666 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* تحسين للموبايل */
+            gap: 2rem;
+        }
+
+        /* تصميم الكارت الاحترافي */
+        .video-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            position: relative;
+        }
+
+        .video-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            border-color: var(--cyber-green);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 20px var(--cyber-glow);
+        }
+
+        .vid-thumb {
+            position: relative;
+            padding-bottom: 56.25%; 
+            background: #000;
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        .vid-thumb img {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            object-fit: cover;
+            transition: 0.5s;
+            filter: brightness(0.8);
+        }
+
+        .video-card:hover .vid-thumb img {
+            filter: brightness(0.4) blur(2px);
+            transform: scale(1.1);
+        }
+
+        .play-btn {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 65px; height: 65px;
+            background: var(--cyber-green);
+            color: #000;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 24px;
+            z-index: 2;
+            opacity: 0.9;
+            box-shadow: 0 0 20px var(--cyber-green);
+            transition: 0.3s;
+        }
+
+        .video-card:hover .play-btn {
+            transform: translate(-50%, -50%) scale(1.2);
+            opacity: 1;
+        }
+
+        .vid-info {
+            padding: 1.5rem;
+        }
+
+        .vid-cat {
+            font-size: 0.7rem;
+            font-weight: bold;
+            color: var(--cyber-green);
+            text-transform: uppercase;
+            border: 1px solid var(--cyber-green);
+            padding: 2px 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            display: inline-block;
+        }
+
+        .vid-info h3 {
+            margin: 10px 0;
+            font-size: 1.1rem;
+            line-height: 1.5;
+            height: 3rem;
+            overflow: hidden;
+        }
+
+        /* زر تحميل الفيديو */
+        .btn-download-vid {
+            width: 100%;
+            background: rgba(0, 255, 136, 0.1);
+            color: var(--cyber-green);
+            border: 1px solid var(--cyber-green);
+            padding: 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            text-decoration: none;
+            margin-top: 15px;
+        }
+
+        .btn-download-vid:hover {
+            background: var(--cyber-green);
+            color: #000;
+        }
+
+        /* أزرار المشاركة */
+        .share-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        .share-btn {
+            width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            color: #fff; font-size: 0.9rem; transition: 0.3s; cursor: pointer; text-decoration: none;
+        }
+        .share-btn:hover { transform: translateY(-3px); }
+        .share-wa { background: #25D366; }
+        .share-fb { background: #1877F2; }
+        .share-tg { background: #0088cc; }
+        .share-cp { background: #555; }
+    </style>
+</head>
+<body>
+
+    <!-- Page Loader -->
+    <div id="page-loader">
+        <div class="loader-content">
+            <i class="fa-solid fa-heart-pulse loader-icon"></i>
+            <div class="loader-text">الدكتور <small>جاري التحميل...</small></div>
+        </div>
+    </div>
+
+    <nav class="navbar">
+        <div class="logo">
+            <i class="fa-solid fa-heart-pulse"></i>
+            <div class="logo-text"><span>الدكتور</span><small>BIOLOGY MASTER</small></div>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html">الرئيسية</a></li>
+            <li><a href="library.html">الكتب</a></li>
+            <li><a href="videos.html" class="active">الفيديوهات</a></li>
+            <li><a href="schedule.html">الجدول</a></li>
+            <li><a href="reviews.html">ورق الشرح</a></li>
+            <li><a href="contact.html">تواصل معنا</a></li>
+        </ul>
+        <button id="themeToggle" class="theme-toggle" title="تبديل الوضع"><i class="fa-solid fa-moon"></i></button>
+        <button id="installAppBtn" class="btn-nav-install" style="display: none;">
+            <i class="fa-solid fa-download"></i>
+            <span>تثبيت التطبيق</span>
+        </button>
+        <a href="scientific-books.html" class="btn-nav-special">الكتب العلمية النادرة</a>
+        <div class="menu-btn"><i class="fa-solid fa-bars"></i></div>
+    </nav>
+
+    <header class="page-header">
+        <p class="subtitle">Premium Learning Experience</p>
+        <h2 class="main-title">مختبر <span style="color:var(--cyber-green)">الفيديو الذكي</span></h2>
+        <p style="color:#8892b0; margin-top:15px;">شاهد المحتوى بدون إعلانات وبسرعة فائقة</p>
+    </header>
+
+    <main class="container">
+        <div class="grid-container" id="videoGrid">
+            </div>
+    </main>
+
+    <footer>
+        <div class="footer-bottom">
+            <p>جميع الحقوق محفوظة © 2026 | الدكتور في الأحياء</p>
+        </div>
+    </footer>
+
+    <script>
+        // قائمة الفيديوهات الـ 12 التي أرسلتها
+        const videos = [
+            { id: 'v0FAN5ieUPc', title: 'قصة اكتشاف الحمض النووي (DNA)', cat: 'الوراثة الجزئية' },
+            { id: 'DVryY-MqMSM', title: 'الأنزيمات وكيف تعمل داخل أجسامنا', cat: 'الكيمياء الحيوية' },
+            { id: 'qtxquLkeNak', title: 'هل الدم فعلاً عمره ما يبقى مياه؟', cat: 'وراثة الدم' },
+            { id: 'RcBR7YDFkaA', title: 'تاريخ التشريح البشري عبر العصور', cat: 'علم الفسيولوجيا' },
+            { id: '3gyeOcpdc6g', title: 'الخلية: رحلة في أصغر مصنع في الكون', cat: 'علم الخلية' },
+            { id: 'H1hGOo0d1Vo', title: 'كيف نفكر؟ الجهاز العصبي المركزي', cat: 'التنسيق العصبي' },
+            { id: 'qM6jPrMPTKk', title: 'المناعة: جيش جسمك السري', cat: 'علم المناعة' },
+            { id: 'jDs55BiCSBk', title: 'الهرمونات: رسائل كيميائية تغير حياتك', cat: 'التنسيق الهرموني' },
+            { id: '9ZTCUyhoknU', title: 'التكاثر في الكائنات الحية', cat: 'التكاثر' },
+            { id: 'eCg6Ybtl2sA', title: 'التنفس الخلوي وإنتاج الطاقة ATP', cat: 'عمليات الحيوية' },
+            { id: '9n-Ne3in2rg', title: 'التطور والارتقاء في الكائنات', cat: 'علم الأحياء العام' },
+            { id: 'DVryY-MqMSM', title: 'مراجعة الأنزيمات والتمثيل الغذائي', cat: 'مراجعة نهائية' }
+        ];
+
+        const grid = document.getElementById('videoGrid');
+
+        // توليد الكروت تلقائياً
+        videos.forEach(vid => {
+            const vidUrl = `https://www.youtube.com/watch?v=${vid.id}`;
+            const card = document.createElement('div');
+            card.className = 'video-card';
+            card.innerHTML = `
+                <div class="vid-thumb" onclick="playVideo(this, '${vid.id}')">
+                    <img src="https://img.youtube.com/vi/${vid.id}/maxresdefault.jpg" alt="${vid.title}" loading="lazy">
+                    <div class="play-btn"><i class="fa-solid fa-play"></i></div>
+                </div>
+                <div class="vid-info">
+                    <span class="vid-cat">${vid.cat}</span>
+                    <h3>${vid.title}</h3>
+                    <a href="https://www.youtube.com/watch?v=${vid.id}" target="_blank" class="btn-download-vid">
+                        <i class="fa-solid fa-download"></i> تحميل الفيديو
+                    </a>
+                    <div class="share-buttons">
+                        <a href="https://wa.me/?text=${encodeURIComponent(vid.title + ' ' + vidUrl)}" target="_blank" class="share-btn share-wa" title="مشاركة عبر واتساب"><i class="fa-brands fa-whatsapp"></i></a>
+                        <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(vidUrl)}" target="_blank" class="share-btn share-fb" title="مشاركة عبر فيسبوك"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a href="https://t.me/share/url?url=${encodeURIComponent(vidUrl)}&text=${encodeURIComponent(vid.title)}" target="_blank" class="share-btn share-tg" title="مشاركة عبر تليجرام"><i class="fa-brands fa-telegram"></i></a>
+                        <div onclick="navigator.clipboard.writeText('${vidUrl}'); alert('تم نسخ الرابط!')" class="share-btn share-cp" title="نسخ الرابط"><i class="fa-solid fa-link"></i></div>
+                    </div>
+                </div>
+            `;
+            grid.appendChild(card);
+        });
+
+        // تشغيل الفيديو فوراً (إلغاء الإعلانات)
+        function playVideo(container, id) {
+            if (container.querySelector('iframe')) return;
+            
+            // إضافة بارامترات السرعة ومنع الإعلانات
+            const iframe = document.createElement('iframe');
+            iframe.src = `https://www.youtube.com/embed/${id}?autoplay=1&rel=0&modestbranding=1&showinfo=0`;
+            iframe.style.position = 'absolute';
+            iframe.style.top = '0';
+            iframe.style.left = '0';
+            iframe.style.width = '100%';
+            iframe.style.height = '100%';
+            iframe.style.border = '0';
+            iframe.setAttribute('allow', 'autoplay; encrypted-media');
+            
+            container.innerHTML = '';
+            container.appendChild(iframe);
+        }
+
+        const menuBtn = document.querySelector('.menu-btn');
+        const navLinks = document.querySelector('.nav-links');
+        menuBtn.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            menuBtn.innerHTML = navLinks.classList.contains('active') ? '<i class="fa-solid fa-xmark"></i>' : '<i class="fa-solid fa-bars"></i>';
+        });
+
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('page-loader').classList.add('loader-hidden');
+            }, 1000);
+        });
+
+        // كود تثبيت التطبيق PWA
+        let deferredPrompt;
+        const installBtn = document.getElementById('installAppBtn');
+
+        // إظهار الزر إذا لم يكن التطبيق مثبتاً
+        if (!window.matchMedia('(display-mode: standalone)').matches) {
+            installBtn.style.display = 'flex';
+        }
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installBtn.style.display = 'flex';
+        });
+
+        installBtn.addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') installBtn.style.display = 'none';
+                deferredPrompt = null;
+            } else {
+                alert('لتثبيت التطبيق، يرجى استخدام خيار "الإضافة إلى الشاشة الرئيسية" من إعدادات المتصفح.');
+            }
+        });
+
+        // كود الوضع الليلي/النهاري
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        const icon = themeToggle.querySelector('i');
+
+        if (localStorage.getItem('theme') === 'light') {
+            body.classList.add('light-mode');
+            icon.classList.replace('fa-moon', 'fa-sun');
+        }
+
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('light-mode');
+            const isLight = body.classList.contains('light-mode');
+            localStorage.setItem('theme', isLight ? 'light' : 'dark');
+            icon.className = isLight ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+        });
+    </script>
+
+    <!-- نظام الإشعارات الذكي -->
+    <div id="fire-notification" class="fire-toast">
+        <i class="fa-solid fa-fire-flame-curved"></i>
+        <div>
+            <h4>تنبيه عاجل من الدكتور</h4>
+            <small>اضغط للذهاب لمركز الرسائل</small>
+        </div>
+    </div>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+        import { getDatabase, ref, onChildAdded, query, limitToLast } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
+
+        const firebaseConfig = { apiKey: "AIzaSyD092yeOowtCLW0fDcIzaEXrnxvrN4X5T8", authDomain: "abqarieno.firebaseapp.com", databaseURL: "https://abqarieno-default-rtdb.firebaseio.com", projectId: "abqarieno", storageBucket: "abqarieno.firebasestorage.app", messagingSenderId: "790682500839", appId: "1:790682500839:web:cd50b8e01729f821e06c42" };
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        
+        const notif = document.getElementById('fire-notification');
+        const loadTime = Date.now();
+
+        onChildAdded(query(ref(db, 'broadcasts'), limitToLast(1)), (snapshot) => {
+            const msg = snapshot.val();
+            if(msg.timestamp > loadTime) {
+                notif.classList.add('show');
+                setTimeout(() => notif.classList.remove('show'), 6000);
+            }
+        });
+        notif.onclick = () => window.location.href = 'contact.html';
+    </script>
+</body>
+</html>

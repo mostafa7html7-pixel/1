@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="ورق الشرح والمراجعات النهائية في الأحياء. ملخصات، خرائط ذهنية، وأوراق عمل هامة للتحميل والمشاهدة المباشرة.">
+    <meta name="keywords" content="ورق شرح, ملخصات أحياء, خرائط ذهنية, مراجعة ليلة الامتحان, ورق مفاهيم, أحياء ثانوية عامة, مذكرات">
+    <title>ورق الشرح - الدكتور</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700;900&family=Reem+Kufi:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="manifest" href="manifest.json">
+    <!-- Structured Data for SEO -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      "name": "أوراق شرح ومراجعات الأحياء",
+      "description": "ملخصات وخرائط ذهنية ومراجعات نهائية في مادة الأحياء.",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "item": {
+            "@type": "LearningResource",
+            "name": "ورقة الشرح الأولى",
+            "description": "ملخص شامل للدرس الأول مدعوم بالرسومات التوضيحية لتبسيط الفهم والتركيز على أهم النقاط الامتحانية.",
+            "learningResourceType": "Study Notes",
+            "url": "https://drive.google.com/file/d/1SLou0Rf7FdyOkwd_zJtWxD7ma1VIELK_/preview"
+          }
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "item": {
+            "@type": "LearningResource",
+            "name": "ورقة الشرح الثانية",
+            "description": "مخططات ذهنية ومقارنات هامة لربط المعلومات ببعضها، مصممة خصيصاً لتسهيل المراجعة السريعة.",
+            "learningResourceType": "Study Notes",
+            "url": "https://drive.google.com/file/d/1RepnR_neZGppXj4xC0F3mbeiPN0upnps/preview"
+          }
+        }
+      ]
+    }
+    </script>
+    <style>
+        /* --- تصميم المنصة التعليمية - طابع الأحياء --- */
+        :root {
+            --bio-green: #00ff88;
+            --bio-blue: #00d2ff;
+            --dark-bg: #050508;
+            --card-bg: rgba(15, 20, 25, 0.85);
+            --border-color: rgba(0, 255, 136, 0.2);
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            /* خلفية هادئة تناسب التركيز في المذاكرة */
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(0, 255, 136, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 85% 30%, rgba(0, 210, 255, 0.03) 0%, transparent 50%);
+            color: #fff;
+        }
+
+        /* Light Mode Overrides */
+        body.light-mode {
+            background-color: #f4f6f8;
+            background-image: none;
+            color: #333;
+        }
+        body.light-mode .study-card {
+            background: #fff;
+            border-color: #e2e8f0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        body.light-mode .study-card h3 { color: #1a202c; }
+        body.light-mode .study-card p { color: #4a5568; }
+        body.light-mode .file-window {
+            background: #fff;
+            border-color: #ddd;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        body.light-mode .window-header { background: #f8f9fa; border-bottom: 1px solid #ddd; }
+        body.light-mode .win-btn { color: #666; }
+        body.light-mode .win-btn:hover { color: #000; }
+
+        /* شبكة ورق الشرح */
+        .cards-hub {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+
+        .study-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 25px;
+            position: relative;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .study-card:hover {
+            border-color: var(--bio-green);
+            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.1);
+            transform: translateY(-5px);
+        }
+
+        .card-icon {
+            font-size: 2.5rem;
+            color: var(--bio-green);
+            margin-bottom: 15px;
+            opacity: 0.8;
+        }
+
+        .study-card h3 {
+            margin: 0 0 10px 0;
+            font-size: 1.3rem;
+            color: #fff;
+            font-weight: 700;
+        }
+
+        .study-card p {
+            font-size: 0.95rem;
+            color: #a0aec0;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            flex-grow: 1;
+        }
+
+        .controls-row {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-view {
+            background: rgba(0, 255, 136, 0.1);
+            color: var(--bio-green);
+            border: 1px solid var(--bio-green);
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: 0.3s;
+            font-family: inherit;
+        }
+
+        .btn-view:hover {
+            background: var(--bio-green);
+            color: #000;
+        }
+
+        .btn-download {
+            background: transparent;
+            color: #a0aec0;
+            border: 1px solid #4a5568;
+            padding: 10px 15px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.3s;
+            text-decoration: none;
+        }
+
+        .btn-download:hover {
+            background: #4a5568;
+            color: #fff;
+        }
+
+        /* --- منطقة عرض الملفات (السبورة الذكية) --- */
+        #workspace {
+            display: grid;
+            grid-template-columns: 1fr; /* تم التعديل لتأخذ الشاشة كاملة لتسهيل القراءة */
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .file-window {
+            background: #111827;
+            border: 1px solid #374151;
+            border-radius: 16px;
+            height: 80vh; /* طول مناسب للقراءة */
+            min-height: 600px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            animation: fadeInUp 0.6s ease;
+            overflow: hidden;
+        }
+
+        .window-header {
+            background: #1f2937;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #374151;
+        }
+
+        .window-title { font-size: 1rem; font-weight: bold; color: var(--bio-green); display: flex; gap: 10px; align-items: center;}
+
+        .window-actions { display: flex; gap: 20px; }
+
+        .win-btn { cursor: pointer; transition: 0.2s; color: #9ca3af; font-size: 1.2rem;}
+        .win-btn:hover { color: #fff; }
+        .win-btn.close:hover { color: #ef4444; }
+
+        .iframe-container {
+            flex-grow: 1;
+            position: relative;
+            background: #e5e7eb; /* خلفية فاتحة للملف ليعطي إحساس الورق */
+        }
+
+        iframe { width: 100%; height: 100%; border: none; }
+
+        @media (max-width: 768px) {
+            .file-window { height: 70vh; min-height: 500px; }
+            .window-title { font-size: 0.9rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Page Loader -->
+    <div id="page-loader">
+        <div class="loader-content">
+            <i class="fa-solid fa-heart-pulse loader-icon"></i>
+            <div class="loader-text">الدكتور <small>جاري التحميل...</small></div>
+        </div>
+    </div>
+
+    <nav class="navbar">
+        <div class="logo">
+            <i class="fa-solid fa-heart-pulse"></i>
+            <div class="logo-text"><span>الدكتور</span><small>BIOLOGY MASTER</small></div>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html">الرئيسية</a></li>
+            <li><a href="library.html">الكتب</a></li>
+            <li><a href="videos.html">الفيديوهات</a></li>
+            <li><a href="schedule.html">الجدول</a></li>
+            <li><a href="reviews.html" class="active">ورق الشرح</a></li> 
+            <li><a href="contact.html">تواصل معنا</a></li>
+        </ul>
+        <button onclick="logout()" style="background:transparent; border:1px solid #333; color:#fff; padding:5px 10px; border-radius:5px; cursor:pointer; margin-left:10px; font-size:0.8rem;"><i class="fa-solid fa-right-from-bracket"></i> خروج</button>
+        <button id="themeToggle" class="theme-toggle" title="تبديل الوضع"><i class="fa-solid fa-moon"></i></button>
+        <button id="installAppBtn" class="btn-nav-install" style="display: none;">
+            <i class="fa-solid fa-download"></i>
+            <span>تثبيت التطبيق</span>
+        </button>
+        <a href="scientific-books.html" class="btn-nav-special">الكتب العلمية النادرة</a>
+        <div class="menu-btn"><i class="fa-solid fa-bars"></i></div>
+    </nav>
+
+    <div class="page-header">
+        <p class="subtitle" style="letter-spacing: 3px;">BIOLOGY STUDY NOTES</p>
+        <h2 class="main-title">أوراق <span style="color:var(--bio-green)">الشرح والمراجعة</span></h2>
+    </div>
+
+    <section class="container">
+        <div class="cards-hub">
+            
+            <div class="study-card">
+                <i class="fa-solid fa-microscope card-icon"></i>
+                <h3>ورقة الشرح الأولى</h3>
+                <p>ملخص شامل للدرس الأول مدعوم بالرسومات التوضيحية لتبسيط الفهم والتركيز على أهم النقاط الامتحانية.</p>
+                <div class="controls-row">
+                    <button class="btn-view" onclick="openFile('https://drive.google.com/file/d/1SLou0Rf7FdyOkwd_zJtWxD7ma1VIELK_/preview', 'ورقة الشرح الأولى')"><i class="fa-regular fa-eye"></i> عرض داخل الموقع</button>
+                    <a href="https://drive.google.com/uc?export=download&id=1SLou0Rf7FdyOkwd_zJtWxD7ma1VIELK_" title="تحميل الملف" class="btn-download" download><i class="fa-solid fa-download"></i></a>
+                </div>
+            </div>
+
+            <div class="study-card">
+                <i class="fa-solid fa-dna card-icon"></i>
+                <h3>ورقة الشرح الثانية</h3>
+                <p>مخططات ذهنية ومقارنات هامة لربط المعلومات ببعضها، مصممة خصيصاً لتسهيل المراجعة السريعة.</p>
+                <div class="controls-row">
+                    <button class="btn-view" onclick="openFile('https://drive.google.com/file/d/1RepnR_neZGppXj4xC0F3mbeiPN0upnps/preview', 'ورقة الشرح الثانية')"><i class="fa-regular fa-eye"></i> عرض داخل الموقع</button>
+                    <a href="https://drive.google.com/uc?export=download&id=1RepnR_neZGppXj4xC0F3mbeiPN0upnps" title="تحميل الملف" class="btn-download" download><i class="fa-solid fa-download"></i></a>
+                </div>
+            </div>
+
+            <div class="study-card">
+                <i class="fa-solid fa-leaf card-icon"></i>
+                <h3>ورقة الشرح الثالثة</h3>
+                <p>شرح تفصيلي للتراكيب الحيوية والعمليات الفسيولوجية بأسلوب مبسط ومباشر.</p>
+                <div class="controls-row">
+                    <button class="btn-view" onclick="openFile('https://drive.google.com/file/d/1vJXNgHxZRNdl78rg3GZo9CBQFu8tJWfG/preview', 'ورقة الشرح الثالثة')"><i class="fa-regular fa-eye"></i> عرض داخل الموقع</button>
+                    <a href="https://drive.google.com/uc?export=download&id=1vJXNgHxZRNdl78rg3GZo9CBQFu8tJWfG" title="تحميل الملف" class="btn-download" download><i class="fa-solid fa-download"></i></a>
+                </div>
+            </div>
+
+            <div class="study-card">
+                <i class="fa-solid fa-disease card-icon"></i>
+                <h3>ورقة الشرح الرابعة</h3>
+                <p>أهم التطبيقات والأسئلة الشائعة التي تتكرر في الامتحانات مع تحليل وافٍ للإجابات النموذجية.</p>
+                <div class="controls-row">
+                    <button class="btn-view" onclick="openFile('https://drive.google.com/file/d/1qVh0HtON6hT1plWTZAqudCuCxy1Xy0nE/preview', 'ورقة الشرح الرابعة')"><i class="fa-regular fa-eye"></i> عرض داخل الموقع</button>
+                    <a href="https://drive.google.com/uc?export=download&id=1qVh0HtON6hT1plWTZAqudCuCxy1Xy0nE" title="تحميل الملف" class="btn-download" download><i class="fa-solid fa-download"></i></a>
+                </div>
+            </div>
+
+            <div class="study-card">
+                <i class="fa-solid fa-notes-medical card-icon"></i>
+                <h3>ورقة الشرح الخامسة</h3>
+                <p>المراجعة النهائية وتجميع القوانين والملاحظات الدقيقة التي تصنع الفارق للطالب المتفوق.</p>
+                <div class="controls-row">
+                    <button class="btn-view" onclick="openFile('https://drive.google.com/file/d/1aVoDCLxMbLQ0X7w9tbwdwXfo4VRO9zIb/preview', 'ورقة الشرح الخامسة')"><i class="fa-regular fa-eye"></i> عرض داخل الموقع</button>
+                    <a href="https://drive.google.com/uc?export=download&id=1aVoDCLxMbLQ0X7w9tbwdwXfo4VRO9zIb" title="تحميل الملف" class="btn-download" download><i class="fa-solid fa-download"></i></a>
+                </div>
+            </div>
+
+        </div>
+
+        <h3 style="color:var(--bio-green); border-right:4px solid var(--bio-green); padding-right:12px; margin-bottom:20px; font-size:1.5rem;">السبورة التفاعلية</h3>
+        <div id="workspace">
+            <div id="empty-state" style="text-align: center; padding: 60px 20px; background: rgba(255,255,255,0.02); border-radius: 16px; border: 1px dashed #333;">
+                <i class="fa-solid fa-book-open-reader" style="font-size: 3.5rem; margin-bottom: 15px; color: #4a5568;"></i>
+                <p style="color: #a0aec0; font-size: 1.1rem;">قم باختيار "عرض داخل الموقع" من البطاقات بالأعلى لتصفح ورق الشرح هنا.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p style="text-align: center; color: #888;">جميع الحقوق محفوظة © 2026 | تم التطوير بواسطة فريق عبقرينو & كيمو <i class="fa-solid fa-heart" style="color:var(--bio-green)"></i></p>
+    </footer>
+
+    <script>
+        let isFileOpen = false;
+
+        function openFile(path, title) {
+            const workspace = document.getElementById('workspace');
+            
+            // إذا كان هناك ملف مفتوح، قم بحذفه لنعرض الملف الجديد فقط لعدم تشتيت الطالب
+            workspace.innerHTML = ''; 
+
+            // إنشاء نافذة العرض
+            const windowId = 'win-' + Date.now();
+            const windowHTML = `
+                <div class="file-window" id="${windowId}">
+                    <div class="window-header">
+                        <span class="window-title"><i class="fa-solid fa-book-open"></i> يتم عرض: ${title}</span>
+                        <div class="window-actions">
+                            <i class="win-btn fa-solid fa-expand" onclick="toggleFull('${windowId}')" title="ملء الشاشة للتركيز"></i>
+                            <i class="win-btn close fa-solid fa-xmark" onclick="closeWin()" title="إغلاق الملف"></i>
+                        </div>
+                    </div>
+                    <div class="iframe-container" id="cont-${windowId}">
+                        <iframe src="${path}" allow="autoplay"></iframe>
+                    </div>
+                </div>
+            `;
+            
+            workspace.insertAdjacentHTML('afterbegin', windowHTML);
+            
+            // عمل سكرول سلس للنزول إلى مكان عرض الملف
+            document.getElementById(windowId).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function closeWin() {
+            const workspace = document.getElementById('workspace');
+            workspace.innerHTML = `
+                <div id="empty-state" style="text-align: center; padding: 60px 20px; background: rgba(255,255,255,0.02); border-radius: 16px; border: 1px dashed #333;">
+                    <i class="fa-solid fa-book-open-reader" style="font-size: 3.5rem; margin-bottom: 15px; color: #4a5568;"></i>
+                    <p style="color: #a0aec0; font-size: 1.1rem;">قم باختيار "عرض داخل الموقع" من البطاقات بالأعلى لتصفح ورق الشرح هنا.</p>
+                </div>
+            `;
+            // الصعود للأعلى بسلاسة
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function toggleFull(id) {
+            const win = document.getElementById(id);
+            if (!document.fullscreenElement) {
+                win.requestFullscreen().catch(err => {
+                    alert(`عذراً، متصفحك لا يدعم هذه الخاصية: ${err.message}`);
+                });
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
+        // سكريبت القائمة المنسدلة
+        const menuBtn = document.querySelector('.menu-btn');
+        const navLinks = document.querySelector('.nav-links');
+        menuBtn.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            menuBtn.innerHTML = navLinks.classList.contains('active') ? '<i class="fa-solid fa-xmark"></i>' : '<i class="fa-solid fa-bars"></i>';
+        });
+
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('page-loader').classList.add('loader-hidden');
+            }, 1000);
+        });
+
+        // كود تثبيت التطبيق PWA
+        let deferredPrompt;
+        const installBtn = document.getElementById('installAppBtn');
+
+        // إظهار الزر إذا لم يكن التطبيق مثبتاً
+        if (!window.matchMedia('(display-mode: standalone)').matches) {
+            installBtn.style.display = 'flex';
+        }
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installBtn.style.display = 'flex';
+        });
+
+        installBtn.addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') installBtn.style.display = 'none';
+                deferredPrompt = null;
+            } else {
+                alert('لتثبيت التطبيق، يرجى استخدام خيار "الإضافة إلى الشاشة الرئيسية" من إعدادات المتصفح.');
+            }
+        });
+
+        // كود الوضع الليلي/النهاري
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        const icon = themeToggle.querySelector('i');
+
+        if (localStorage.getItem('theme') === 'light') {
+            body.classList.add('light-mode');
+            icon.classList.replace('fa-moon', 'fa-sun');
+        }
+
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('light-mode');
+            const isLight = body.classList.contains('light-mode');
+            localStorage.setItem('theme', isLight ? 'light' : 'dark');
+            icon.className = isLight ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+        });
+    </script>
+
+    <div id="fire-notification" class="fire-toast">
+        <i class="fa-solid fa-fire-flame-curved"></i>
+        <div>
+            <h4>تنبيه عاجل من الدكتور</h4>
+            <small id="fire-msg-text-reviews">رسالة جديدة...</small>
+        </div>
+    </div>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+        import { getDatabase, ref, onChildAdded, query, limitToLast } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
+
+        const firebaseConfig = { apiKey: "AIzaSyD092yeOowtCLW0fDcIzaEXrnxvrN4X5T8", authDomain: "abqarieno.firebaseapp.com", databaseURL: "https://abqarieno-default-rtdb.firebaseio.com", projectId: "abqarieno", storageBucket: "abqarieno.firebasestorage.app", messagingSenderId: "790682500839", appId: "1:790682500839:web:cd50b8e01729f821e06c42" };
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const auth = getAuth(app);
+
+        // حماية الصفحة: التحقق من تسجيل الدخول
+        onAuthStateChanged(auth, (user) => {
+            if (!user) {
+                window.location.href = "auth.html";
+            }
+        });
+
+        window.logout = () => signOut(auth);
+        
+        const notif = document.getElementById('fire-notification');
+        const contactLink = document.querySelector('a[href="contact.html"]');
+        const loadTime = Date.now();
+
+        onChildAdded(query(ref(db, 'broadcasts'), limitToLast(1)), (snapshot) => {
+            const msg = snapshot.val();
+            if(msg.timestamp > loadTime) {
+                document.getElementById('fire-msg-text-reviews').textContent = msg.text;
+                notif.classList.add('show');
+                setTimeout(() => notif.classList.remove('show'), 6000);
+                if(contactLink) contactLink.classList.add('has-new');
+            }
+        });
+        notif.onclick = () => window.location.href = 'contact.html';
+    </script>
+</body>
+</html>

@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="تواصل مباشرة مع الدكتور وفريق الدعم الفني. مركز الرسائل والتنبيهات لطلاب الأحياء لمتابعة كل جديد.">
+    <meta name="keywords" content="تواصل معنا, دعم فني, رسائل الدكتور, شات طلاب, استفسارات أحياء, متابعة الطلاب">
+    <title>مركز رسائل الدكتور - 2028 Edition</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700;900&family=Reem+Kufi:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="manifest" href="manifest.json">
+    <!-- Structured Data for SEO -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ContactPage",
+      "name": "تواصل مع الدكتور",
+      "description": "مركز الرسائل والدعم الفني لطلاب الدكتور في مادة الأحياء.",
+      "url": "https://abqarieno.firebaseapp.com/contact.html"
+    }
+    </script>
+    <style>
+        :root {
+            --master-neon: #00f2ff;
+            --dark-surface: #070a0f;
+            --glass-bg: rgba(15, 22, 36, 0.9);
+            --message-bg: rgba(255, 255, 255, 0.03);
+            --accent-glow: rgba(0, 242, 255, 0.2);
+        }
+
+        body {
+            background: radial-gradient(circle at center, #101a2d 0%, #070a0f 100%);
+            background-attachment: fixed;
+            color: #e0e6ed;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        /* Light Mode Overrides */
+        body.light-mode {
+            background: #f0f2f5;
+            color: #333;
+        }
+        body.light-mode .chat-container {
+            background: #fff;
+            border-color: #ddd;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        body.light-mode .msg-block {
+            background: #f8f9fa;
+            color: #333;
+            border-right: 4px solid var(--master-neon);
+        }
+        body.light-mode .msg-content { color: #333; }
+        body.light-mode .master-input { background: #fff; color: #333; border: 1px solid #ddd; }
+        body.light-mode #master-panel { background: rgba(0, 242, 255, 0.1); }
+        body.light-mode footer { background: #e9ecef; border-top: 1px solid #ddd; color: #333; }
+        body.light-mode .f-card { background: #fff; color: #333; border-color: #ddd; }
+
+        /* --- واجهة الشات المصغرة والأنيقة --- */
+        .chat-wrapper { max-width: 800px; margin: 20px auto; padding: 0 15px; }
+        
+        .live-status {
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            background: rgba(0, 242, 255, 0.05); padding: 8px; border-radius: 50px;
+            margin-bottom: 15px; border: 1px solid var(--accent-glow); font-size: 0.85rem;
+        }
+        .pulse { width: 8px; height: 8px; background: #00ff88; border-radius: 50%; box-shadow: 0 0 10px #00ff88; animation: pulse-anim 1.5s infinite; }
+        @keyframes pulse-anim { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+        .chat-container {
+            background: var(--glass-bg); border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05); min-height: 500px;
+            display: flex; flex-direction: column; box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            overflow: hidden;
+        }
+
+        #master-panel {
+            display: none; background: rgba(0, 242, 255, 0.07);
+            padding: 15px; border-bottom: 1px solid var(--accent-glow);
+        }
+
+        .master-input {
+            width: 100%; background: #000; border: 1px solid #222;
+            color: #fff; padding: 10px; border-radius: 8px; outline: none; margin-bottom: 10px; resize: none;
+        }
+
+        .upload-row { display: flex; gap: 10px; align-items: center; }
+        .file-btn { background: #1a2332; color: var(--master-neon); padding: 8px 15px; border-radius: 6px; cursor: pointer; border: 1px solid var(--master-neon); font-size: 0.8rem; transition: 0.3s; }
+        .file-btn:hover { background: var(--master-neon); color: #000; }
+
+        #messages-flow { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
+        
+        .msg-block {
+            background: var(--message-bg); padding: 15px; border-radius: 15px;
+            border-right: 4px solid var(--master-neon); animation: fadeIn 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .msg-header { display: flex; justify-content: space-between; font-size: 0.8rem; color: #888; margin-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 5px; }
+        .msg-content { font-size: 1.1rem; line-height: 1.7; color: #fff; font-weight: 500; white-space: pre-wrap; }
+        .msg-media { margin-top: 12px; border-radius: 8px; max-width: 100%; border: 1px solid #222; display: block; }
+        
+        .download-btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            margin-top: 10px; padding: 6px 12px; background: rgba(0, 242, 255, 0.1);
+            color: var(--master-neon); border-radius: 5px; text-decoration: none; font-size: 0.8rem; transition: 0.3s;
+        }
+        .download-btn:hover { background: var(--master-neon); color: #000; }
+
+        /* زر الحذف الخاص بالمستر */
+        .btn-delete {
+            background: rgba(255, 51, 102, 0.1); color: #ff3366;
+            border: 1px solid #ff3366; padding: 8px 15px;
+            border-radius: 8px; cursor: pointer; font-size: 0.85rem;
+            margin-top: 15px; transition: 0.3s; display: inline-flex; align-items: center; gap: 8px; font-weight: bold;
+        }
+        .btn-delete:hover { background: #ff3366; color: #fff; box-shadow: 0 0 15px rgba(255, 51, 102, 0.4); }
+
+        .preview-img { max-width: 150px; max-height: 150px; width: auto; height: auto; object-fit: contain; border-radius: 8px; border: 1px solid var(--master-neon); display: none; animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); background: rgba(0,0,0,0.3); margin: 0 10px; }
+        @keyframes popIn { from { transform: scale(0); } to { transform: scale(1); } }
+
+        /* --- الفوتر الجديد --- */
+        footer {
+            margin-top: 40px; padding: 30px 5%; background: #030508;
+            border-top: 1px solid #111; text-align: center;
+        }
+        .footer-links { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; margin-bottom: 20px; }
+        .f-card {
+            padding: 10px 20px; background: #0a0e14; border-radius: 10px;
+            color: #fff; text-decoration: none; border: 1px solid #1a1a1a; transition: 0.3s;
+        }
+        .f-card:hover { border-color: var(--master-neon); transform: translateY(-3px); }
+
+        #gate-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(5, 8, 15, 0.98); z-index: 10000; 
+            display: flex; align-items: center; justify-content: center; backdrop-filter: blur(15px);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Page Loader -->
+    <div id="page-loader">
+        <div class="loader-content">
+            <i class="fa-solid fa-heart-pulse loader-icon"></i>
+            <div class="loader-text">الدكتور <small>جاري التحميل...</small></div>
+        </div>
+    </div>
+
+    <nav class="navbar">
+        <div class="logo">
+            <i class="fa-solid fa-heart-pulse"></i>
+            <div class="logo-text"><span>الدكتور</span><small>BIOLOGY MASTER</small></div>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html">الرئيسية</a></li>
+            <li><a href="library.html">الكتب</a></li>
+            <li><a href="videos.html">الفيديوهات</a></li>
+            <li><a href="schedule.html">الجدول</a></li>
+            <li><a href="reviews.html">ورق الشرح</a></li>
+            <li><a href="contact.html" class="active">تواصل معنا</a></li>
+        </ul>
+        <button onclick="logout()" style="background:transparent; border:1px solid #333; color:#fff; padding:5px 10px; border-radius:5px; cursor:pointer; margin-left:10px; font-size:0.8rem;"><i class="fa-solid fa-right-from-bracket"></i> خروج</button>
+        <button id="themeToggle" class="theme-toggle" title="تبديل الوضع"><i class="fa-solid fa-moon"></i></button>
+        <button id="installAppBtn" class="btn-nav-install" style="display: none;">
+            <i class="fa-solid fa-download"></i>
+            <span>تثبيت التطبيق</span>
+        </button>
+        <a href="scientific-books.html" class="btn-nav-special">الكتب العلمية النادرة</a>
+        <div class="menu-btn"><i class="fa-solid fa-bars"></i></div>
+    </nav>
+
+    <div class="chat-wrapper">
+        <div class="live-status">
+            <div class="pulse"></div>
+            <span>متصل الآن: <strong id="userCount" style="color: var(--master-neon);">241</strong> طالب يتابعون الدكتور</span>
+        </div>
+
+        <div class="chat-container">
+            <div id="master-panel">
+                <textarea id="msgInput" class="master-input" rows="2" placeholder="اكتب تعليماتك هنا يا دكتور..."></textarea>
+                <div class="upload-row">
+                    <label class="file-btn">
+                        <i class="fa-solid fa-paperclip"></i> رفع ملف/صورة
+                        <input type="file" id="fileInput" hidden onchange="handleFileSelect()">
+                    </label>
+                    <img id="imgPreview" class="preview-img" alt="Preview">
+                    <span id="fileName" style="font-size: 0.7rem; color: #888; display:none;"></span>
+                    <button onclick="pushMessage()" style="margin-right:auto; padding:8px 20px; background:var(--master-neon); border:none; border-radius:6px; font-weight:bold; cursor:pointer;">نشر</button>
+                </div>
+            </div>
+
+            <div id="messages-flow">
+                <p style="text-align: center; color: #444;">جاري جلب آخر توجيهات الدكتور...</p>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-links">
+            <a href="https://t.me/c/2716758716/613" class="f-card" target="_blank">
+                <i class="fa-brands fa-telegram" style="color: #0088cc;"></i> تليجرام الدكتور
+            </a>
+            <a href="https://mostafa7html7-pixel.github.io/Abqarieno-/" class="f-card" target="_blank">
+                <i class="fa-solid fa-user-gear" style="color: var(--master-neon);"></i> موقع المبرمج
+            </a>
+        </div>
+        <div style="font-size: 0.8rem; color: #444;">
+            تطوير وإدارة فريق <span style="color: var(--master-neon);">عبقرينو وكريم</span> &copy; 2026
+        </div>
+    </footer>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+        import { getDatabase, ref, push, onChildAdded, onChildRemoved, serverTimestamp, remove, get } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyD092yeOowtCLW0fDcIzaEXrnxvrN4X5T8",
+            authDomain: "abqarieno.firebaseapp.com",
+            databaseURL: "https://abqarieno-default-rtdb.firebaseio.com",
+            projectId: "abqarieno",
+            storageBucket: "abqarieno.firebasestorage.app",
+            messagingSenderId: "790682500839",
+            appId: "1:790682500839:web:cd50b8e01729f821e06c42"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const auth = getAuth(app);
+        const messagesRef = ref(db, 'broadcasts');
+
+        let isMaster = false; // سيتم تحديدها من خلال Firebase
+
+        // --- نظام المصادقة الموحد ---
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                // المستخدم مسجل دخوله
+                document.getElementById('page-loader').classList.remove('loader-hidden'); // التأكد من إخفاء شاشة التحميل
+                
+                // التحقق من صلاحيات المستخدم (أدمن أم طالب)
+                const userRef = ref(db, 'users/' + user.uid);
+                const snapshot = await get(userRef);
+                if (snapshot.exists() && snapshot.val().role === 'admin') {
+                    isMaster = true;
+                    document.getElementById('master-panel').style.display = 'block';
+                }
+            } else {
+                // لا يوجد مستخدم، توجيه لصفحة الدخول
+                window.location.href = 'auth.html';
+            }
+        });
+
+        // دالة تسجيل الخروج
+        window.logout = () => signOut(auth);
+
+        window.handleFileSelect = () => {
+            const file = document.getElementById('fileInput').files[0];
+            const preview = document.getElementById('imgPreview');
+            const nameSpan = document.getElementById('fileName');
+            
+            if (file) {
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        preview.src = e.target.result;
+                        preview.style.display = 'block';
+                        nameSpan.style.display = 'none';
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    preview.style.display = 'none';
+                    nameSpan.innerText = file.name;
+                    nameSpan.style.display = 'inline';
+                }
+            }
+        }
+
+        // دالة ضغط الصور
+        function compressImage(file) {
+            return new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.src = e.target.result;
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        const MAX_WIDTH = 800; // أقصى عرض للصورة
+                        const scaleSize = MAX_WIDTH / img.width;
+                        canvas.width = MAX_WIDTH;
+                        canvas.height = img.height * scaleSize;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                        resolve(canvas.toDataURL('image/jpeg', 0.7)); // ضغط الجودة إلى 70%
+                    };
+                };
+            });
+        }
+
+        // إرسال (معدلة للضغط)
+        window.pushMessage = async function() {
+            const text = document.getElementById('msgInput').value;
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+            
+            if(!text && !file) return;
+
+            let media = null;
+            if(file) {
+                if(file.type.startsWith('image/')) {
+                    media = await compressImage(file);
+                } else {
+                    media = await new Promise(resolve => {
+                        const reader = new FileReader();
+                        reader.onload = (e) => resolve(e.target.result);
+                        reader.readAsDataURL(file);
+                    });
+                }
+            }
+            send(text, media);
+        }
+
+        function send(t, m) {
+            push(messagesRef, { text: t, media: m, timestamp: serverTimestamp() });
+            document.getElementById('msgInput').value = '';
+            document.getElementById('fileInput').value = '';
+            document.getElementById('fileName').style.display = 'none';
+            document.getElementById('imgPreview').style.display = 'none';
+        }
+
+        // عرض الرسائل (نظام سريع جداً)
+        const flow = document.getElementById('messages-flow');
+        // إزالة رسالة التحميل عند وصول أول رسالة
+        let firstLoad = true;
+
+        onChildAdded(messagesRef, (snapshot) => {
+            if(firstLoad) {
+                flow.innerHTML = '';
+                firstLoad = false;
+            }
+
+            const m = snapshot.val();
+            const id = snapshot.key;
+            const date = m.timestamp ? new Date(m.timestamp).toLocaleTimeString('ar-EG') : 'الآن';
+            let mediaTag = '';
+            
+            if(m.media) {
+                if(m.media.includes('data:image')) {
+                    mediaTag = `<img src="${m.media}" class="msg-media">
+                                <a href="${m.media}" download="dr-image" class="download-btn"><i class="fa-solid fa-download"></i> حفظ الصورة</a>`;
+                } else {
+                    mediaTag = `<a href="${m.media}" download="file" class="download-btn"><i class="fa-solid fa-file-arrow-down"></i> تحميل المرفق</a>`;
+                }
+            }
+
+            const html = `
+                <div class="msg-block" id="msg-${id}">
+                    <div class="msg-header"><span><i class="fa-solid fa-bullhorn" style="color:var(--master-neon)"></i> توجيه رسمي</span><span>${date}</span></div>
+                    <div class="msg-content">${m.text}</div>
+                    ${mediaTag}
+                    ${isMaster ? `<button onclick="deleteMsg('${id}')" class="btn-delete"><i class="fa-solid fa-trash-can"></i> حذف الرسالة نهائياً</button>` : ''}
+                </div>
+            `;
+            flow.insertAdjacentHTML('afterbegin', html); // إضافة الرسالة الجديدة في الأعلى
+        });
+
+        onChildRemoved(messagesRef, (snapshot) => {
+            const el = document.getElementById(`msg-${snapshot.key}`);
+            if(el) el.remove();
+        });
+
+        window.deleteMsg = (id) => { 
+            if(confirm("هل أنت متأكد يا دكتور من حذف هذه الرسالة؟ لا يمكن التراجع عن هذا الإجراء.")) {
+                remove(ref(db, `broadcasts/${id}`)); 
+            }
+        }
+
+        // عداد وهمي
+        setInterval(() => {
+            document.getElementById('userCount').innerText = Math.floor(Math.random() * 50) + 200;
+        }, 5000);
+    </script>
+
+    <script>
+        const menuBtn = document.querySelector('.menu-btn');
+        const navLinks = document.querySelector('.nav-links');
+        menuBtn.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            menuBtn.innerHTML = navLinks.classList.contains('active') ? '<i class="fa-solid fa-xmark"></i>' : '<i class="fa-solid fa-bars"></i>';
+        });
+
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('page-loader').classList.add('loader-hidden');
+            }, 1000);
+        });
+
+        // تسجيل Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js'));
+        }
+
+        // كود تثبيت التطبيق PWA
+        let deferredPrompt;
+        const installBtn = document.getElementById('installAppBtn');
+
+        // إظهار الزر إذا لم يكن التطبيق مثبتاً
+        if (!window.matchMedia('(display-mode: standalone)').matches) {
+            installBtn.style.display = 'flex';
+        }
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installBtn.style.display = 'flex';
+        });
+
+        installBtn.addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') installBtn.style.display = 'none';
+                deferredPrompt = null;
+            } else {
+                alert('لتثبيت التطبيق، يرجى استخدام خيار "الإضافة إلى الشاشة الرئيسية" من إعدادات المتصفح.');
+            }
+        });
+
+        // كود الوضع الليلي/النهاري
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        const icon = themeToggle.querySelector('i');
+
+        if (localStorage.getItem('theme') === 'light') {
+            body.classList.add('light-mode');
+            icon.classList.replace('fa-moon', 'fa-sun');
+        }
+
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('light-mode');
+            const isLight = body.classList.contains('light-mode');
+            localStorage.setItem('theme', isLight ? 'light' : 'dark');
+            icon.className = isLight ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+        });
+    </script>
+</body>
+</html>

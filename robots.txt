@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://abqarieno.firebaseapp.com/sitemap.xml

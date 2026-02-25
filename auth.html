@@ -1,0 +1,188 @@
+<!-- c:\Users\mosa\Desktop\Project3\df\auth.html -->
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل الدخول - الدكتور</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700;900&display=swap" rel="stylesheet">
+</head>
+<body class="auth-body">
+
+    <div class="auth-container">
+        <div class="auth-logo">
+            <i class="fa-solid fa-heart-pulse"></i>
+        </div>
+        <h2 class="auth-title" id="formTitle">أهلاً بك يا دكتور</h2>
+        <p class="auth-subtitle" id="formSubtitle">سجل دخولك للمتابعة إلى المنصة</p>
+
+        <div id="errorBox" class="error-msg"></div>
+
+        <form id="authForm">
+            <div class="input-group" id="nameGroup" style="display:none;">
+                <input type="text" id="fullName" placeholder="الاسم الثلاثي">
+                <i class="fa-solid fa-user"></i>
+            </div>
+
+            <div class="input-group">
+                <input type="email" id="email" placeholder="البريد الإلكتروني" required>
+                <i class="fa-solid fa-envelope"></i>
+            </div>
+
+            <div class="input-group">
+                <input type="password" id="password" placeholder="كلمة المرور" required>
+                <i class="fa-solid fa-lock"></i>
+            </div>
+
+            <button type="submit" class="auth-btn" id="submitBtn">تسجيل الدخول</button>
+        </form>
+
+        <button type="button" class="google-btn" onclick="googleLogin()">
+            <i class="fa-brands fa-google" style="color:#DB4437;"></i> تسجيل الدخول باستخدام Google
+        </button>
+
+        <div class="toggle-auth">
+            <span id="toggleText">ليس لديك حساب؟</span>
+            <a id="toggleBtn" onclick="toggleMode()">إنشاء حساب جديد</a>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
+        import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
+
+        const firebaseConfig = { apiKey: "AIzaSyD092yeOowtCLW0fDcIzaEXrnxvrN4X5T8", authDomain: "abqarieno.firebaseapp.com", databaseURL: "https://abqarieno-default-rtdb.firebaseio.com", projectId: "abqarieno", storageBucket: "abqarieno.firebasestorage.app", messagingSenderId: "790682500839", appId: "1:790682500839:web:cd50b8e01729f821e06c42" };
+        
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+        const googleProvider = new GoogleAuthProvider();
+
+        let isLogin = true;
+
+        // التحقق مما إذا كان المستخدم مسجلاً بالفعل
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // توجيه المستخدم حسب دوره
+                checkUserRole(user.uid);
+            }
+        });
+
+        window.googleLogin = async function() {
+            try {
+                const result = await signInWithPopup(auth, googleProvider);
+                const user = result.user;
+                
+                // التحقق مما إذا كان المستخدم جديداً لحفظ بياناته
+                const snapshot = await get(ref(db, 'users/' + user.uid));
+                if (!snapshot.exists()) {
+                    await set(ref(db, 'users/' + user.uid), {
+                        username: user.displayName,
+                        email: user.email,
+                        role: 'student',
+                        joinedAt: new Date().toISOString()
+                    });
+                }
+                checkUserRole(user.uid);
+            } catch (error) {
+                console.error(error);
+                alert("حدث خطأ أثناء الدخول بجوجل: " + error.message);
+            }
+        }
+
+        window.toggleMode = function() {
+            isLogin = !isLogin;
+            const title = document.getElementById('formTitle');
+            const subtitle = document.getElementById('formSubtitle');
+            const btn = document.getElementById('submitBtn');
+            const toggleText = document.getElementById('toggleText');
+            const toggleBtn = document.getElementById('toggleBtn');
+            const nameGroup = document.getElementById('nameGroup');
+
+            if (isLogin) {
+                title.innerText = "أهلاً بك يا دكتور";
+                subtitle.innerText = "سجل دخولك للمتابعة إلى المنصة";
+                btn.innerText = "تسجيل الدخول";
+                toggleText.innerText = "ليس لديك حساب؟";
+                toggleBtn.innerText = "إنشاء حساب جديد";
+                nameGroup.style.display = "none";
+            } else {
+                title.innerText = "انضم لعائلة الدكتور";
+                subtitle.innerText = "أنشئ حسابك الآن وابدأ رحلة التفوق";
+                btn.innerText = "إنشاء الحساب";
+                toggleText.innerText = "لديك حساب بالفعل؟";
+                toggleBtn.innerText = "تسجيل الدخول";
+                nameGroup.style.display = "block";
+            }
+        }
+
+        document.getElementById('authForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const name = document.getElementById('fullName').value;
+            const errorBox = document.getElementById('errorBox');
+            const btn = document.getElementById('submitBtn');
+
+            errorBox.style.display = 'none';
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري التحميل...';
+            btn.disabled = true;
+
+            try {
+                if (isLogin) {
+                    // تسجيل الدخول
+                    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                    checkUserRole(userCredential.user.uid);
+                } else {
+                    // إنشاء حساب جديد
+                    if(name.length < 3) throw new Error("يرجى كتابة الاسم الثلاثي بشكل صحيح");
+                    
+                    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                    const user = userCredential.user;
+
+                    // حفظ بيانات المستخدم في قاعدة البيانات
+                    await set(ref(db, 'users/' + user.uid), {
+                        username: name,
+                        email: email,
+                        role: 'student', // الافتراضي طالب
+                        joinedAt: new Date().toISOString()
+                    });
+
+                    window.location.href = "index.html";
+                }
+            } catch (error) {
+                btn.disabled = false;
+                btn.innerText = isLogin ? "تسجيل الدخول" : "إنشاء الحساب";
+                errorBox.style.display = 'block';
+                
+                let msg = "حدث خطأ غير متوقع.";
+                if(error.code === 'auth/wrong-password') msg = "كلمة المرور غير صحيحة.";
+                else if(error.code === 'auth/user-not-found') msg = "هذا البريد غير مسجل.";
+                else if(error.code === 'auth/email-already-in-use') msg = "البريد الإلكتروني مستخدم بالفعل.";
+                else if(error.code === 'auth/weak-password') msg = "كلمة المرور ضعيفة (يجب أن تكون 6 أحرف على الأقل).";
+                else msg = error.message;
+                
+                errorBox.innerText = msg;
+            }
+        });
+
+        async function checkUserRole(uid) {
+            const snapshot = await get(ref(db, 'users/' + uid));
+            if (snapshot.exists()) {
+                const userData = snapshot.val();
+                if (userData.role === 'admin') {
+                    window.location.href = "admin.html";
+                } else {
+                    window.location.href = "index.html";
+                }
+            } else {
+                // في حالة عدم وجود بيانات (نادر الحدوث)
+                window.location.href = "index.html";
+            }
+        }
+    </script>
+</body>
+</html>

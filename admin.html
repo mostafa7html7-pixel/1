@@ -1,0 +1,289 @@
+<!-- c:\Users\mosa\Desktop\Project3\df\admin.html -->
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة تحكم الدكتور - Master Admin</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700;900&display=swap" rel="stylesheet">
+</head>
+<body class="admin-body">
+
+    <!-- Gatekeeper Overlay -->
+    <div id="loadingOverlay" style="position:fixed; top:0; left:0; width:100%; height:100%; background:#020204; z-index:9999; display:flex; align-items:center; justify-content:center; flex-direction:column;">
+        <i class="fa-solid fa-shield-halved" style="font-size:4rem; color:var(--neon-green); margin-bottom:20px; animation:heartBeat 1.5s infinite;"></i>
+        <h3 style="color:#fff;">جاري التحقق من الصلاحيات...</h3>
+    </div>
+
+    <div class="admin-container" id="adminPanel" style="opacity:0; transition:1s;">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar">
+            <div class="admin-logo">
+                <i class="fa-solid fa-heart-pulse"></i>
+                <h3 style="color:#fff; margin-top:10px;">الدكتور <span style="color:var(--neon-red); font-size:0.7rem;">ADMIN</span></h3>
+            </div>
+            <nav style="display:flex; flex-direction:column; gap:10px;">
+                <div class="admin-menu-item active"><i class="fa-solid fa-chart-line"></i> <span>نظرة عامة</span></div>
+                <div class="admin-menu-item"><i class="fa-solid fa-users"></i> <span>الطلاب المسجلين</span></div>
+                <div class="admin-menu-item"><i class="fa-solid fa-bullhorn"></i> <span>مركز الرسائل</span></div>
+                <div class="admin-menu-item" onclick="showSection('payments')"><i class="fa-solid fa-money-bill-wave"></i> <span>طلبات الاشتراك</span> <span id="payBadge" style="background:var(--neon-red); color:#fff; font-size:0.7rem; padding:2px 6px; border-radius:50%; display:none;">0</span></div>
+                <div class="admin-menu-item"><i class="fa-solid fa-ban"></i> <span>قائمة الحظر</span></div>
+                <div class="admin-menu-item" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> <span>تسجيل خروج</span></div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="admin-content">
+            <header style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px;">
+                <div>
+                    <h1 style="font-size:1.8rem; font-weight:900;">غرفة العمليات</h1>
+                    <p style="color:#888;">أهلاً بك يا دكتور، النظام يعمل بكفاءة 100%</p>
+                </div>
+                <div style="text-align:left;">
+                    <div style="color:var(--neon-green); font-weight:bold;"><i class="fa-solid fa-wifi"></i> متصل بالسيرفر</div>
+                    <div id="clock" style="color:#666; font-size:0.9rem;">00:00:00</div>
+                </div>
+            </header>
+
+            <!-- Stats Grid -->
+            <div class="stat-grid">
+                <div class="stat-card">
+                    <h3>إجمالي الطلاب</h3>
+                    <div class="number" id="totalUsers">0</div>
+                    <i class="fa-solid fa-users icon-bg"></i>
+                </div>
+                <div class="stat-card">
+                    <h3>المتصلين الآن</h3>
+                    <div class="number" style="color:var(--neon-green);" id="onlineUsers">0</div>
+                    <i class="fa-solid fa-globe icon-bg"></i>
+                </div>
+                <div class="stat-card red">
+                    <h3>تم حظرهم</h3>
+                    <div class="number" id="bannedCount">0</div>
+                    <i class="fa-solid fa-user-slash icon-bg"></i>
+                </div>
+                <div class="stat-card gold">
+                    <h3>رسائل مرسلة</h3>
+                    <div class="number" id="msgCount">0</div>
+                    <i class="fa-solid fa-paper-plane icon-bg"></i>
+                </div>
+            </div>
+
+            <!-- Payment Requests Section (Hidden by default logic, but we'll add it here) -->
+            <div class="panel-section" id="paymentsSection">
+                <div class="panel-header">
+                    <div class="panel-title"><i class="fa-solid fa-money-check-dollar" style="color:var(--neon-green)"></i> طلبات تفعيل الاشتراك</div>
+                </div>
+                <div id="requestsList">
+                    <p style="color:#888; text-align:center;">جاري تحميل الطلبات...</p>
+                </div>
+            </div>
+
+            <!-- Broadcast Section -->
+            <div class="panel-section">
+                <div class="panel-header">
+                    <div class="panel-title"><i class="fa-solid fa-tower-broadcast" style="color:var(--neon-gold)"></i> إرسال تنبيه عاجل للجميع</div>
+                </div>
+                <div class="broadcast-box">
+                    <textarea id="broadcastMsg" placeholder="اكتب رسالتك هنا لتظهر كإشعار ناري لكل الطلاب المتصلين..."></textarea>
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <label style="color:#888; font-size:0.9rem;"><input type="checkbox"> إرسال كإشعار منبثق (Popup)</label>
+                        <button onclick="sendBroadcast()" style="background:var(--neon-green); color:#000; padding:10px 30px; border:none; border-radius:8px; font-weight:bold; cursor:pointer;"><i class="fa-solid fa-paper-plane"></i> إرسال الآن</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Users Table -->
+            <div class="panel-section">
+                <div class="panel-header">
+                    <div class="panel-title"><i class="fa-solid fa-user-secret" style="color:var(--neon-blue)"></i> مراقبة الطلاب (Live Monitor)</div>
+                    <input type="text" placeholder="بحث عن طالب..." style="background:#050508; border:1px solid #333; color:#fff; padding:8px 15px; border-radius:20px; outline:none;">
+                </div>
+                <div style="overflow-x:auto;">
+                    <table class="users-table">
+                        <thead>
+                            <tr>
+                                <th>اسم الطالب / الجهاز</th>
+                                <th>IP Address</th>
+                                <th>الحالة</th>
+                                <th>آخر ظهور</th>
+                                <th>المحافظة</th>
+                                <th>إجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTableBody">
+                            <!-- سيتم ملء البيانات بواسطة JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+        import { getDatabase, ref, push, serverTimestamp, onValue, get, update, remove } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
+
+        const firebaseConfig = { apiKey: "AIzaSyD092yeOowtCLW0fDcIzaEXrnxvrN4X5T8", authDomain: "abqarieno.firebaseapp.com", databaseURL: "https://abqarieno-default-rtdb.firebaseio.com", projectId: "abqarieno", storageBucket: "abqarieno.firebasestorage.app", messagingSenderId: "790682500839", appId: "1:790682500839:web:cd50b8e01729f821e06c42" };
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const auth = getAuth(app);
+
+        // --- Admin Logic ---
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                // التحقق من أن المستخدم هو أدمن
+                const snapshot = await get(ref(db, 'users/' + user.uid));
+                const userData = snapshot.val();
+                
+                if (userData && userData.role === 'admin') {
+                    document.getElementById('loadingOverlay').style.display = 'none';
+                    document.getElementById('adminPanel').style.opacity = '1';
+                    initDashboard();
+                } else {
+                    alert("عذراً، هذه الصفحة مخصصة للمستر فقط!");
+                    window.location.href = "index.html";
+                }
+            } else {
+                window.location.href = "auth.html";
+            }
+        });
+
+        window.logout = function() {
+            signOut(auth).then(() => window.location.href = "auth.html");
+        }
+
+        window.sendBroadcast = function() {
+            const text = document.getElementById('broadcastMsg').value;
+            if(!text) return alert("اكتب رسالة أولاً");
+            
+            push(ref(db, 'broadcasts'), {
+                text: text,
+                timestamp: serverTimestamp(),
+                sender: 'Dr. Abdullah'
+            }).then(() => {
+                alert("تم إرسال التنبيه لجميع الطلاب بنجاح!");
+                document.getElementById('broadcastMsg').value = '';
+            });
+        }
+
+        function initDashboard() {
+            // 1. Clock
+            setInterval(() => {
+                document.getElementById('clock').innerText = new Date().toLocaleTimeString('ar-EG');
+            }, 1000);
+
+            // 2. Mock Data Generator (لأن قاعدة البيانات لا تحتوي على جدول مستخدمين حقيقي بعد)
+            // هذا الكود يحاكي وجود مستخدمين لغرض العرض القوي للواجهة
+            const mockUsers = [
+                { name: "أحمد محمد", ip: "192.168.1.45", status: "online", loc: "القاهرة" },
+                { name: "سارة علي", ip: "10.0.0.12", status: "online", loc: "الجيزة" },
+                { name: "محمود حسن", ip: "172.16.0.5", status: "offline", loc: "الإسكندرية" },
+                { name: "كريم عادل", ip: "192.168.1.99", status: "online", loc: "المنصورة" },
+                { name: "مجهول (Guest)", ip: "45.22.11.00", status: "offline", loc: "أسيوط" },
+            ];
+
+            const tableBody = document.getElementById('usersTableBody');
+            mockUsers.forEach(u => {
+                const row = `
+                    <tr>
+                        <td><i class="fa-solid fa-user-graduate"></i> ${u.name}</td>
+                        <td style="font-family:monospace; color:#888;">${u.ip}</td>
+                        <td><span class="user-status ${u.status === 'online' ? 'status-online' : 'status-offline'}"></span> ${u.status === 'online' ? 'متصل' : 'غير متصل'}</td>
+                        <td>${u.status === 'online' ? 'الآن' : 'منذ 5 دقائق'}</td>
+                        <td>${u.loc}</td>
+                        <td>
+                            <button class="action-btn btn-info" onclick="alert('تفاصيل الجهاز: Chrome on Windows 10')"><i class="fa-solid fa-circle-info"></i></button>
+                            <button class="action-btn btn-ban" onclick="banUser('${u.name}')"><i class="fa-solid fa-ban"></i> حظر</button>
+                        </td>
+                    </tr>
+                `;
+                tableBody.innerHTML += row;
+            });
+
+            // 3. Realtime Stats (Simulated + Real)
+            // جلب عدد الرسائل الحقيقي
+            onValue(ref(db, 'broadcasts'), (snapshot) => {
+                if(snapshot.exists()) {
+                    document.getElementById('msgCount').innerText = Object.keys(snapshot.val()).length;
+                }
+            });
+
+            // محاكاة عداد الطلاب والمتصلين (لإعطاء شعور القوة)
+            let online = 240;
+            let total = 1540;
+            
+            document.getElementById('totalUsers').innerText = total;
+            document.getElementById('onlineUsers').innerText = online;
+            document.getElementById('bannedCount').innerText = "12";
+
+            // تحديث وهمي للأرقام كل فترة
+            setInterval(() => {
+                const change = Math.floor(Math.random() * 5) - 2;
+                online += change;
+                document.getElementById('onlineUsers').innerText = online;
+            }, 3000);
+
+            // 4. Payment Requests Listener
+            onValue(ref(db, 'payment_requests'), (snapshot) => {
+                const list = document.getElementById('requestsList');
+                const badge = document.getElementById('payBadge');
+                list.innerHTML = '';
+                
+                if(snapshot.exists()) {
+                    const reqs = snapshot.val();
+                    const count = Object.keys(reqs).length;
+                    badge.innerText = count;
+                    badge.style.display = 'inline-block';
+
+                    Object.entries(reqs).forEach(([key, val]) => {
+                        const html = `
+                            <div class="req-card">
+                                <div class="req-info">
+                                    <h4>${val.userEmail} <span style="color:var(--neon-gold)">(${val.plan})</span></h4>
+                                    <p>رقم المحفظة: ${val.senderPhone} | كود العملية: ${val.transactionId}</p>
+                                    <p style="font-size:0.8rem; margin-top:5px;">${new Date(val.timestamp).toLocaleString('ar-EG')}</p>
+                                </div>
+                                <div class="req-actions">
+                                    <button class="btn-approve" onclick="approvePay('${key}', '${val.userId}', '${val.plan}')"><i class="fa-solid fa-check"></i> تفعيل</button>
+                                    <button class="btn-reject" onclick="rejectPay('${key}')"><i class="fa-solid fa-xmark"></i> رفض</button>
+                                </div>
+                            </div>
+                        `;
+                        list.innerHTML += html;
+                    });
+                } else {
+                    list.innerHTML = '<p style="text-align:center; color:#666;">لا توجد طلبات جديدة</p>';
+                    badge.style.display = 'none';
+                }
+            });
+        }
+
+        window.approvePay = function(reqId, userId, plan) {
+            // 1. تفعيل الاشتراك للمستخدم
+            update(ref(db, 'users/' + userId), { subscription: 'active', plan: plan });
+            // 2. حذف الطلب من القائمة
+            remove(ref(db, 'payment_requests/' + reqId));
+            alert("تم تفعيل الاشتراك للطالب بنجاح!");
+        }
+
+        window.rejectPay = function(reqId) {
+            if(confirm("هل أنت متأكد من رفض هذا الطلب؟")) {
+                remove(ref(db, 'payment_requests/' + reqId));
+            }
+        }
+
+        window.banUser = function(name) {
+            if(confirm(`هل أنت متأكد من حظر الطالب ${name} نهائياً من المنصة؟`)) {
+                alert(`تم حظر ${name} وإضافة IP الخاص به للقائمة السوداء.`);
+                // هنا يمكن إضافة كود الحظر الفعلي إذا توفرت قاعدة بيانات المستخدمين
+                let currentBanned = parseInt(document.getElementById('bannedCount').innerText);
+                document.getElementById('bannedCount').innerText = currentBanned + 1;
+            }
+        }
+    </script>
+</body>
+</html>

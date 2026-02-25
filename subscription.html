@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الاشتراك - الدكتور</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Page Loader -->
+    <div id="page-loader">
+        <div class="loader-content">
+            <i class="fa-solid fa-heart-pulse loader-icon"></i>
+            <div class="loader-text">الدكتور <small>جاري التحميل...</small></div>
+        </div>
+    </div>
+
+    <nav class="navbar">
+        <div class="logo">
+            <i class="fa-solid fa-heart-pulse"></i>
+            <div class="logo-text"><span>الدكتور</span><small>BIOLOGY MASTER</small></div>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html">الرئيسية</a></li>
+            <li><a href="subscription.html" class="active" style="color:var(--neon-gold);">الاشتراك</a></li>
+            <li><a href="contact.html">تواصل معنا</a></li>
+        </ul>
+    </nav>
+
+    <div class="page-header">
+        <p class="subtitle">PREMIUM ACCESS</p>
+        <h2 class="main-title">خطط <span style="color:var(--neon-gold)">الاشتراك</span></h2>
+        <p style="color:#888">استثمر في مستقبلك مع أقوى محتوى تعليمي في الأحياء</p>
+    </div>
+
+    <section class="container">
+        <!-- Pricing Plans -->
+        <div class="pricing-container" id="plansSection">
+            <div class="pricing-card">
+                <h3>اشتراك شهري</h3>
+                <div class="price-tag">150 <small>ج.م</small></div>
+                <ul class="plan-features">
+                    <li><i class="fa-solid fa-check"></i> الوصول لكل الفيديوهات</li>
+                    <li><i class="fa-solid fa-check"></i> تحميل الملازم PDF</li>
+                    <li><i class="fa-solid fa-check"></i> امتحانات دورية</li>
+                </ul>
+                <button onclick="selectPlan('شهري', 150)" class="btn-subscribe green">اشترك الآن</button>
+            </div>
+
+            <div class="pricing-card featured">
+                <h3>اشتراك ترم كامل</h3>
+                <div class="price-tag">500 <small>ج.م</small></div>
+                <ul class="plan-features">
+                    <li><i class="fa-solid fa-check"></i> توفير 20% من المبلغ</li>
+                    <li><i class="fa-solid fa-check"></i> متابعة خاصة مع الدكتور</li>
+                    <li><i class="fa-solid fa-check"></i> جميع مميزات الشهري</li>
+                </ul>
+                <button onclick="selectPlan('ترم كامل', 500)" class="btn-subscribe gold">اشترك الآن</button>
+            </div>
+        </div>
+
+        <!-- Payment Form (Hidden initially) -->
+        <div class="payment-form-container" id="paymentForm" style="display:none;">
+            <h3 style="text-align:center; margin-bottom:20px; color:var(--neon-green);">تأكيد الاشتراك: <span id="selectedPlanName"></span></h3>
+            
+            <div style="background:#222; padding:15px; border-radius:10px; margin-bottom:20px; text-align:center;">
+                <p style="color:#ccc; margin-bottom:5px;">يرجى تحويل مبلغ <strong id="amountDisplay" style="color:#fff; font-size:1.2rem;"></strong> جنيه على:</p>
+                <div style="font-size:1.5rem; font-weight:bold; color:var(--neon-gold); letter-spacing:2px;">01012345678</div>
+                <small style="color:#888;">(فودافون كاش / إنستا باي)</small>
+            </div>
+
+            <form id="confirmForm">
+                <div class="input-group">
+                    <input type="text" id="senderPhone" placeholder="رقم المحفظة المحول منها" required>
+                    <i class="fa-solid fa-mobile-screen"></i>
+                </div>
+                <div class="input-group">
+                    <input type="text" id="transactionId" placeholder="رقم العملية (Transaction ID) الموجود في الرسالة" required>
+                    <i class="fa-solid fa-receipt"></i>
+                </div>
+                <button type="submit" class="auth-btn">تأكيد الدفع وإرسال الطلب</button>
+                <button type="button" onclick="location.reload()" style="width:100%; background:transparent; border:1px solid #333; color:#888; padding:10px; margin-top:10px; border-radius:10px; cursor:pointer;">إلغاء</button>
+            </form>
+        </div>
+    </section>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+        import { getDatabase, ref, push, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
+
+        const firebaseConfig = { apiKey: "AIzaSyD092yeOowtCLW0fDcIzaEXrnxvrN4X5T8", authDomain: "abqarieno.firebaseapp.com", databaseURL: "https://abqarieno-default-rtdb.firebaseio.com", projectId: "abqarieno", storageBucket: "abqarieno.firebasestorage.app", messagingSenderId: "790682500839", appId: "1:790682500839:web:cd50b8e01729f821e06c42" };
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const auth = getAuth(app);
+
+        let currentUser = null;
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                currentUser = user;
+                document.getElementById('page-loader').classList.add('loader-hidden');
+            } else {
+                window.location.href = "auth.html";
+            }
+        });
+
+        window.selectPlan = function(planName, price) {
+            document.getElementById('plansSection').style.display = 'none';
+            document.getElementById('paymentForm').style.display = 'block';
+            document.getElementById('selectedPlanName').innerText = planName;
+            document.getElementById('amountDisplay').innerText = price;
+            
+            // تخزين البيانات مؤقتاً
+            sessionStorage.setItem('tempPlan', planName);
+            sessionStorage.setItem('tempPrice', price);
+        }
+
+        document.getElementById('confirmForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            if(!currentUser) return;
+
+            const sender = document.getElementById('senderPhone').value;
+            const transId = document.getElementById('transactionId').value;
+            const plan = sessionStorage.getItem('tempPlan');
+            const price = sessionStorage.getItem('tempPrice');
+
+            const btn = e.target.querySelector('button[type="submit"]');
+            btn.disabled = true;
+            btn.innerText = "جاري الإرسال...";
+
+            push(ref(db, 'payment_requests'), {
+                userId: currentUser.uid,
+                userEmail: currentUser.email,
+                plan: plan,
+                price: price,
+                senderPhone: sender,
+                transactionId: transId,
+                status: 'pending',
+                timestamp: serverTimestamp()
+            }).then(() => {
+                alert("تم إرسال طلبك بنجاح! سيتم مراجعة الدفع وتفعيل حسابك خلال ساعات.");
+                window.location.href = "index.html";
+            }).catch(err => {
+                alert("حدث خطأ: " + err.message);
+                btn.disabled = false;
+                btn.innerText = "تأكيد الدفع وإرسال الطلب";
+            });
+        });
+    </script>
+</body>
+</html>
+```
+
+### 3. تحديث `admin.html` لإدارة الطلبات
+سنضيف قسماً جديداً في لوحة التحكم لعرض طلبات الدفع والموافقة عليها.
+
+```diff

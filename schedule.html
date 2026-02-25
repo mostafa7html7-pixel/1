@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="جدول مواعيد حصص الأحياء مع الدكتور. تعرف على مواعيد المجموعات المتاحة للصف الأول الثانوي وأماكن التواجد.">
+    <meta name="keywords" content="جدول حصص, مواعيد دروس, مجموعات أحياء, أولى ثانوي, سنتر تعليمي, حجز دروس, مواعيد الدكتور">
+    <title>الجدول - الدكتور</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700;900&family=Reem+Kufi:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="manifest" href="manifest.json">
+    <!-- Structured Data for SEO -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "EventSeries",
+      "name": "حصص الأحياء للصف الأول الثانوي",
+      "description": "جدول مواعيد مجموعات دروس الأحياء مع الدكتور للصف الأول الثانوي.",
+      "startDate": "2025-09-01",
+      "endDate": "2026-05-30",
+      "location": {
+        "@type": "Place",
+        "name": "السنتر التعليمي",
+        "address": "عنوان السنتر"
+      },
+      "organizer": {
+        "@type": "Person",
+        "name": "دكتور عبدالله"
+      },
+      "eventSchedule": [
+        {
+          "@type": "Schedule",
+          "byDay": [ "http://schema.org/Sunday", "http://schema.org/Wednesday" ],
+          "startTime": "14:00",
+          "endTime": "15:30"
+        },
+        {
+          "@type": "Schedule",
+          "byDay": [ "http://schema.org/Monday", "http://schema.org/Thursday" ],
+          "startTime": "14:00",
+          "endTime": "15:30"
+        }
+      ]
+    }
+    </script>
+    <style>
+        /* --- ستايلات الجدول الاحترافية الجديدة --- */
+        :root {
+            --accent-color: #00ff88;
+            --bg-dark: #050508;
+            --card-bg: rgba(255, 255, 255, 0.03);
+        }
+
+        .schedule-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .schedule-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 1.5rem;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Light Mode Overrides */
+        body.light-mode {
+            --bg-dark: #f8f9fa;
+            --card-bg: #ffffff;
+            color: #333;
+        }
+        body.light-mode .schedule-card {
+            background: #fff;
+            border-color: #e2e8f0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        body.light-mode .card-header h3 { color: #1a202c; }
+        body.light-mode .group-info .time { color: #2d3748; }
+        body.light-mode .group-info .name { color: #718096; }
+        body.light-mode .group-item { background: #f7fafc; }
+
+        .schedule-card:hover {
+            border-color: var(--accent-color);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.1);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 1rem;
+        }
+
+        .card-header i {
+            font-size: 1.5rem;
+            color: var(--accent-color);
+        }
+
+        .card-header h3 {
+            margin: 0;
+            font-size: 1.3rem;
+            color: #fff;
+        }
+
+        .grade-badge {
+            position: absolute;
+            top: 15px;
+            left: -30px;
+            background: var(--accent-color);
+            color: #000;
+            padding: 5px 40px;
+            transform: rotate(-45deg);
+            font-weight: bold;
+            font-size: 0.8rem;
+            box-shadow: 0 0 10px var(--accent-color);
+        }
+
+        .group-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: rgba(255,255,255,0.02);
+            margin-bottom: 10px;
+            border-radius: 12px;
+            border-right: 4px solid var(--accent-color);
+        }
+
+        .group-info .time {
+            display: block;
+            font-weight: bold;
+            color: #fff;
+            font-size: 1.1rem;
+        }
+
+        .group-info .name {
+            font-size: 0.85rem;
+            color: #8892b0;
+        }
+
+        .status-pill {
+            background: rgba(0, 255, 136, 0.1);
+            color: var(--accent-color);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .schedule-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Page Loader -->
+    <div id="page-loader">
+        <div class="loader-content">
+            <i class="fa-solid fa-heart-pulse loader-icon"></i>
+            <div class="loader-text">الدكتور <small>جاري التحميل...</small></div>
+        </div>
+    </div>
+
+    <nav class="navbar">
+        <div class="logo">
+            <i class="fa-solid fa-heart-pulse"></i>
+            <div class="logo-text"><span>الدكتور</span><small>BIOLOGY MASTER</small></div>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html">الرئيسية</a></li>
+            <li><a href="library.html">الكتب</a></li>
+            <li><a href="videos.html">الفيديوهات</a></li>
+            <li><a href="schedule.html" class="active">الجدول</a></li>
+            <li><a href="reviews.html">ورق الشرح</a></li>
+            <li><a href="contact.html">تواصل معنا</a></li>
+        </ul>
+        <button id="themeToggle" class="theme-toggle" title="تبديل الوضع"><i class="fa-solid fa-moon"></i></button>
+        <button id="installAppBtn" class="btn-nav-install" style="display: none;">
+            <i class="fa-solid fa-download"></i>
+            <span>تثبيت التطبيق</span>
+        </button>
+        <a href="scientific-books.html" class="btn-nav-special">الكتب العلمية النادرة</a>
+        <div class="menu-btn"><i class="fa-solid fa-bars"></i></div>
+    </nav>
+
+    <div class="page-header">
+        <p class="subtitle">1ST SECONDARY GRADE</p>
+        <h2 class="main-title">جدول مجموعات <span style="color:var(--accent-color)">الصف الأول الثانوي</span></h2>
+        <p style="color: #8892b0; text-align: center; margin-top: 10px;">اختر الموعد الذي يناسبك من المجاميع المتاحة</p>
+    </div>
+
+    <section class="container">
+        <div class="schedule-grid">
+            
+            <div class="schedule-card">
+                <div class="grade-badge">أولى ثانوي</div>
+                <div class="card-header">
+                    <i class="fa-solid fa-calendar-days"></i>
+                    <h3>الأحد والأربعاء</h3>
+                </div>
+                
+                <div class="group-item">
+                    <div class="group-info">
+                        <span class="time">02:00 PM</span>
+                        <span class="name">المجموعة الأولى (أ)</span>
+                    </div>
+                    <span class="status-pill">متاح</span>
+                </div>
+
+                <div class="group-item">
+                    <div class="group-info">
+                        <span class="time">03:30 PM</span>
+                        <span class="name">المجموعة الثانية (ب)</span>
+                    </div>
+                    <span class="status-pill">متاح</span>
+                </div>
+
+                <div class="group-item">
+                    <div class="group-info">
+                        <span class="time">07:30 PM</span>
+                        <span class="name">المجموعة الثالثة (ج)</span>
+                    </div>
+                    <span class="status-pill">متاح</span>
+                </div>
+            </div>
+
+            <div class="schedule-card">
+                <div class="grade-badge">أولى ثانوي</div>
+                <div class="card-header">
+                    <i class="fa-solid fa-calendar-check"></i>
+                    <h3>الاثنين والخميس</h3>
+                </div>
+                
+                <div class="group-item">
+                    <div class="group-info">
+                        <span class="time">02:00 PM</span>
+                        <span class="name">المجموعة الرابعة (د)</span>
+                    </div>
+                    <span class="status-pill">متاح</span>
+                </div>
+
+                <div class="group-item">
+                    <div class="group-info">
+                        <span class="time">03:30 PM</span>
+                        <span class="name">المجموعة الخامسة (هـ)</span>
+                    </div>
+                    <span class="status-pill">متاح</span>
+                </div>
+
+                <div class="group-item">
+                    <div class="group-info">
+                        <span class="time">07:30 PM</span>
+                        <span class="name">المجموعة السادسة (و)</span>
+                    </div>
+                    <span class="status-pill">متاح</span>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <footer>
+        <p style="text-align: center;">جميع الحقوق محفوظة © 2026 | تم التطوير بواسطة فريق عبقرينو & كيمو <i class="fa-solid fa-heart" style="color:var(--accent-color)"></i></p>
+    </footer>
+
+    <script>
+        const menuBtn = document.querySelector('.menu-btn');
+        const navLinks = document.querySelector('.nav-links');
+        menuBtn.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            menuBtn.innerHTML = navLinks.classList.contains('active') ? '<i class="fa-solid fa-xmark"></i>' : '<i class="fa-solid fa-bars"></i>';
+        });
+
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('page-loader').classList.add('loader-hidden');
+            }, 1000);
+        });
+
+        // كود تثبيت التطبيق PWA
+        let deferredPrompt;
+        const installBtn = document.getElementById('installAppBtn');
+
+        // إظهار الزر إذا لم يكن التطبيق مثبتاً
+        if (!window.matchMedia('(display-mode: standalone)').matches) {
+            installBtn.style.display = 'flex';
+        }
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installBtn.style.display = 'flex';
+        });
+
+        installBtn.addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') installBtn.style.display = 'none';
+                deferredPrompt = null;
+            } else {
+                alert('لتثبيت التطبيق، يرجى استخدام خيار "الإضافة إلى الشاشة الرئيسية" من إعدادات المتصفح.');
+            }
+        });
+
+        // كود الوضع الليلي/النهاري
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        const icon = themeToggle.querySelector('i');
+
+        if (localStorage.getItem('theme') === 'light') {
+            body.classList.add('light-mode');
+            icon.classList.replace('fa-moon', 'fa-sun');
+        }
+
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('light-mode');
+            const isLight = body.classList.contains('light-mode');
+            localStorage.setItem('theme', isLight ? 'light' : 'dark');
+            icon.className = isLight ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+        });
+    </script>
+
+    <!-- نظام الإشعارات الذكي -->
+    <div id="fire-notification" class="fire-toast">
+        <i class="fa-solid fa-fire-flame-curved"></i>
+        <div>
+            <h4>تنبيه عاجل من الدكتور</h4>
+            <small>اضغط للذهاب لمركز الرسائل</small>
+        </div>
+    </div>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+        import { getDatabase, ref, onChildAdded, query, limitToLast } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
+
+        const firebaseConfig = { apiKey: "AIzaSyD092yeOowtCLW0fDcIzaEXrnxvrN4X5T8", authDomain: "abqarieno.firebaseapp.com", databaseURL: "https://abqarieno-default-rtdb.firebaseio.com", projectId: "abqarieno", storageBucket: "abqarieno.firebasestorage.app", messagingSenderId: "790682500839", appId: "1:790682500839:web:cd50b8e01729f821e06c42" };
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        
+        const notif = document.getElementById('fire-notification');
+        const contactLink = document.querySelector('a[href="contact.html"]');
+        const loadTime = Date.now();
+
+        onChildAdded(query(ref(db, 'broadcasts'), limitToLast(1)), (snapshot) => {
+            const msg = snapshot.val();
+            if(msg.timestamp > loadTime) {
+                notif.classList.add('show');
+                setTimeout(() => notif.classList.remove('show'), 6000);
+                if(contactLink) contactLink.classList.add('has-new');
+            }
+        });
+        notif.onclick = () => window.location.href = 'contact.html';
+    </script>
+</body>
+</html>

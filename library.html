@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="مكتبة الدكتور الرقمية - تحميل كتب الأحياء والملازم والمراجعات النهائية للصف الأول الثانوي مجاناً بصيغة PDF.">
+    <meta name="keywords" content="مكتبة أحياء, كتب pdf, ملازم أحياء, تحميل كتب خارجية, الصف الأول الثانوي, مراجعات نهائية, كتب مجانية">
+    <title>المكتبة الرقمية - الدكتور</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700;900&family=Reem+Kufi:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="manifest" href="manifest.json">
+    <!-- Structured Data for SEO -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      "name": "مكتبة الأحياء الرقمية",
+      "description": "كتب وملازم مجانية في مادة الأحياء للصف الأول الثانوي.",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "item": {
+            "@type": "Book",
+            "name": "علوم متكاملة - كتاب الامتحان",
+            "bookFormat": "http://schema.org/EBook",
+            "url": "https://drive.google.com/file/d/1-zj4QAfj640KJ7LrGGagpulPN8PmgjbY/view?usp=sharing",
+            "inLanguage": "ar"
+          }
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "item": {
+            "@type": "Book",
+            "name": "علوم متكاملة - كتاب الأضواء",
+            "bookFormat": "http://schema.org/EBook",
+            "url": "https://drive.google.com/file/d/17jJErZF6tYNAlP948e21za5snV6Yjo-S/view?usp=sharing",
+            "inLanguage": "ar"
+          }
+        }
+      ]
+    }
+    </script>
+    <style>
+        /* تحسينات إضافية لأزرار التحميل في المكتبة */
+        .book-card {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .download-footer {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+            text-align: center;
+        }
+        .btn-download-book {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: #27ae60;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 0.9rem;
+            transition: 0.3s;
+        }
+        .btn-download-book:hover {
+            background: #2ecc71;
+            box-shadow: 0 4px 10px rgba(39, 174, 96, 0.2);
+        }
+        .free-tag {
+            color: #27ae60;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        @media (max-width: 992px) {
+            .grid-container.grid-4 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        @media (max-width: 768px) {
+            .grid-container.grid-4 {
+                grid-template-columns: 1fr;
+            }
+            .page-header .main-title {
+                font-size: 2.2rem !important;
+            }
+            .page-header p:not(.subtitle) {
+                width: 90%;
+                max-width: 500px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Page Loader -->
+    <div id="page-loader">
+        <div class="loader-content">
+            <i class="fa-solid fa-heart-pulse loader-icon"></i>
+            <div class="loader-text">الدكتور <small>جاري التحميل...</small></div>
+        </div>
+    </div>
+
+    <nav class="navbar">
+        <div class="logo">
+            <i class="fa-solid fa-heart-pulse"></i>
+            <div class="logo-text"><span>الدكتور</span><small>BIOLOGY MASTER</small></div>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html">الرئيسية</a></li>
+            <li><a href="library.html" class="active">الكتب</a></li> 
+            <li><a href="videos.html">الفيديوهات</a></li>
+            <li><a href="schedule.html">الجدول</a></li>
+            <li><a href="reviews.html">ورق الشرح</a></li>
+            <li><a href="contact.html">تواصل معنا</a></li>
+        </ul>
+        <button onclick="logout()" style="background:transparent; border:1px solid #333; color:#fff; padding:5px 10px; border-radius:5px; cursor:pointer; margin-left:10px; font-size:0.8rem;"><i class="fa-solid fa-right-from-bracket"></i> خروج</button>
+        <button id="themeToggle" class="theme-toggle" title="تبديل الوضع"><i class="fa-solid fa-moon"></i></button>
+        <button id="installAppBtn" class="btn-nav-install" style="display: none;">
+            <i class="fa-solid fa-download"></i>
+            <span>تثبيت التطبيق</span>
+        </button>
+        <a href="scientific-books.html" class="btn-nav-special">الكتب العلمية النادرة</a>
+        <div class="menu-btn"><i class="fa-solid fa-bars"></i></div>
+    </nav>
+
+    <div class="page-header">
+        <p class="subtitle">FREE DIGITAL LIBRARY</p>
+        <h2 class="main-title">مكتبة الدكتور المجانية</h2>
+        <p style="color:#888">جميع الكتب والملازم متاحة الآن للتحميل المباشر بصيغة PDF</p>
+    </div>
+
+    <section class="container">
+        <div class="grid-container grid-4">
+            <div class="book-card">
+                <div class="book-img">
+                    <span class="badge">الصف الأول الثانوي</span>
+                    <!-- ضع رابط صورة الكتاب هنا في src -->
+                    <img src="12.jpg" alt="غلاف الكتاب" loading="lazy">
+                </div>
+                <div class="book-info">
+                    <span class="free-tag"><i class="fa-solid fa-check-circle"></i> متاح مجاناً</span>
+                    <h3>علوم متكاملة  </h3>
+                    <p style="color:#9c9a9a; font-size:0.8rem">كتاب الامتحان اولى ثانوى ترم اول</p>
+                    <div class="download-footer">
+                        <a href="https://drive.google.com/file/d/1-zj4QAfj640KJ7LrGGagpulPN8PmgjbY/view?usp=sharing" download class="btn-download-book">
+                            <i class="fa-solid fa-file-arrow-down"></i> تحميل الكتاب
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="book-card">
+                <div class="book-img">
+                    <span class="badge">الصف الأول الثانوي</span>
+                    <!-- ضع رابط صورة الكتاب هنا في src -->
+                    <img src="13.jpg" alt="غلاف الكتاب" loading="lazy">
+                </div>
+                <div class="book-info">
+                    <span class="free-tag"><i class="fa-solid fa-check-circle"></i> متاح مجاناً</span>
+                    <h3>علوم متكاملة  </h3>
+                    <p style="color:#888; font-size:0.8rem"> كتاب الأضواء علوم متكاملة اولى ثانوى</p>
+                    <div class="download-footer">
+                        <a href="https://drive.google.com/file/d/17jJErZF6tYNAlP948e21za5snV6Yjo-S/view?usp=sharing" download class="btn-download-book">
+                            <i class="fa-solid fa-file-arrow-down"></i> تحميل الكتاب
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="book-card">
+                <div class="book-img">
+                    <span class="badge">الصف الأول الثانوي</span>
+                    <!-- ضع رابط صورة الكتاب هنا في src -->
+                    <img src="14.png" alt="غلاف الكتاب" loading="lazy">
+                </div>
+                <div class="book-info">
+                    <span class="free-tag"><i class="fa-solid fa-check-circle"></i> متاح مجاناً</span>
+                    <h3>   العلوم المتكاملة</h3>
+                    <p style="color:#888; font-size:0.8rem">كتاب التفوق علوم متكاملة اولى ثانوى 2026</p>
+                    <div class="download-footer">
+                        <a href="https://drive.google.com/file/d/1yuUNB36gDlju8MnfWVyuuEkRGisjsC_F/view?usp=sharing" download class="btn-download-book">
+                            <i class="fa-solid fa-file-arrow-down"></i> تحميل الكتاب
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+           
+        </div>
+    </section>
+
+    <footer>
+        <p style="text-align: center;">جميع الحقوق محفوظة © 2026 | تم التطوير بواسطة فريق عبقرينو & كيمو <i class="fa-solid fa-heart"></i></p>
+    </footer>
+
+    <script>
+        const menuBtn = document.querySelector('.menu-btn');
+        const navLinks = document.querySelector('.nav-links');
+        menuBtn.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            menuBtn.innerHTML = navLinks.classList.contains('active') ? '<i class="fa-solid fa-xmark"></i>' : '<i class="fa-solid fa-bars"></i>';
+        });
+
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('page-loader').classList.add('loader-hidden');
+            }, 1000);
+        });
+
+        // كود تثبيت التطبيق PWA
+        let deferredPrompt;
+        const installBtn = document.getElementById('installAppBtn');
+
+        // إظهار الزر إذا لم يكن التطبيق مثبتاً
+        if (!window.matchMedia('(display-mode: standalone)').matches) {
+            installBtn.style.display = 'flex';
+        }
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installBtn.style.display = 'flex';
+        });
+
+        installBtn.addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') installBtn.style.display = 'none';
+                deferredPrompt = null;
+            } else {
+                alert('لتثبيت التطبيق، يرجى استخدام خيار "الإضافة إلى الشاشة الرئيسية" من إعدادات المتصفح.');
+            }
+        });
+
+        // كود الوضع الليلي/النهاري
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        const icon = themeToggle.querySelector('i');
+
+        if (localStorage.getItem('theme') === 'light') {
+            body.classList.add('light-mode');
+            icon.classList.replace('fa-moon', 'fa-sun');
+        }
+
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('light-mode');
+            const isLight = body.classList.contains('light-mode');
+            localStorage.setItem('theme', isLight ? 'light' : 'dark');
+            icon.className = isLight ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+        });
+    </script>
+
+    <!-- نظام الإشعارات الذكي -->
+    <div id="fire-notification" class="fire-toast">
+        <i class="fa-solid fa-fire-flame-curved"></i>
+        <div>
+            <h4>تنبيه عاجل من الدكتور</h4>
+            <small id="fire-msg-text-library">رسالة جديدة...</small>
+        </div>
+    </div>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+        import { getDatabase, ref, onChildAdded, query, limitToLast } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
+
+        const firebaseConfig = { apiKey: "AIzaSyD092yeOowtCLW0fDcIzaEXrnxvrN4X5T8", authDomain: "abqarieno.firebaseapp.com", databaseURL: "https://abqarieno-default-rtdb.firebaseio.com", projectId: "abqarieno", storageBucket: "abqarieno.firebasestorage.app", messagingSenderId: "790682500839", appId: "1:790682500839:web:cd50b8e01729f821e06c42" };
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const auth = getAuth(app);
+
+        // حماية الصفحة: التحقق من تسجيل الدخول
+        onAuthStateChanged(auth, (user) => {
+            if (!user) {
+                window.location.href = "auth.html";
+            }
+        });
+
+        window.logout = () => signOut(auth);
+        
+        const notif = document.getElementById('fire-notification');
+        const contactLink = document.querySelector('a[href="contact.html"]');
+        const loadTime = Date.now();
+
+        onChildAdded(query(ref(db, 'broadcasts'), limitToLast(1)), (snapshot) => {
+            const msg = snapshot.val();
+            if(msg.timestamp > loadTime) {
+                document.getElementById('fire-msg-text-library').textContent = msg.text;
+                notif.classList.add('show');
+                setTimeout(() => notif.classList.remove('show'), 6000);
+                if(contactLink) contactLink.classList.add('has-new');
+            }
+        });
+        notif.onclick = () => window.location.href = 'contact.html';
+    </script>
+</body>
+</html>
