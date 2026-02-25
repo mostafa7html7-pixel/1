@@ -97,6 +97,7 @@
             <li><a href="reviews.html">ورق الشرح</a></li>
             <li><a href="contact.html">تواصل معنا</a></li>
         </ul>
+        <button onclick="location.href='profile.html'" style="background:transparent; border:1px solid var(--neon-green); color:var(--neon-green); padding:5px 10px; border-radius:5px; cursor:pointer; margin-left:10px; font-size:0.8rem;"><i class="fa-solid fa-user"></i> ملفي</button>
         <button onclick="logout()" style="background:transparent; border:1px solid #333; color:#fff; padding:5px 10px; border-radius:5px; cursor:pointer; margin-left:10px; font-size:0.8rem;"><i class="fa-solid fa-right-from-bracket"></i> خروج</button>
         <button id="themeToggle" class="theme-toggle" title="تبديل الوضع"><i class="fa-solid fa-moon"></i></button>
         <button id="installAppBtn" class="btn-nav-install" style="display: none;">
@@ -238,6 +239,18 @@
                 update(ref(db, 'users/' + user.uid), {
                     lastLogin: serverTimestamp(),
                     status: 'online'
+                });
+
+                // الاستماع للإشعارات الخاصة (مثل تفعيل الاشتراك)
+                const notifRef = query(ref(db, 'notifications/' + user.uid), limitToLast(1));
+                onChildAdded(notifRef, (snapshot) => {
+                    const notif = snapshot.val();
+                    if (notif.timestamp > loadTime) {
+                        fireText.textContent = notif.text;
+                        fireImg.classList.remove('show'); // إخفاء الصورة للإشعارات النصية
+                        fireToast.classList.add('show');
+                        setTimeout(() => fireToast.classList.remove('show'), 8000);
+                    }
                 });
             }
         });

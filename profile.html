@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الملف الشخصي - الدكتور</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Page Loader -->
+    <div id="page-loader">
+        <div class="loader-content">
+            <i class="fa-solid fa-heart-pulse loader-icon"></i>
+            <div class="loader-text">الدكتور <small>جاري التحميل...</small></div>
+        </div>
+    </div>
+
+    <nav class="navbar">
+        <div class="logo">
+            <i class="fa-solid fa-heart-pulse"></i>
+            <div class="logo-text"><span>الدكتور</span><small>BIOLOGY MASTER</small></div>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html">الرئيسية</a></li>
+            <li><a href="library.html">الكتب</a></li>
+            <li><a href="videos.html">الفيديوهات</a></li>
+            <li><a href="schedule.html">الجدول</a></li>
+            <li><a href="reviews.html">ورق الشرح</a></li>
+            <li><a href="contact.html">تواصل معنا</a></li>
+        </ul>
+        <button onclick="location.href='profile.html'" style="background:transparent; border:1px solid var(--neon-green); color:var(--neon-green); padding:5px 10px; border-radius:5px; cursor:pointer; margin-left:10px; font-size:0.8rem;"><i class="fa-solid fa-user"></i> ملفي</button>
+        <button onclick="logout()" style="background:transparent; border:1px solid #333; color:#fff; padding:5px 10px; border-radius:5px; cursor:pointer; margin-left:10px; font-size:0.8rem;"><i class="fa-solid fa-right-from-bracket"></i> خروج</button>
+        <button id="themeToggle" class="theme-toggle" title="تبديل الوضع"><i class="fa-solid fa-moon"></i></button>
+        <div class="menu-btn"><i class="fa-solid fa-bars"></i></div>
+    </nav>
+
+    <div class="container">
+        <div class="profile-container">
+            <div class="profile-header">
+                <div class="profile-avatar" onclick="document.getElementById('avatarInput').click()">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+                <input type="file" id="avatarInput" hidden accept="image/*" onchange="handleAvatarUpload(event)">
+                <h2 class="profile-name" id="userName">جاري التحميل...</h2>
+                <p class="profile-email" id="userEmail">...</p>
+            </div>
+
+            <div class="profile-grid">
+                <div class="profile-card">
+                    <label class="profile-label">حالة الاشتراك</label>
+                    <div class="profile-value" id="subStatus">...</div>
+                </div>
+                <div class="profile-card">
+                    <label class="profile-label">تاريخ الانضمام</label>
+                    <div class="profile-value" id="joinDate">...</div>
+                </div>
+                <div class="profile-card" style="grid-column: 1 / -1;">
+                    <label class="profile-label">رقم الهاتف</label>
+                    <div class="edit-group">
+                        <input type="text" id="phoneInput" class="edit-input" placeholder="أدخل رقم هاتفك">
+                        <button onclick="savePhone()" class="save-btn">حفظ</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+        import { getDatabase, ref, get, update } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
+        import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-storage.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
+
+        const firebaseConfig = { apiKey: "AIzaSyD092yeOowtCLW0fDcIzaEXrnxvrN4X5T8", authDomain: "abqarieno.firebaseapp.com", databaseURL: "https://abqarieno-default-rtdb.firebaseio.com", projectId: "abqarieno", storageBucket: "abqarieno.firebasestorage.app", messagingSenderId: "790682500839", appId: "1:790682500839:web:cd50b8e01729f821e06c42" };
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const auth = getAuth(app);
+        const storage = getStorage(app);
+
+        let currentUserUid = null;
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUserUid = user.uid;
+                const snapshot = await get(ref(db, 'users/' + user.uid));
+                if (snapshot.exists()) {
+                    const data = snapshot.val();
+                    document.getElementById('userName').innerText = data.username || 'بدون اسم';
+                    document.getElementById('userEmail').innerText = data.email;
+                    document.getElementById('phoneInput').value = data.phone || '';
+                    
+                    const avatarContainer = document.querySelector('.profile-avatar');
+                    if (data.photoURL) {
+                        avatarContainer.innerHTML = `<img src="${data.photoURL}" alt="الصورة الشخصية">`;
+                    } else {
+                        avatarContainer.innerHTML = '<i class="fa-solid fa-user"></i>';
+                    }
+                    avatarContainer.innerHTML += '<div class="upload-overlay"><i class="fa-solid fa-camera"></i> تغيير</div>';
+                    
+                    const subStatus = data.subscription === 'active' 
+                        ? `<span style="color:var(--neon-green)"><i class="fa-solid fa-check-circle"></i> مشترك (${data.plan || 'خطة غير محددة'})</span>` 
+                        : '<span style="color:#888">حساب مجاني</span>';
+                    document.getElementById('subStatus').innerHTML = subStatus;
+
+                    const date = data.joinedAt ? new Date(data.joinedAt).toLocaleDateString('ar-EG') : 'غير معروف';
+                    document.getElementById('joinDate').innerText = date;
+                }
+                document.getElementById('page-loader').classList.add('loader-hidden');
+            } else {
+                window.location.href = "auth.html";
+            }
+        });
+
+        window.savePhone = function() {
+            const phone = document.getElementById('phoneInput').value;
+            if (phone.length < 10) return alert("يرجى إدخال رقم هاتف صحيح");
+            
+            update(ref(db, 'users/' + currentUserUid), {
+                phone: phone
+            }).then(() => {
+                alert("تم حفظ رقم الهاتف بنجاح!");
+            }).catch(err => {
+                alert("حدث خطأ: " + err.message);
+            });
+        }
+
+        window.handleAvatarUpload = async function(event) {
+            const file = event.target.files[0];
+            if (!file || !currentUserUid) return;
+
+            const avatarContainer = document.querySelector('.profile-avatar');
+            avatarContainer.innerHTML = '<i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem;"></i>';
+
+            try {
+                const fileRef = storageRef(storage, `profile_pictures/${currentUserUid}`);
+                const uploadResult = await uploadBytes(fileRef, file);
+                const photoURL = await getDownloadURL(uploadResult.ref);
+
+                await update(ref(db, `users/${currentUserUid}`), { photoURL: photoURL });
+
+                avatarContainer.innerHTML = `<img src="${photoURL}" alt="الصورة الشخصية">`;
+                avatarContainer.innerHTML += '<div class="upload-overlay"><i class="fa-solid fa-camera"></i> تغيير</div>';
+
+                alert("تم تحديث الصورة الشخصية بنجاح!");
+
+            } catch (error) {
+                console.error("Error uploading image: ", error);
+                alert("حدث خطأ أثناء رفع الصورة. حاول مرة أخرى.");
+                
+                // Restore default icon on error
+                avatarContainer.innerHTML = '<i class="fa-solid fa-user"></i>';
+                avatarContainer.innerHTML += '<div class="upload-overlay"><i class="fa-solid fa-camera"></i> تغيير</div>';
+            }
+        }
+
+        window.logout = () => signOut(auth);
+
+        // Menu Toggle
+        const menuBtn = document.querySelector('.menu-btn');
+        const navLinks = document.querySelector('.nav-links');
+        if(menuBtn) {
+            menuBtn.addEventListener('click', () => {
+                navLinks.classList.toggle('active');
+                menuBtn.innerHTML = navLinks.classList.contains('active') ? '<i class="fa-solid fa-xmark"></i>' : '<i class="fa-solid fa-bars"></i>';
+            });
+        }
+        
+        // Theme Toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        const icon = themeToggle.querySelector('i');
+        if (localStorage.getItem('theme') === 'light') {
+            body.classList.add('light-mode');
+            icon.classList.replace('fa-moon', 'fa-sun');
+        }
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('light-mode');
+            const isLight = body.classList.contains('light-mode');
+            localStorage.setItem('theme', isLight ? 'light' : 'dark');
+            icon.className = isLight ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+        });
+    </script>
+</body>
+</html>

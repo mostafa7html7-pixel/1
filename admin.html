@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="admin-body">
 
@@ -27,17 +28,28 @@
                 <h3 style="color:#fff; margin-top:10px;">الدكتور <span style="color:var(--neon-red); font-size:0.7rem;">ADMIN</span></h3>
             </div>
             <nav style="display:flex; flex-direction:column; gap:10px;">
-                <div class="admin-menu-item active"><i class="fa-solid fa-chart-line"></i> <span>نظرة عامة</span></div>
-                <div class="admin-menu-item"><i class="fa-solid fa-users"></i> <span>الطلاب المسجلين</span></div>
-                <div class="admin-menu-item"><i class="fa-solid fa-bullhorn"></i> <span>مركز الرسائل</span></div>
-                <div class="admin-menu-item" onclick="showSection('payments')"><i class="fa-solid fa-money-bill-wave"></i> <span>طلبات الاشتراك</span> <span id="payBadge" style="background:var(--neon-red); color:#fff; font-size:0.7rem; padding:2px 6px; border-radius:50%; display:none;">0</span></div>
-                <div class="admin-menu-item"><i class="fa-solid fa-ban"></i> <span>قائمة الحظر</span></div>
+                <div class="admin-menu-item active" onclick="switchSection('overview', this)"><i class="fa-solid fa-chart-line"></i> <span>نظرة عامة</span></div>
+                <div class="admin-menu-item" onclick="switchSection('students', this)"><i class="fa-solid fa-users"></i> <span>الطلاب المسجلين</span></div>
+                <div class="admin-menu-item" onclick="switchSection('messages', this)"><i class="fa-solid fa-bullhorn"></i> <span>مركز الرسائل</span></div>
+                <div class="admin-menu-item" onclick="switchSection('payments', this)"><i class="fa-solid fa-money-bill-wave"></i> <span>طلبات الاشتراك</span> <span id="payBadge" style="background:var(--neon-red); color:#fff; font-size:0.7rem; padding:2px 6px; border-radius:50%; display:none;">0</span></div>
+                <div class="admin-menu-item" onclick="switchSection('banlist', this)"><i class="fa-solid fa-ban"></i> <span>قائمة الحظر</span></div>
                 <div class="admin-menu-item" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> <span>تسجيل خروج</span></div>
             </nav>
         </aside>
 
         <!-- Main Content -->
         <main class="admin-content">
+            <!-- Top Navigation for Quick Access -->
+            <nav class="admin-top-nav">
+                <a href="index.html" class="home-btn"><i class="fa-solid fa-house"></i> الرئيسية</a>
+                <a href="library.html"><i class="fa-solid fa-book"></i> المكتبة</a>
+                <a href="videos.html"><i class="fa-solid fa-play"></i> الفيديوهات</a>
+                <a href="schedule.html"><i class="fa-solid fa-calendar-days"></i> الجدول</a>
+                <a href="reviews.html"><i class="fa-solid fa-file-lines"></i> ورق الشرح</a>
+                <a href="contact.html"><i class="fa-solid fa-comments"></i> الشات</a>
+                <a href="scientific-books.html"><i class="fa-solid fa-flask"></i> الكتب العلمية</a>
+            </nav>
+
             <header style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px;">
                 <div>
                     <h1 style="font-size:1.8rem; font-weight:900;">غرفة العمليات</h1>
@@ -49,79 +61,148 @@
                 </div>
             </header>
 
-            <!-- Stats Grid -->
-            <div class="stat-grid">
-                <div class="stat-card">
-                    <h3>إجمالي الطلاب</h3>
-                    <div class="number" id="totalUsers">0</div>
-                    <i class="fa-solid fa-users icon-bg"></i>
+            <!-- SECTION: OVERVIEW -->
+            <div id="sec-overview" class="content-section">
+                <!-- Stats Grid -->
+                <div class="stat-grid">
+                    <div class="stat-card">
+                        <h3>إجمالي الطلاب</h3>
+                        <div class="number" id="totalUsers">0</div>
+                        <i class="fa-solid fa-users icon-bg"></i>
+                    </div>
+                    <div class="stat-card">
+                        <h3>المتصلين الآن</h3>
+                        <div class="number" style="color:var(--neon-green);" id="onlineUsers">0</div>
+                        <i class="fa-solid fa-globe icon-bg"></i>
+                    </div>
+                    <div class="stat-card red">
+                        <h3>تم حظرهم</h3>
+                        <div class="number" id="bannedCount">0</div>
+                        <i class="fa-solid fa-user-slash icon-bg"></i>
+                    </div>
+                    <div class="stat-card gold">
+                        <h3>رسائل مرسلة</h3>
+                        <div class="number" id="msgCount">0</div>
+                        <i class="fa-solid fa-paper-plane icon-bg"></i>
+                    </div>
                 </div>
-                <div class="stat-card">
-                    <h3>المتصلين الآن</h3>
-                    <div class="number" style="color:var(--neon-green);" id="onlineUsers">0</div>
-                    <i class="fa-solid fa-globe icon-bg"></i>
-                </div>
-                <div class="stat-card red">
-                    <h3>تم حظرهم</h3>
-                    <div class="number" id="bannedCount">0</div>
-                    <i class="fa-solid fa-user-slash icon-bg"></i>
-                </div>
-                <div class="stat-card gold">
-                    <h3>رسائل مرسلة</h3>
-                    <div class="number" id="msgCount">0</div>
-                    <i class="fa-solid fa-paper-plane icon-bg"></i>
+
+                <!-- Chart Section -->
+                <div class="chart-container">
+                    <h3 style="color:#fff; margin-bottom:15px;">معدل تسجيل الطلاب (آخر 7 أيام)</h3>
+                    <canvas id="usersChart"></canvas>
                 </div>
             </div>
 
-            <!-- Payment Requests Section (Hidden by default logic, but we'll add it here) -->
-            <div class="panel-section" id="paymentsSection">
-                <div class="panel-header">
-                    <div class="panel-title"><i class="fa-solid fa-money-check-dollar" style="color:var(--neon-green)"></i> طلبات تفعيل الاشتراك</div>
-                </div>
-                <div id="requestsList">
-                    <p style="color:#888; text-align:center;">جاري تحميل الطلبات...</p>
-                </div>
-            </div>
-
-            <!-- Broadcast Section -->
-            <div class="panel-section">
-                <div class="panel-header">
-                    <div class="panel-title"><i class="fa-solid fa-tower-broadcast" style="color:var(--neon-gold)"></i> إرسال تنبيه عاجل للجميع</div>
-                </div>
-                <div class="broadcast-box">
-                    <textarea id="broadcastMsg" placeholder="اكتب رسالتك هنا لتظهر كإشعار ناري لكل الطلاب المتصلين..."></textarea>
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <label style="color:#888; font-size:0.9rem;"><input type="checkbox"> إرسال كإشعار منبثق (Popup)</label>
-                        <button onclick="sendBroadcast()" style="background:var(--neon-green); color:#000; padding:10px 30px; border:none; border-radius:8px; font-weight:bold; cursor:pointer;"><i class="fa-solid fa-paper-plane"></i> إرسال الآن</button>
+            <!-- SECTION: STUDENTS -->
+            <div id="sec-students" class="content-section" style="display:none;">
+                <div class="panel-section">
+                    <div class="panel-header">
+                        <div class="panel-title"><i class="fa-solid fa-user-secret" style="color:var(--neon-blue)"></i> مراقبة الطلاب (Live Monitor)</div>
+                        <input type="text" placeholder="بحث عن طالب..." style="background:#050508; border:1px solid #333; color:#fff; padding:8px 15px; border-radius:20px; outline:none;">
+                    </div>
+                    <div style="overflow-x:auto;">
+                        <table class="users-table">
+                            <thead>
+                                <tr>
+                                    <th>اسم الطالب / الجهاز</th>
+                                    <th>رقم الهاتف</th>
+                                    <th>IP Address</th>
+                                    <th>الحالة</th>
+                                    <th>آخر ظهور</th>
+                                    <th>المحافظة</th>
+                                    <th>إجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersTableBody">
+                                <!-- سيتم ملء البيانات بواسطة JS -->
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
 
-            <!-- Users Table -->
-            <div class="panel-section">
-                <div class="panel-header">
-                    <div class="panel-title"><i class="fa-solid fa-user-secret" style="color:var(--neon-blue)"></i> مراقبة الطلاب (Live Monitor)</div>
-                    <input type="text" placeholder="بحث عن طالب..." style="background:#050508; border:1px solid #333; color:#fff; padding:8px 15px; border-radius:20px; outline:none;">
-                </div>
-                <div style="overflow-x:auto;">
-                    <table class="users-table">
-                        <thead>
-                            <tr>
-                                <th>اسم الطالب / الجهاز</th>
-                                <th>IP Address</th>
-                                <th>الحالة</th>
-                                <th>آخر ظهور</th>
-                                <th>المحافظة</th>
-                                <th>إجراءات</th>
-                            </tr>
-                        </thead>
-                        <tbody id="usersTableBody">
-                            <!-- سيتم ملء البيانات بواسطة JS -->
-                        </tbody>
-                    </table>
+            <!-- SECTION: MESSAGES -->
+            <div id="sec-messages" class="content-section" style="display:none;">
+                <div class="panel-section">
+                    <div class="panel-header">
+                        <div class="panel-title"><i class="fa-solid fa-tower-broadcast" style="color:var(--neon-gold)"></i> إرسال تنبيه عاجل للجميع</div>
+                    </div>
+                    <div class="broadcast-box">
+                        <textarea id="broadcastMsg" placeholder="اكتب رسالتك هنا لتظهر كإشعار ناري لكل الطلاب المتصلين..."></textarea>
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <label style="color:#888; font-size:0.9rem;"><input type="checkbox"> إرسال كإشعار منبثق (Popup)</label>
+                            <button onclick="sendBroadcast()" style="background:var(--neon-green); color:#000; padding:10px 30px; border:none; border-radius:8px; font-weight:bold; cursor:pointer;"><i class="fa-solid fa-paper-plane"></i> إرسال الآن</button>
+                        </div>
+                    </div>
                 </div>
             </div>
+
+            <!-- SECTION: PAYMENTS -->
+            <div id="sec-payments" class="content-section" style="display:none;">
+                <div class="panel-section">
+                    <div class="panel-header">
+                        <div class="panel-title"><i class="fa-solid fa-money-check-dollar" style="color:var(--neon-green)"></i> طلبات تفعيل الاشتراك</div>
+                    </div>
+                    <div id="requestsList">
+                        <p style="color:#888; text-align:center;">جاري تحميل الطلبات...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION: BAN LIST -->
+            <div id="sec-banlist" class="content-section" style="display:none;">
+                <div class="panel-section">
+                    <div class="panel-header">
+                        <div class="panel-title"><i class="fa-solid fa-ban" style="color:var(--neon-red)"></i> قائمة المحظورين</div>
+                    </div>
+                    <div style="overflow-x:auto;">
+                        <table class="users-table">
+                            <thead>
+                                <tr>
+                                    <th>اسم الطالب</th>
+                                    <th>البريد الإلكتروني</th>
+                                    <th>إجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="banTableBody">
+                                <!-- سيتم ملء البيانات بواسطة JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
         </main>
+    </div>
+
+    <!-- Edit User Modal -->
+    <div id="editUserModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeEditModal()">&times;</span>
+            <h2 style="text-align:center; margin-bottom:20px; color:var(--neon-green);">تعديل بيانات الطالب</h2>
+            <input type="hidden" id="editUserId">
+            <div class="modal-input-group">
+                <label>اسم الطالب</label>
+                <input type="text" id="editUsername">
+            </div>
+            <div class="modal-input-group">
+                <label>رقم الهاتف</label>
+                <input type="text" id="editPhone" placeholder="01xxxxxxxxx">
+            </div>
+            <div class="modal-input-group">
+                <label>حالة الاشتراك</label>
+                <select id="editSubscription">
+                    <option value="free">مجاني (Free)</option>
+                    <option value="active">مشترك (Active)</option>
+                </select>
+            </div>
+            <div class="modal-input-group">
+                <label>تفاصيل الخطة (اختياري)</label>
+                <input type="text" id="editPlan" placeholder="مثال: شهري, ترم كامل">
+            </div>
+            <button onclick="saveUserChanges()" class="auth-btn" style="margin-top:10px;">حفظ التعديلات</button>
+        </div>
     </div>
 
     <script type="module">
@@ -135,6 +216,7 @@
         const auth = getAuth(app);
 
         let currentUserUid = null;
+        let usersChartInstance = null;
 
         // --- Admin Logic ---
         onAuthStateChanged(auth, async (user) => {
@@ -197,6 +279,18 @@
             });
         }
 
+        // دالة التبديل بين الأقسام
+        window.switchSection = function(sectionId, btnElement) {
+            // إخفاء كل الأقسام
+            document.querySelectorAll('.content-section').forEach(el => el.style.display = 'none');
+            // إظهار القسم المطلوب
+            document.getElementById('sec-' + sectionId).style.display = 'block';
+            
+            // تحديث القائمة الجانبية
+            document.querySelectorAll('.admin-menu-item').forEach(el => el.classList.remove('active'));
+            if(btnElement) btnElement.classList.add('active');
+        }
+
         function initDashboard() {
             // 1. Clock
             setInterval(() => {
@@ -205,12 +299,15 @@
 
             // 2. جلب المستخدمين الحقيقيين (Realtime)
             onValue(ref(db, 'users'), (snapshot) => {
-                const tableBody = document.getElementById('usersTableBody');
-                tableBody.innerHTML = '';
+                const usersTableBody = document.getElementById('usersTableBody');
+                const banTableBody = document.getElementById('banTableBody');
+                usersTableBody.innerHTML = '';
+                banTableBody.innerHTML = '';
                 let total = 0;
                 let online = 0;
                 let banned = 0;
                 const now = Date.now();
+                const joinDates = {}; // لتخزين تواريخ الانضمام للرسم البياني
 
                 snapshot.forEach((childSnapshot) => {
                     const u = childSnapshot.val();
@@ -232,24 +329,52 @@
 
                     if (u.banned) banned++;
 
+                    // تجميع البيانات للرسم البياني
+                    if (u.joinedAt) {
+                        const dateKey = u.joinedAt.split('T')[0]; // YYYY-MM-DD
+                        joinDates[dateKey] = (joinDates[dateKey] || 0) + 1;
+                    }
+
+                    const avatarHTML = u.photoURL 
+                        ? `<img src="${u.photoURL}" style="width:35px; height:35px; border-radius:50%; object-fit:cover; vertical-align:middle; margin-left:8px; border:1px solid var(--neon-green);">` 
+                        : `<i class="fa-solid fa-user-graduate" style="font-size:1.2rem; margin-left:8px; vertical-align:middle;"></i>`;
+
                     const row = `
                         <tr style="${u.banned ? 'background:rgba(255,0,0,0.1)' : ''}">
-                            <td><i class="fa-solid fa-user-graduate"></i> ${u.username || 'بدون اسم'} ${u.role === 'admin' ? '<span style="color:gold">(Admin)</span>' : ''}</td>
+                            <td>${avatarHTML} <span style="vertical-align:middle;">${u.username || 'بدون اسم'}</span> ${u.role === 'admin' ? '<span style="color:gold; font-size:0.8rem;">(Admin)</span>' : ''}</td>
+                            <td>${u.phone || '<span style="color:#555">غير مسجل</span>'}</td>
                             <td style="font-family:monospace; color:#888;">${u.email}</td>
                             <td><span class="user-status ${isOnline ? 'status-online' : 'status-offline'}"></span> ${isOnline ? 'متصل' : 'غير متصل'}</td>
                             <td>${isOnline ? 'الآن' : lastSeenText}</td>
                             <td>${u.subscription === 'active' ? '<span style="color:var(--neon-green)">مشترك</span>' : 'مجاني'}</td>
                             <td>
-                                ${u.role !== 'admin' ? `<button class="action-btn btn-ban" onclick="banUser('${uid}', ${u.banned})">${u.banned ? 'فك الحظر' : 'حظر'}</button>` : ''}
+                                ${u.role !== 'admin' ? `
+                                    <button class="action-btn btn-info" onclick="openEditModal('${uid}', '${u.username || ''}', '${u.phone || ''}', '${u.subscription || 'free'}', '${u.plan || ''}')"><i class="fa-solid fa-pen"></i></button>
+                                    <button class="action-btn btn-ban" onclick="banUser('${uid}', ${u.banned})">${u.banned ? 'فك الحظر' : 'حظر'}</button>
+                                    <button class="action-btn btn-delete" onclick="deleteUser('${uid}')"><i class="fa-solid fa-trash"></i></button>
+                                ` : ''}
                             </td>
                         </tr>
                     `;
-                    tableBody.innerHTML += row;
+                    usersTableBody.innerHTML += row;
+
+                    if (u.banned) {
+                        const banRow = `
+                            <tr>
+                                <td>${u.username}</td>
+                                <td>${u.email}</td>
+                                <td><button class="action-btn btn-ban" onclick="banUser('${uid}', true)">فك الحظر</button></td>
+                            </tr>
+                        `;
+                        banTableBody.innerHTML += banRow;
+                    }
                 });
 
                 document.getElementById('totalUsers').innerText = total;
                 document.getElementById('onlineUsers').innerText = online;
                 document.getElementById('bannedCount').innerText = banned;
+
+                updateChart(joinDates);
             });
 
             // 3. Realtime Stats (Simulated + Real)
@@ -295,11 +420,56 @@
             });
         }
 
+        function updateChart(data) {
+            const ctx = document.getElementById('usersChart').getContext('2d');
+            
+            // ترتيب التواريخ
+            const sortedDates = Object.keys(data).sort().slice(-7); // آخر 7 أيام
+            const counts = sortedDates.map(date => data[date]);
+
+            if (usersChartInstance) {
+                usersChartInstance.destroy();
+            }
+
+            usersChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: sortedDates,
+                    datasets: [{
+                        label: 'عدد الطلاب الجدد',
+                        data: counts,
+                        borderColor: '#00ff41',
+                        backgroundColor: 'rgba(0, 255, 65, 0.1)',
+                        borderWidth: 2,
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { labels: { color: '#fff' } } },
+                    scales: {
+                        y: { ticks: { color: '#888' }, grid: { color: '#222' } },
+                        x: { ticks: { color: '#888' }, grid: { color: '#222' } }
+                    }
+                }
+            });
+        }
+
         window.approvePay = function(reqId, userId, plan) {
             // 1. تفعيل الاشتراك للمستخدم
             update(ref(db, 'users/' + userId), { subscription: 'active', plan: plan });
             // 2. حذف الطلب من القائمة
             remove(ref(db, 'payment_requests/' + reqId));
+            
+            // 3. إرسال إشعار للطالب (New)
+            push(ref(db, 'notifications/' + userId), {
+                text: `مبروك! تم تفعيل اشتراكك في خطة ${plan} بنجاح. استمتع بالمحتوى الكامل.`,
+                timestamp: serverTimestamp(),
+                type: 'system'
+            });
+
             alert("تم تفعيل الاشتراك للطالب بنجاح!");
         }
 
@@ -315,6 +485,54 @@
                 update(ref(db, 'users/' + uid), {
                     banned: !isBanned
                 });
+            }
+        }
+
+        window.deleteUser = function(uid) {
+            if(confirm("تحذير هام: هل أنت متأكد من حذف بيانات هذا الطالب نهائياً من قاعدة البيانات؟ لا يمكن التراجع عن هذا الإجراء.")) {
+                remove(ref(db, 'users/' + uid));
+            }
+        }
+
+        // --- Edit User Functions ---
+        window.openEditModal = function(uid, name, phone, sub, plan) {
+            document.getElementById('editUserId').value = uid;
+            document.getElementById('editUsername').value = name;
+            document.getElementById('editPhone').value = phone;
+            document.getElementById('editSubscription').value = sub;
+            document.getElementById('editPlan').value = plan;
+            document.getElementById('editUserModal').style.display = 'block';
+        }
+
+        window.closeEditModal = function() {
+            document.getElementById('editUserModal').style.display = 'none';
+        }
+
+        window.saveUserChanges = function() {
+            const uid = document.getElementById('editUserId').value;
+            const name = document.getElementById('editUsername').value;
+            const phone = document.getElementById('editPhone').value;
+            const sub = document.getElementById('editSubscription').value;
+            const plan = document.getElementById('editPlan').value;
+
+            update(ref(db, 'users/' + uid), {
+                username: name,
+                phone: phone,
+                subscription: sub,
+                plan: plan
+            }).then(() => {
+                alert('تم تحديث بيانات الطالب بنجاح');
+                closeEditModal();
+            }).catch(err => {
+                alert('حدث خطأ: ' + err.message);
+            });
+        }
+
+        // إغلاق النافذة عند الضغط خارجها
+        window.onclick = function(event) {
+            const modal = document.getElementById('editUserModal');
+            if (event.target == modal) {
+                modal.style.display = "none";
             }
         }
     </script>

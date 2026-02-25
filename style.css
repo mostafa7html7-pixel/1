@@ -784,6 +784,15 @@ footer {
 .admin-sidebar { width: 250px; background: #0a0a0f; border-left: 1px solid #222; padding: 20px; display: flex; flex-direction: column; gap: 20px; position: fixed; right: 0; height: 100%; z-index: 100; }
 .admin-content { flex: 1; margin-right: 250px; padding: 30px; background: radial-gradient(circle at 10% 10%, rgba(0, 255, 65, 0.03), transparent 40%); }
 
+.admin-top-nav {
+    background: #0f0f13; border: 1px solid #222; border-radius: 10px; padding: 10px 20px;
+    margin-bottom: 25px; display: flex; gap: 15px; flex-wrap: wrap; align-items: center;
+}
+.admin-top-nav a { color: #888; font-size: 0.9rem; font-weight: bold; transition: 0.3s; }
+.admin-top-nav a:hover { color: var(--neon-green); }
+.admin-top-nav .home-btn { background: var(--neon-green); color: #000; padding: 5px 15px; border-radius: 5px; }
+.admin-top-nav .home-btn:hover { background: #00cc33; color: #000; }
+
 .admin-logo { text-align: center; padding-bottom: 20px; border-bottom: 1px solid #222; margin-bottom: 10px; }
 .admin-logo i { font-size: 2rem; color: var(--neon-red); animation: heartBeat 2s infinite; }
 .admin-menu-item { padding: 12px 15px; border-radius: 10px; color: #888; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 10px; font-weight: bold; }
@@ -798,6 +807,8 @@ footer {
 .stat-card .icon-bg { position: absolute; top: 20px; left: 20px; font-size: 3rem; opacity: 0.1; color: #fff; }
 .stat-card.red .number { color: var(--neon-red); }
 .stat-card.gold .number { color: var(--neon-gold); }
+
+.chart-container { background: #0f0f13; border: 1px solid #222; border-radius: 15px; padding: 20px; margin-bottom: 30px; height: 350px; position: relative; }
 
 .panel-section { background: #0f0f13; border: 1px solid #222; border-radius: 15px; padding: 25px; margin-bottom: 30px; }
 .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #222; padding-bottom: 15px; }
@@ -816,6 +827,8 @@ footer {
 .btn-ban:hover { background: var(--neon-red); color: #fff; }
 .btn-info { background: rgba(0, 210, 255, 0.1); color: #00d2ff; border: 1px solid #00d2ff; margin-left: 5px; }
 .btn-info:hover { background: #00d2ff; color: #000; }
+.btn-delete { background: rgba(255, 50, 50, 0.15); color: #ff5555; border: 1px solid #ff5555; margin-right: 5px; }
+.btn-delete:hover { background: #ff5555; color: #fff; }
 
 .broadcast-box textarea { width: 100%; background: #050508; border: 1px solid #333; color: #fff; padding: 15px; border-radius: 10px; resize: vertical; min-height: 100px; margin-bottom: 15px; }
 .broadcast-box textarea:focus { border-color: var(--neon-green); outline: none; }
@@ -878,6 +891,132 @@ footer {
 .req-actions { display: flex; gap: 10px; }
 .btn-approve { background: var(--neon-green); color: #000; border: none; padding: 5px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; }
 .btn-reject { background: var(--neon-red); color: #fff; border: none; padding: 5px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+
+/* --- Edit User Modal --- */
+.modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.8); backdrop-filter: blur(5px); }
+.modal-content { background-color: #111; margin: 10% auto; padding: 30px; border: 1px solid var(--neon-green); width: 90%; max-width: 500px; border-radius: 15px; color: #fff; position: relative; box-shadow: 0 0 20px rgba(0, 255, 65, 0.2); animation: fadeInUp 0.4s ease; }
+.close-modal { color: #aaa; float: left; font-size: 28px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+.close-modal:hover { color: var(--neon-red); }
+.modal-input-group { margin-bottom: 15px; text-align: right; }
+.modal-input-group label { display: block; margin-bottom: 8px; color: var(--neon-green); font-weight: bold; font-size: 0.9rem; }
+.modal-input-group input, .modal-input-group select { width: 100%; padding: 12px; background: #222; border: 1px solid #444; color: #fff; border-radius: 8px; outline: none; transition: 0.3s; }
+.modal-input-group input:focus, .modal-input-group select:focus { border-color: var(--neon-green); }
+
+/* --- Profile Page Styles --- */
+.profile-container {
+    max-width: 800px;
+    margin: 50px auto;
+    background: #0f0f13;
+    border: 1px solid #333;
+    border-radius: 20px;
+    padding: 40px;
+    position: relative;
+    overflow: hidden;
+}
+.profile-header {
+    text-align: center;
+    margin-bottom: 40px;
+    border-bottom: 1px solid #222;
+    padding-bottom: 20px;
+}
+.profile-avatar {
+    width: 100px;
+    height: 100px;
+    background: #222;
+    border-radius: 50%;
+    margin: 0 auto 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    color: var(--neon-green);
+    border: 2px solid var(--neon-green);
+    box-shadow: 0 0 20px rgba(0, 255, 65, 0.2);
+    position: relative;
+    cursor: pointer;
+    overflow: hidden;
+}
+.profile-name {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #fff;
+}
+.profile-email {
+    color: #888;
+    font-size: 0.9rem;
+}
+.profile-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.profile-avatar .upload-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 35%;
+    background: rgba(0,0,0,0.7);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none; /* Important */
+}
+.profile-avatar:hover .upload-overlay {
+    opacity: 1;
+}
+.profile-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+.profile-card {
+    background: #1a1a20;
+    padding: 20px;
+    border-radius: 15px;
+    border: 1px solid #333;
+}
+.profile-label {
+    color: var(--neon-green);
+    font-size: 0.85rem;
+    margin-bottom: 5px;
+    display: block;
+    font-weight: bold;
+}
+.profile-value {
+    color: #fff;
+    font-size: 1.1rem;
+}
+.edit-group {
+    display: flex;
+    gap: 10px;
+    margin-top: 5px;
+}
+.edit-input {
+    flex: 1;
+    background: #050508;
+    border: 1px solid #444;
+    color: #fff;
+    padding: 8px 15px;
+    border-radius: 8px;
+    outline: none;
+}
+.edit-input:focus { border-color: var(--neon-green); }
+.save-btn {
+    background: var(--neon-green);
+    color: #000;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s;
+}
+.save-btn:hover { background: #00cc33; }
 /* c:\Users\mosa\Desktop\Project3\df\style.css */
 
 /* ... (الأكواد السابقة كما هي) ... */
