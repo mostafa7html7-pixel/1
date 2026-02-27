@@ -6,7 +6,7 @@
     <meta name="description" content="منصة الدكتور التعليمية للأحياء - شرح مبسط، فيديوهات عالية الجودة، كتب وملازم مجانية، ومتابعة مستمرة لطلاب الثانوية العامة.">
     <meta name="keywords" content="أحياء, ثانوية عامة, دكتور عبدالله, منصة تعليمية, شرح أحياء, مراجعات, امتحانات, كتب pdf">
     <title>الرئيسية - الدكتور</title>
-    <link rel="stylesheet" href="style.css?v=12">
+    <link rel="stylesheet" href="style.css?v=15">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
     <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -198,6 +198,16 @@
         </div>
     </div>
 
+    <!-- Welcome Modal for New Users -->
+    <div id="welcomeOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 10001; align-items: center; justify-content: center; backdrop-filter: blur(10px);">
+        <div id="welcomeModal" style="background: #0f0f13; padding: 30px; border-radius: 20px; text-align: center; border: 1px solid var(--neon-green); box-shadow: 0 0 30px rgba(0, 255, 65, 0.2); max-width: 90%; width: 400px; animation: fadeInUp 0.5s;">
+            <i class="fa-solid fa-hand-sparkles" style="font-size: 3rem; color: var(--neon-gold); margin-bottom: 15px;"></i>
+            <h2 style="color: #fff; margin-bottom: 10px;">أهلاً بك في عائلة الدكتور!</h2>
+            <p style="color: #ccc; margin-bottom: 25px;">يسعدنا انضمامك إلينا. أنت الآن جزء من مجتمعنا التعليمي. استكشف المنصة وابدأ رحلتك نحو التفوق.</p>
+            <button onclick="closeWelcomeModal()" style="background: var(--neon-green); color: #000; padding: 10px 30px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">لنبدأ!</button>
+        </div>
+    </div>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
@@ -214,6 +224,25 @@
         const fireText = document.getElementById('fire-msg-text');
         const fireImg = document.getElementById('fire-msg-img');
         
+        // --- Welcome Message for New Users ---
+        if (sessionStorage.getItem('isNewUser') === 'true') {
+            const welcomeOverlay = document.getElementById('welcomeOverlay');
+            if (welcomeOverlay) {
+                // Using setTimeout to ensure the page is fully rendered before showing the modal
+                setTimeout(() => {
+                    welcomeOverlay.style.display = 'flex';
+                }, 1000); // 1 second delay
+            }
+            sessionStorage.removeItem('isNewUser');
+        }
+
+        window.closeWelcomeModal = function() {
+            const welcomeOverlay = document.getElementById('welcomeOverlay');
+            if (welcomeOverlay) {
+                welcomeOverlay.style.display = 'none';
+            }
+        }
+
         const auth = getAuth(app);
         onAuthStateChanged(auth, (user) => {
             if (!user) {

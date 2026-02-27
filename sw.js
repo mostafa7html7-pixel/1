@@ -1,4 +1,4 @@
-const CACHE_NAME = 'abqarieno-v12'; // Switch to Cloudinary for faster uploads
+const CACHE_NAME = 'abqarieno-v15'; // Added Welcome Message
 const ASSETS = [
     './',
     './index.html',

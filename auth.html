@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>تسجيل الدخول - الدكتور</title>
-    <link rel="stylesheet" href="style.css?v=12">
+    <link rel="stylesheet" href="style.css?v=15">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700;900&display=swap" rel="stylesheet">
 </head>
@@ -50,9 +50,16 @@
             </div>
 
             <div class="input-group" id="photoGroup" style="display:none;">
-                <label style="display:block; color:#888; margin-bottom:5px; font-size:0.9rem;">صورة الملف الشخصي:</label>
-                <input type="file" id="profilePic" accept="image/*" required style="padding:10px;">
-                <i class="fa-solid fa-camera" style="top:40px;"></i>
+                <label for="profilePic" style="cursor:pointer; display:block; text-align:center; background:#050508; border:2px dashed #333; border-radius:10px; padding:20px; transition:0.3s;">
+                    <div id="imgPreviewBox" style="width:80px; height:80px; margin:0 auto 10px; border-radius:50%; background:#222; display:flex; align-items:center; justify-content:center; overflow:hidden;">
+                        <i class="fa-solid fa-camera" style="font-size:2rem; color:#666;"></i>
+                    </div>
+                    <span style="color:var(--neon-green); font-size:0.9rem;">اضغط لاختيار صورة شخصية</span>
+                </label>
+                <input type="file" id="profilePic" accept="image/*" style="display:none;" onchange="previewAuthImage(this)">
+                <div id="uploadProgressContainer" style="display:none; width:100%; background:#222; height:6px; border-radius:3px; margin-top:10px; overflow:hidden;">
+                    <div id="uploadProgressBar" style="width:0%; height:100%; background:var(--neon-green); transition:width 0.2s;"></div>
+                </div>
             </div>
 
             <div class="input-group">
@@ -93,6 +100,19 @@
         // تفعيل الحفظ المحلي للجلسة لحل مشاكل الخروج المفاجئ
         setPersistence(auth, browserLocalPersistence).catch(console.error);
 
+        // دالة معاينة الصورة
+        window.previewAuthImage = function(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const box = document.getElementById('imgPreviewBox');
+                    box.innerHTML = `<img src="${e.target.result}" style="width:100%; height:100%; object-fit:cover;">`;
+                    box.style.border = '2px solid var(--neon-green)';
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
         let isLogin = true;
 
         // التحقق مما إذا كان المستخدم مسجلاً بالفعل
@@ -121,6 +141,7 @@
                         role: 'student',
                         joinedAt: new Date().toISOString()
                     });
+                    sessionStorage.setItem('isNewUser', 'true'); // Set flag for welcome message
                 }
                 checkUserRole(user.uid);
             } catch (error) {
@@ -167,6 +188,63 @@
             }
         }
 
+        // دالة ضغط الصور (لتقليل الحجم وتسريع الرفع)
+        function compressImage(file) {
+            return new Promise((resolve, reject) => {
+                const maxWidth = 500; // أقصى عرض للصورة
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = (event) => {
+                    const img = new Image();
+                    img.src = event.target.result;
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        let width = img.width;
+                        let height = img.height;
+                        if (width > maxWidth) {
+                            height = Math.round((height * maxWidth) / width);
+                            width = maxWidth;
+                        }
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+                        canvas.toBlob((blob) => {
+                            resolve(new File([blob], file.name, { type: 'image/jpeg', lastModified: Date.now() }));
+                        }, 'image/jpeg', 0.7); // جودة 70%
+                    };
+                };
+                reader.onerror = (error) => reject(error);
+            });
+        }
+
+        // دالة الرفع مع متابعة التقدم
+        function uploadImageXHR(file, onProgress) {
+            return new Promise((resolve, reject) => {
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('upload_preset', 'my_chat_preset');
+                formData.append('cloud_name', 'dzwrz9qzb');
+
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', 'https://api.cloudinary.com/v1_1/dzwrz9qzb/image/upload');
+
+                xhr.upload.onprogress = function(e) {
+                    if (e.lengthComputable) {
+                        const percentComplete = (e.loaded / e.total) * 100;
+                        onProgress(percentComplete);
+                    }
+                };
+
+                xhr.onload = function() {
+                    if (xhr.status === 200) resolve(JSON.parse(xhr.responseText));
+                    else reject(new Error('Upload failed'));
+                };
+                xhr.onerror = () => reject(new Error('Network error'));
+                xhr.send(formData);
+            });
+        }
+
         document.getElementById('authForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const email = document.getElementById('email').value;
@@ -178,6 +256,8 @@
             const grade = document.getElementById('grade').value;
             const errorBox = document.getElementById('errorBox');
             const btn = document.getElementById('submitBtn');
+            const progressContainer = document.getElementById('uploadProgressContainer');
+            const progressBar = document.getElementById('uploadProgressBar');
 
             errorBox.style.display = 'none';
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري التحميل...';
@@ -199,15 +279,15 @@
                     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
                     const user = userCredential.user;
 
-                    // رفع الصورة على Cloudinary (أسرع)
-                    const formData = new FormData();
-                    formData.append('file', file);
-                    formData.append('upload_preset', 'my_chat_preset'); // استخدام نفس البريست الموجود
-                    formData.append('cloud_name', 'dzwrz9qzb');
+                    // ضغط الصورة قبل الرفع
+                    const compressedFile = await compressImage(file);
 
-                    const res = await fetch('https://api.cloudinary.com/v1_1/dzwrz9qzb/image/upload', { method: 'POST', body: formData });
-                    const data = await res.json();
-                    if (data.error) throw new Error("فشل رفع الصورة: " + data.error.message);
+                    // رفع الصورة مع شريط التقدم
+                    progressContainer.style.display = 'block';
+                    const data = await uploadImageXHR(compressedFile, (percent) => {
+                        progressBar.style.width = percent + '%';
+                    });
+                    
                     const photoURL = data.secure_url;
 
                     // حفظ بيانات المستخدم في قاعدة البيانات
@@ -222,6 +302,7 @@
                         photoURL: photoURL
                     });
 
+                    sessionStorage.setItem('isNewUser', 'true'); // Set flag for welcome message
                     window.location.href = "index.html";
                 }
             } catch (error) {
