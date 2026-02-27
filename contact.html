@@ -6,7 +6,7 @@
     <meta name="description" content="تواصل مباشرة مع الدكتور وفريق الدعم الفني. مركز الرسائل والتنبيهات لطلاب الأحياء لمتابعة كل جديد.">
     <meta name="keywords" content="تواصل معنا, دعم فني, رسائل الدكتور, شات طلاب, استفسارات أحياء, متابعة الطلاب">
     <title>مركز رسائل الدكتور - 2028 Edition</title>
-    <link rel="stylesheet" href="style.css?v=10">
+    <link rel="stylesheet" href="style.css?v=11">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
     <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -194,11 +194,24 @@
     <div id="gate-overlay">
         <div style="text-align: center; background: var(--glass-bg); padding: 40px; border-radius: 20px; border: 1px solid var(--accent-glow); width: 90%; max-width: 400px;">
             <i class="fa-solid fa-user-graduate" style="font-size: 3rem; color: var(--master-neon); margin-bottom: 20px;"></i>
-            <h2>إكمال بيانات الطالب</h2>
-            <p style="color: #666; margin-bottom: 25px;">يرجى إدخال اسمك ورقم هاتفك للمتابعة</p>
+            <h2>إكمال الملف الشخصي</h2>
+            <p style="color: #666; margin-bottom: 25px;">نحتاج بعض البيانات الإضافية للمتابعة</p>
             
             <input type="text" id="studentName" placeholder="الاسم بالكامل" style="width:100%; padding:12px; margin-bottom:10px; background:#1a2332; color:#fff; border:1px solid #333; border-radius:8px; outline:none; text-align:center;">
             <input type="tel" id="studentPhone" placeholder="رقم الهاتف" style="width:100%; padding:12px; margin-bottom:15px; background:#1a2332; color:#fff; border:1px solid #333; border-radius:8px; outline:none; text-align:center;">
+            
+            <div style="margin-bottom: 15px;">
+                <select id="gender" required style="width:100%; padding:12px; background:#1a2332; border:1px solid #333; border-radius:8px; color:#fff; text-align: center;">
+                    <option value="" disabled selected>اختر النوع (ولد / بنت)</option>
+                    <option value="male">ولد</option>
+                    <option value="female">بنت</option>
+                </select>
+            </div>
+
+            <div style="margin-bottom: 15px; text-align: right;">
+                <label style="display:block; color:#888; margin-bottom:5px; font-size:0.9rem;">صورة الملف الشخصي:</label>
+                <input type="file" id="profilePic" accept="image/*" required style="padding:10px; width: 100%; background: #1a2332; border-radius: 8px; border: 1px solid #333;">
+            </div>
             
             <button onclick="registerStudent()" style="width:100%; padding:12px; background:var(--master-neon); color:#000; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">دخول</button>
             
@@ -286,6 +299,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
         import { getDatabase, ref, push, onChildAdded, onChildRemoved, serverTimestamp, remove, get, update } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
+        import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-storage.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyD092yeOowtCLW0fDcIzaEXrnxvrN4X5T8",
@@ -300,6 +314,7 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
         const auth = getAuth(app);
+        const storage = getStorage(app);
         const messagesRef = ref(db, 'broadcasts');
         let currentUserUid = null;
 
@@ -320,7 +335,7 @@
                     const userRef = ref(db, 'users/' + user.uid);
                     const snapshot = await get(userRef);
 
-                    if (snapshot.exists() && snapshot.val().phone) {
+                    if (snapshot.exists() && snapshot.val().phone && snapshot.val().gender && snapshot.val().photoURL) {
                         // الطالب أكمل بياناته (لديه رقم هاتف)، أخفِ البوابة
                         document.getElementById('gate-overlay').style.display = 'none';
                     } else {
@@ -353,6 +368,8 @@
         window.registerStudent = async function() {
             const name = document.getElementById('studentName').value;
             const phone = document.getElementById('studentPhone').value;
+            const gender = document.getElementById('gender').value;
+            const file = document.getElementById('profilePic').files[0];
 
             if (!name || name.length < 5) {
                 alert("يرجى إدخال الاسم بالكامل.");
@@ -363,20 +380,45 @@
                 alert("يرجى إدخال رقم هاتف مصري صحيح (11 رقم).");
                 return;
             }
+            if (!gender) {
+                alert("يرجى اختيار النوع (ولد / بنت).");
+                return;
+            }
+            if (!file) {
+                alert("يرجى اختيار صورة شخصية.");
+                return;
+            }
 
             if (!currentUserUid) {
                 alert("حدث خطأ في التحقق من الهوية. يرجى إعادة تحميل الصفحة.");
                 return;
             }
 
+            const btn = document.querySelector('#gate-overlay button');
+            btn.disabled = true;
+            btn.innerText = 'جاري الحفظ...';
+
             try {
+                // رفع الصورة
+                const fileRef = storageRef(storage, `profile_pictures/${currentUserUid}`);
+                const uploadResult = await uploadBytes(fileRef, file);
+                const photoURL = await getDownloadURL(uploadResult.ref);
+
                 const userRef = ref(db, 'users/' + currentUserUid);
-                await update(userRef, { username: name, phone: phone });
+                await update(userRef, { 
+                    username: name, 
+                    phone: phone,
+                    gender: gender,
+                    photoURL: photoURL
+                });
                 document.getElementById('gate-overlay').style.display = 'none';
                 alert("تم تسجيل بياناتك بنجاح. أهلاً بك!");
             } catch (error) {
                 console.error("Error updating profile:", error);
                 alert("حدث خطأ أثناء حفظ البيانات: " + error.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerText = 'دخول';
             }
         }
 
