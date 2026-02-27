@@ -1,4 +1,4 @@
-const CACHE_NAME = 'abqarieno-v7'; // Update: Force refresh & Skip Waiting
+const CACHE_NAME = 'abqarieno-v9'; // Update: Admin & Auth Revamp
 const ASSETS = [
     './',
     './index.html',

@@ -20,174 +20,104 @@
         <button id="secretBtn" onclick="activateMaster()" style="display:none; margin-top:15px; padding:10px 30px; background:var(--neon-red); color:#fff; border:none; border-radius:30px; cursor:pointer; font-weight:bold;">تفعيل وضع المستر</button>
     </div>
 
-    <div class="admin-container" id="adminPanel" style="opacity:0; transition:1s;">
-        <!-- Sidebar -->
-        <aside class="admin-sidebar">
-            <div class="admin-logo">
-                <i class="fa-solid fa-heart-pulse"></i>
-                <h3 style="color:#fff; margin-top:10px;">الدكتور <span style="color:var(--neon-red); font-size:0.7rem;">ADMIN</span></h3>
-            </div>
-            <nav style="display:flex; flex-direction:column; gap:10px;">
-                <div class="admin-menu-item active" onclick="switchSection('students', this)"><i class="fa-solid fa-users"></i> <span>الطلاب المسجلين</span></div>
-                <div class="admin-menu-item" onclick="switchSection('messages', this)"><i class="fa-solid fa-bullhorn"></i> <span>مركز الرسائل</span></div>
-                <div class="admin-menu-item" onclick="switchSection('payments', this)"><i class="fa-solid fa-money-bill-wave"></i> <span>طلبات الاشتراك</span> <span id="payBadge" style="background:var(--neon-red); color:#fff; font-size:0.7rem; padding:2px 6px; border-radius:50%; display:none;">0</span></div>
-                <div class="admin-menu-item" onclick="switchSection('banlist', this)"><i class="fa-solid fa-ban"></i> <span>قائمة الحظر</span></div>
-                <div class="admin-menu-item" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> <span>تسجيل خروج</span></div>
-            </nav>
-        </aside>
+    <style>
+        .split-container {
+            display: flex;
+            width: 100%;
+            min-height: 100vh;
+            padding-top: 20px;
+        }
+        .section {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        .boys-section {
+            border-left: 2px solid #333;
+            background: rgba(0, 100, 255, 0.05);
+        }
+        .girls-section {
+            background: rgba(255, 0, 100, 0.05);
+        }
+        .section-title {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 30px;
+            font-weight: 900;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .boys-title { color: #00d2ff; }
+        .girls-title { color: #ff3366; }
 
-        <!-- Main Content -->
-        <main class="admin-content">
-            <!-- Top Navigation for Quick Access -->
-            <nav class="admin-top-nav">
-                <div class="logo" style="margin-left: auto;">
-                    <i class="fa-solid fa-heart-pulse" style="color:var(--neon-red)"></i>
-                    <span style="font-weight:bold; color:#fff; margin-right:5px;">لوحة التحكم</span>
-                </div>
-                <div class="menu-btn" style="display:block; font-size:1.5rem; cursor:pointer;"><i class="fa-solid fa-bars"></i></div>
-                <ul class="nav-links">
-                    <li><a href="index.html"><i class="fa-solid fa-house"></i> الرئيسية</a></li>
-                    <li><a href="contact.html"><i class="fa-solid fa-comments"></i> الشات</a></li>
-                    <li><a href="profile.html"><i class="fa-solid fa-user"></i> الملف الشخصي</a></li>
-                    <li><a href="#" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> خروج</a></li>
-                </ul>
-            </nav>
+        .user-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        .user-card {
+            background: #111;
+            border: 1px solid #333;
+            border-radius: 15px;
+            padding: 15px;
+            text-align: center;
+            transition: 0.3s;
+        }
+        .user-card:hover { transform: translateY(-5px); border-color: #fff; }
+        .user-img {
+            width: 100px; height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #333;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .user-img:hover { transform: scale(1.1); border-color: var(--neon-green); }
+        .user-name { font-weight: bold; color: #fff; margin-bottom: 5px; font-size: 1.1rem; }
+        .user-phone { color: var(--neon-green); font-family: monospace; font-size: 1rem; }
+        
+        /* Lightbox */
+        .img-modal {
+            display: none; position: fixed; z-index: 10000;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9);
+            align-items: center; justify-content: center;
+        }
+        .img-modal img { max-width: 90%; max-height: 90vh; border-radius: 10px; box-shadow: 0 0 50px rgba(255,255,255,0.2); }
+        .close-img { position: absolute; top: 20px; right: 30px; color: #fff; font-size: 3rem; cursor: pointer; }
+    </style>
 
-            <header style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px;">
-                <div>
-                    <h1 style="font-size:1.8rem; font-weight:900;">غرفة العمليات</h1>
-                    <p style="color:#888;">أهلاً بك يا دكتور، النظام يعمل بكفاءة 100%</p>
-                </div>
-                <div style="text-align:left;">
-                    <div style="color:var(--neon-green); font-weight:bold;"><i class="fa-solid fa-wifi"></i> متصل بالسيرفر</div>
-                    <div id="clock" style="color:#666; font-size:0.9rem;">00:00:00</div>
-                </div>
-            </header>
+    <div class="admin-container" id="adminPanel" style="opacity:0; transition:1s; display: block;">
+        
+        <div style="position: fixed; top: 20px; left: 20px; z-index: 100;">
+            <button onclick="logout()" style="background: #333; color: #fff; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer;">خروج</button>
+        </div>
 
-            <!-- SECTION: STUDENTS -->
-            <div id="sec-students" class="content-section">
-                <div class="panel-section">
-                    <div class="panel-header">
-                        <div class="panel-title"><i class="fa-solid fa-user-secret" style="color:var(--neon-blue)"></i> مراقبة الطلاب (Live Monitor)</div>
-                        <input type="text" placeholder="بحث عن طالب..." style="background:#050508; border:1px solid #333; color:#fff; padding:8px 15px; border-radius:20px; outline:none;">
-                    </div>
-                    <div style="overflow-x:auto;">
-                        <table class="users-table">
-                            <thead>
-                                <tr>
-                                    <th>اسم الطالب / الجهاز</th>
-                                    <th>رقم الهاتف</th>
-                                    <th>البريد الإلكتروني</th>
-                                    <th>الصف الدراسي</th>
-                                    <th>الحالة</th>
-                                    <th>آخر ظهور</th>
-                                    <th>الاشتراك</th>
-                                    <th>إجراءات</th>
-                                </tr>
-                            </thead>
-                            <tbody id="usersTableBody">
-                                <!-- سيتم ملء البيانات بواسطة JS -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <!-- SECTION: MESSAGES -->
-            <div id="sec-messages" class="content-section" style="display:none;">
-                <div class="panel-section">
-                    <div class="panel-header">
-                        <div class="panel-title"><i class="fa-solid fa-tower-broadcast" style="color:var(--neon-gold)"></i> إرسال تنبيه عاجل للجميع</div>
-                    </div>
-                    <div class="broadcast-box">
-                        <textarea id="broadcastMsg" placeholder="اكتب رسالتك هنا لتظهر كإشعار ناري لكل الطلاب المتصلين..."></textarea>
-                        <div style="display:flex; justify-content:space-between; align-items:center;">
-                            <label style="color:#888; font-size:0.9rem;"><input type="checkbox"> إرسال كإشعار منبثق (Popup)</label>
-                            <button onclick="sendBroadcast()" style="background:var(--neon-green); color:#000; padding:10px 30px; border:none; border-radius:8px; font-weight:bold; cursor:pointer;"><i class="fa-solid fa-paper-plane"></i> إرسال الآن</button>
-                        </div>
-                    </div>
-                    
-                    <h3 style="color:#fff; margin: 20px 0 10px; border-bottom:1px solid #333; padding-bottom:10px;">الرسائل المرسلة سابقاً</h3>
-                    <div id="activeBroadcastsList">
-                        <p style="color:#888; text-align:center;">جاري تحميل الرسائل...</p>
-                    </div>
+        <div class="split-container">
+            <!-- قسم الأولاد -->
+            <div class="section boys-section">
+                <h2 class="section-title boys-title"><i class="fa-solid fa-mars"></i> الأولاد</h2>
+                <div class="user-grid" id="boysGrid">
+                    <!-- سيتم إضافة الكروت هنا -->
                 </div>
             </div>
 
-            <!-- SECTION: PAYMENTS -->
-            <div id="sec-payments" class="content-section" style="display:none;">
-                <div class="panel-section">
-                    <div class="panel-header">
-                        <div class="panel-title"><i class="fa-solid fa-money-check-dollar" style="color:var(--neon-green)"></i> طلبات تفعيل الاشتراك</div>
-                    </div>
-                    <div id="requestsList">
-                        <p style="color:#888; text-align:center;">جاري تحميل الطلبات...</p>
-                    </div>
+            <!-- قسم البنات -->
+            <div class="section girls-section">
+                <h2 class="section-title girls-title"><i class="fa-solid fa-venus"></i> البنات</h2>
+                <div class="user-grid" id="girlsGrid">
+                    <!-- سيتم إضافة الكروت هنا -->
                 </div>
             </div>
+        </div>
 
-            <!-- SECTION: BAN LIST -->
-            <div id="sec-banlist" class="content-section" style="display:none;">
-                <div class="panel-section">
-                    <div class="panel-header">
-                        <div class="panel-title"><i class="fa-solid fa-ban" style="color:var(--neon-red)"></i> قائمة المحظورين</div>
-                    </div>
-                    <div style="overflow-x:auto;">
-                        <table class="users-table">
-                            <thead>
-                                <tr>
-                                    <th>اسم الطالب</th>
-                                    <th>البريد الإلكتروني</th>
-                                    <th>إجراءات</th>
-                                </tr>
-                            </thead>
-                            <tbody id="banTableBody">
-                                <!-- سيتم ملء البيانات بواسطة JS -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-        </main>
     </div>
 
-    <!-- Edit User Modal -->
-    <div id="editUserModal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal" onclick="closeEditModal()">&times;</span>
-            <h2 style="text-align:center; margin-bottom:20px; color:var(--neon-green);">تعديل بيانات الطالب</h2>
-            <input type="hidden" id="editUserId">
-            <div class="modal-input-group">
-                <label>اسم الطالب</label>
-                <input type="text" id="editUsername">
-            </div>
-            <div class="modal-input-group">
-                <label>رقم الهاتف</label>
-                <input type="text" id="editPhone" placeholder="01xxxxxxxxx">
-            </div>
-            <div class="modal-input-group">
-                <label>الصف الدراسي</label>
-                <select id="editGrade">
-                    <option value="">اختر الصف</option>
-                    <option value="الصف الأول الثانوي">الصف الأول الثانوي</option>
-                    <option value="الصف الثاني الثانوي">الصف الثاني الثانوي</option>
-                    <option value="الصف الثالث الثانوي">الصف الثالث الثانوي</option>
-                </select>
-            </div>
-            <div class="modal-input-group">
-                <label>حالة الاشتراك</label>
-                <select id="editSubscription">
-                    <option value="free">مجاني (Free)</option>
-                    <option value="active">مشترك (Active)</option>
-                </select>
-            </div>
-            <div class="modal-input-group">
-                <label>تفاصيل الخطة (اختياري)</label>
-                <input type="text" id="editPlan" placeholder="مثال: شهري, ترم كامل">
-            </div>
-            <button onclick="saveUserChanges()" class="auth-btn" style="margin-top:10px;">حفظ التعديلات</button>
-        </div>
+    <!-- Image Modal -->
+    <div id="imgModal" class="img-modal" onclick="this.style.display='none'">
+        <span class="close-img">&times;</span>
+        <img id="modalImg" src="">
     </div>
 
     <script type="module">
@@ -199,14 +129,6 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
         const auth = getAuth(app);
-
-        // Menu Toggle Logic
-        const menuBtn = document.querySelector('.menu-btn');
-        const navLinks = document.querySelector('.nav-links');
-        menuBtn.addEventListener('click', () => {
-            navLinks.classList.toggle('active');
-            menuBtn.innerHTML = navLinks.classList.contains('active') ? '<i class="fa-solid fa-xmark"></i>' : '<i class="fa-solid fa-bars"></i>';
-        });
 
         let currentUserUid = null;
 
@@ -257,256 +179,48 @@
             signOut(auth).then(() => window.location.href = "auth.html");
         }
 
-        window.sendBroadcast = function() {
-            const text = document.getElementById('broadcastMsg').value;
-            if(!text) return alert("اكتب رسالة أولاً");
-            
-            push(ref(db, 'broadcasts'), {
-                text: text,
-                timestamp: serverTimestamp(),
-                sender: 'Dr. Abdullah'
-            }).then(() => {
-                alert("تم إرسال التنبيه لجميع الطلاب بنجاح!");
-                document.getElementById('broadcastMsg').value = '';
-            });
-        }
-
-        // دالة التبديل بين الأقسام
-        window.switchSection = function(sectionId, btnElement) {
-            // إخفاء كل الأقسام
-            document.querySelectorAll('.content-section').forEach(el => el.style.display = 'none');
-            // إظهار القسم المطلوب
-            document.getElementById('sec-' + sectionId).style.display = 'block';
-            
-            // تحديث القائمة الجانبية
-            document.querySelectorAll('.admin-menu-item').forEach(el => el.classList.remove('active'));
-            if(btnElement) btnElement.classList.add('active');
-        }
-
         function initDashboard() {
-            // 1. Clock
-            setInterval(() => {
-                document.getElementById('clock').innerText = new Date().toLocaleTimeString('ar-EG');
-            }, 1000);
-
-            // 2. جلب المستخدمين الحقيقيين (Realtime)
+            // جلب المستخدمين وتوزيعهم
             onValue(ref(db, 'users'), (snapshot) => {
-                const usersTableBody = document.getElementById('usersTableBody');
-                const banTableBody = document.getElementById('banTableBody');
-                usersTableBody.innerHTML = '';
-                banTableBody.innerHTML = '';
-                const now = Date.now();
+                const boysGrid = document.getElementById('boysGrid');
+                const girlsGrid = document.getElementById('girlsGrid');
+                
+                boysGrid.innerHTML = '';
+                girlsGrid.innerHTML = '';
 
                 snapshot.forEach((childSnapshot) => {
                     const u = childSnapshot.val();
-                    const uid = childSnapshot.key;
-                    total++;
-
-                    // حساب حالة الاتصال (إذا كان آخر ظهور أقل من 5 دقائق)
-                    let isOnline = false;
-                    let lastSeenText = "غير معروف";
                     
-                    if (u.lastLogin) {
-                        const diff = now - u.lastLogin;
-                        if (diff < 5 * 60 * 1000) { // 5 دقائق
-                            isOnline = true;
-                        }
-                        lastSeenText = new Date(u.lastLogin).toLocaleString('ar-EG');
-                    }
+                    // تخطي الأدمن
+                    if(u.role === 'admin') return;
 
-                    const avatarHTML = u.photoURL 
-                        ? `<img src="${u.photoURL}" style="width:35px; height:35px; border-radius:50%; object-fit:cover; vertical-align:middle; margin-left:8px; border:1px solid var(--neon-green);">` 
-                        : `<i class="fa-solid fa-user-graduate" style="font-size:1.2rem; margin-left:8px; vertical-align:middle;"></i>`;
+                    const imgSrc = u.photoURL || 'https://via.placeholder.com/100';
+                    const name = u.username || 'بدون اسم';
+                    const phone = u.phone || 'لا يوجد رقم';
 
-                    const row = `
-                        <tr style="${u.banned ? 'background:rgba(255,0,0,0.1)' : ''}">
-                            <td>${avatarHTML} <span style="vertical-align:middle;">${u.username || 'بدون اسم'}</span> ${u.role === 'admin' ? '<span style="color:gold; font-size:0.8rem;">(Admin)</span>' : ''}</td>
-                            <td>${u.phone || '<span style="color:#555">غير مسجل</span>'}</td>
-                            <td style="font-family:monospace; color:#888;">${u.email}</td>
-                            <td>${u.grade || '<span style="color:#555">غير محدد</span>'}</td>
-                            <td><span class="user-status ${isOnline ? 'status-online' : 'status-offline'}"></span> ${isOnline ? 'متصل' : 'غير متصل'}</td>
-                            <td>${isOnline ? 'الآن' : lastSeenText}</td>
-                            <td>${u.subscription === 'active' ? '<span style="color:var(--neon-green)">مشترك</span>' : 'مجاني'}</td>
-                            <td>
-                                ${u.role !== 'admin' ? `
-                                    <button class="action-btn btn-info" onclick="openEditModal('${uid}', '${u.username || ''}', '${u.phone || ''}', '${u.grade || ''}', '${u.subscription || 'free'}', '${u.plan || ''}')"><i class="fa-solid fa-pen"></i></button>
-                                    <button class="action-btn btn-ban" onclick="banUser('${uid}', ${u.banned})">${u.banned ? 'فك الحظر' : 'حظر'}</button>
-                                    <button class="action-btn btn-delete" onclick="deleteUser('${uid}')"><i class="fa-solid fa-trash"></i></button>
-                                ` : ''}
-                            </td>
-                        </tr>
+                    const cardHTML = `
+                        <div class="user-card">
+                            <img src="${imgSrc}" class="user-img" onclick="showImg('${imgSrc}')">
+                            <div class="user-name">${name}</div>
+                            <div class="user-phone">${phone}</div>
+                        </div>
                     `;
-                    usersTableBody.innerHTML += row;
 
-                    if (u.banned) {
-                        const banRow = `
-                            <tr>
-                                <td>${u.username}</td>
-                                <td>${u.email}</td>
-                                <td><button class="action-btn btn-ban" onclick="banUser('${uid}', true)">فك الحظر</button></td>
-                            </tr>
-                        `;
-                        banTableBody.innerHTML += banRow;
+                    if (u.gender === 'male') {
+                        boysGrid.innerHTML += cardHTML;
+                    } else if (u.gender === 'female') {
+                        girlsGrid.innerHTML += cardHTML;
+                    } else {
+                        // في حالة عدم تحديد النوع (مستخدمين قدامى)، نضعهم في الأولاد افتراضياً أو نتجاهلهم
+                        boysGrid.innerHTML += cardHTML; 
                     }
                 });
-
-            });
-
-            // 4. Payment Requests Listener
-            onValue(ref(db, 'payment_requests'), (snapshot) => {
-                const list = document.getElementById('requestsList');
-                const badge = document.getElementById('payBadge');
-                list.innerHTML = '';
-                
-                if(snapshot.exists()) {
-                    const reqs = snapshot.val();
-                    const count = Object.keys(reqs).length;
-                    badge.innerText = count;
-                    badge.style.display = 'inline-block';
-
-                    Object.entries(reqs).forEach(([key, val]) => {
-                        const html = `
-                            <div class="req-card">
-                                <div class="req-info">
-                                    <h4>${val.userEmail} <span style="color:var(--neon-gold)">(${val.plan})</span></h4>
-                                    <p>رقم المحفظة: ${val.senderPhone} | كود العملية: ${val.transactionId}</p>
-                                    <p style="font-size:0.8rem; margin-top:5px;">${new Date(val.timestamp).toLocaleString('ar-EG')}</p>
-                                </div>
-                                <div class="req-actions">
-                                    <button class="btn-approve" onclick="approvePay('${key}', '${val.userId}', '${val.plan}')"><i class="fa-solid fa-check"></i> تفعيل</button>
-                                    <button class="btn-reject" onclick="rejectPay('${key}')"><i class="fa-solid fa-xmark"></i> رفض</button>
-                                </div>
-                            </div>
-                        `;
-                        list.innerHTML += html;
-                    });
-                } else {
-                    list.innerHTML = '<p style="text-align:center; color:#666;">لا توجد طلبات جديدة</p>';
-                    badge.style.display = 'none';
-                }
-            });
-
-            // 5. Broadcasts List Listener (For Deletion)
-            onValue(ref(db, 'broadcasts'), (snapshot) => {
-                const list = document.getElementById('activeBroadcastsList');
-                list.innerHTML = '';
-                if(snapshot.exists()) {
-                    snapshot.forEach((child) => {
-                        const msg = child.val();
-                        const key = child.key;
-                        const date = new Date(msg.timestamp).toLocaleString('ar-EG');
-                        
-                        let mediaPreview = '';
-                        if (msg.media) {
-                            if (msg.mediaType === 'image' || msg.media.includes('data:image')) mediaPreview = '<i class="fa-solid fa-image" style="color:var(--neon-green); margin-right:5px;"></i> صورة';
-                            else if (msg.mediaType === 'video' || msg.media.includes('data:video')) mediaPreview = '<i class="fa-solid fa-video" style="color:var(--neon-red); margin-right:5px;"></i> فيديو';
-                            else if (msg.mediaType === 'audio' || msg.media.includes('data:audio')) mediaPreview = '<i class="fa-solid fa-microphone" style="color:var(--neon-gold); margin-right:5px;"></i> صوت';
-                            else mediaPreview = '<i class="fa-solid fa-paperclip" style="color:#888; margin-right:5px;"></i> ملف';
-                        }
-
-                        const html = `
-                            <div class="msg-list-item">
-                                <div class="msg-list-content">
-                                    <span class="msg-list-date">${date}</span>
-                                    <div class="msg-list-text">${msg.text} <small style="display:block; margin-top:5px;">${mediaPreview}</small></div>
-                                </div>
-                                <button class="msg-delete-btn" onclick="deleteBroadcast('${key}')"><i class="fa-solid fa-trash"></i> حذف</button>
-                            </div>
-                        `;
-                        list.insertAdjacentHTML('afterbegin', html);
-                    });
-                } else {
-                    list.innerHTML = '<p style="text-align:center; color:#666;">لا توجد رسائل</p>';
-                }
             });
         }
 
-        window.approvePay = function(reqId, userId, plan) {
-            // 1. تفعيل الاشتراك للمستخدم
-            update(ref(db, 'users/' + userId), { subscription: 'active', plan: plan });
-            // 2. حذف الطلب من القائمة
-            remove(ref(db, 'payment_requests/' + reqId));
-            
-            // 3. إرسال إشعار للطالب (New)
-            push(ref(db, 'notifications/' + userId), {
-                text: `مبروك! تم تفعيل اشتراكك في خطة ${plan} بنجاح. استمتع بالمحتوى الكامل.`,
-                timestamp: serverTimestamp(),
-                type: 'system'
-            });
-
-            alert("تم تفعيل الاشتراك للطالب بنجاح!");
-        }
-
-        window.rejectPay = function(reqId) {
-            if(confirm("هل أنت متأكد من رفض هذا الطلب؟")) {
-                remove(ref(db, 'payment_requests/' + reqId));
-            }
-        }
-
-        window.banUser = function(uid, isBanned) {
-            const action = isBanned ? "فك الحظر عن" : "حظر";
-            if(confirm(`هل أنت متأكد من ${action} هذا الطالب؟`)) {
-                update(ref(db, 'users/' + uid), {
-                    banned: !isBanned
-                });
-            }
-        }
-
-        window.deleteUser = function(uid) {
-            if(confirm("تحذير هام: هل أنت متأكد من حذف بيانات هذا الطالب نهائياً من قاعدة البيانات؟ لا يمكن التراجع عن هذا الإجراء.")) {
-                remove(ref(db, 'users/' + uid));
-            }
-        }
-
-        window.deleteBroadcast = function(key) {
-            if(confirm("هل أنت متأكد من حذف هذه الرسالة؟ ستختفي من عند جميع الطلاب.")) {
-                remove(ref(db, 'broadcasts/' + key));
-            }
-        }
-
-        // --- Edit User Functions ---
-        window.openEditModal = function(uid, name, phone, grade, sub, plan) {
-            document.getElementById('editUserId').value = uid;
-            document.getElementById('editUsername').value = name;
-            document.getElementById('editPhone').value = phone;
-            document.getElementById('editGrade').value = grade;
-            document.getElementById('editSubscription').value = sub;
-            document.getElementById('editPlan').value = plan;
-            document.getElementById('editUserModal').style.display = 'block';
-        }
-
-        window.closeEditModal = function() {
-            document.getElementById('editUserModal').style.display = 'none';
-        }
-
-        window.saveUserChanges = function() {
-            const uid = document.getElementById('editUserId').value;
-            const name = document.getElementById('editUsername').value;
-            const phone = document.getElementById('editPhone').value;
-            const grade = document.getElementById('editGrade').value;
-            const sub = document.getElementById('editSubscription').value;
-            const plan = document.getElementById('editPlan').value;
-
-            update(ref(db, 'users/' + uid), {
-                username: name,
-                phone: phone,
-                grade: grade,
-                subscription: sub,
-                plan: plan
-            }).then(() => {
-                alert('تم تحديث بيانات الطالب بنجاح');
-                closeEditModal();
-            }).catch(err => {
-                alert('حدث خطأ: ' + err.message);
-            });
-        }
-
-        // إغلاق النافذة عند الضغط خارجها
-        window.onclick = function(event) {
-            const modal = document.getElementById('editUserModal');
-            if (event.target == modal) {
-                modal.style.display = "none";
-            }
+        window.showImg = function(src) {
+            document.getElementById('modalImg').src = src;
+            document.getElementById('imgModal').style.display = 'flex';
         }
     </script>
 </body>

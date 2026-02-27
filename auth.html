@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>تسجيل الدخول - الدكتور</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=8">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700;900&display=swap" rel="stylesheet">
 </head>
@@ -22,8 +22,21 @@
 
         <form id="authForm">
             <div class="input-group" id="nameGroup" style="display:none;">
-                <input type="text" id="fullName" placeholder="الاسم الثلاثي">
+                <input type="text" id="fullName" placeholder="الاسم الثلاثي" required>
                 <i class="fa-solid fa-user"></i>
+            </div>
+            
+            <div class="input-group" id="phoneGroup" style="display:none;">
+                <input type="tel" id="phone" placeholder="رقم الهاتف (للتواصل)" required>
+                <i class="fa-solid fa-phone"></i>
+            </div>
+
+            <div class="input-group" id="genderGroup" style="display:none;">
+                <select id="gender" required style="width:100%; padding:15px; background:#050508; border:1px solid #333; border-radius:10px; color:#fff;">
+                    <option value="" disabled selected>اختر النوع (ولد / بنت)</option>
+                    <option value="male">ولد</option>
+                    <option value="female">بنت</option>
+                </select>
             </div>
 
             <div class="input-group" id="gradeGroup" style="display:none;">
@@ -34,6 +47,12 @@
                     <option value="الصف الثالث الثانوي">الصف الثالث الثانوي</option>
                 </select>
                 <i class="fa-solid fa-graduation-cap"></i>
+            </div>
+
+            <div class="input-group" id="photoGroup" style="display:none;">
+                <label style="display:block; color:#888; margin-bottom:5px; font-size:0.9rem;">صورة الملف الشخصي:</label>
+                <input type="file" id="profilePic" accept="image/*" required style="padding:10px;">
+                <i class="fa-solid fa-camera" style="top:40px;"></i>
             </div>
 
             <div class="input-group">
@@ -63,12 +82,14 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
         import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
+        import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-storage.js";
 
         const firebaseConfig = { apiKey: "AIzaSyD092yeOowtCLW0fDcIzaEXrnxvrN4X5T8", authDomain: "abqarieno.firebaseapp.com", databaseURL: "https://abqarieno-default-rtdb.firebaseio.com", projectId: "abqarieno", storageBucket: "abqarieno.firebasestorage.app", messagingSenderId: "790682500839", appId: "1:790682500839:web:cd50b8e01729f821e06c42" };
         
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getDatabase(app);
+        const storage = getStorage(app);
         const googleProvider = new GoogleAuthProvider();
 
         // تفعيل الحفظ المحلي للجلسة لحل مشاكل الخروج المفاجئ
@@ -119,6 +140,9 @@
             const toggleBtn = document.getElementById('toggleBtn');
             const nameGroup = document.getElementById('nameGroup');
             const gradeGroup = document.getElementById('gradeGroup');
+            const phoneGroup = document.getElementById('phoneGroup');
+            const genderGroup = document.getElementById('genderGroup');
+            const photoGroup = document.getElementById('photoGroup');
 
             if (isLogin) {
                 title.innerText = "أهلاً بك يا دكتور";
@@ -128,6 +152,9 @@
                 toggleBtn.innerText = "إنشاء حساب جديد";
                 nameGroup.style.display = "none";
                 gradeGroup.style.display = "none";
+                phoneGroup.style.display = "none";
+                genderGroup.style.display = "none";
+                photoGroup.style.display = "none";
             } else {
                 title.innerText = "انضم لعائلة الدكتور";
                 subtitle.innerText = "أنشئ حسابك الآن وابدأ رحلة التفوق";
@@ -136,6 +163,9 @@
                 toggleBtn.innerText = "تسجيل الدخول";
                 nameGroup.style.display = "block";
                 gradeGroup.style.display = "block";
+                phoneGroup.style.display = "block";
+                genderGroup.style.display = "block";
+                photoGroup.style.display = "block";
             }
         }
 
@@ -144,6 +174,9 @@
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
             const name = document.getElementById('fullName').value;
+            const phone = document.getElementById('phone').value;
+            const gender = document.getElementById('gender').value;
+            const file = document.getElementById('profilePic').files[0];
             const grade = document.getElementById('grade').value;
             const errorBox = document.getElementById('errorBox');
             const btn = document.getElementById('submitBtn');
@@ -159,19 +192,30 @@
                     checkUserRole(userCredential.user.uid);
                 } else {
                     // إنشاء حساب جديد
-                    if(name.length < 3) throw new Error("يرجى كتابة الاسم الثلاثي بشكل صحيح");
-                    if(!grade) throw new Error("يرجى اختيار الصف الدراسي");
+                    if (!name || name.trim().length < 3) throw new Error("يرجى كتابة الاسم الثلاثي بشكل صحيح.");
+                    if (!grade) throw new Error("يرجى اختيار الصف الدراسي.");
+                    if (!phone) throw new Error("يرجى كتابة رقم الهاتف.");
+                    if (!gender) throw new Error("يرجى اختيار النوع.");
+                    if (!file) throw new Error("يرجى اختيار صورة شخصية.");
                     
                     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
                     const user = userCredential.user;
+
+                    // رفع الصورة
+                    const fileRef = storageRef(storage, `profile_pictures/${user.uid}`);
+                    const uploadResult = await uploadBytes(fileRef, file);
+                    const photoURL = await getDownloadURL(uploadResult.ref);
 
                     // حفظ بيانات المستخدم في قاعدة البيانات
                     await set(ref(db, 'users/' + user.uid), {
                         username: name,
                         email: email,
+                        phone: phone,
+                        gender: gender,
                         role: 'student', // الافتراضي طالب
                         grade: grade,
-                        joinedAt: new Date().toISOString()
+                        joinedAt: new Date().toISOString(),
+                        photoURL: photoURL
                     });
 
                     window.location.href = "index.html";
