@@ -1,4 +1,4 @@
-const CACHE_NAME = 'abqarieno-v9'; // Update: Admin & Auth Revamp
+const CACHE_NAME = 'abqarieno-v10'; // Final Deployment: Gender & Photo Update
 const ASSETS = [
     './',
     './index.html',
