@@ -1,4 +1,4 @@
-const CACHE_NAME = 'abqarieno-v11'; // Final check for deployment
+const CACHE_NAME = 'abqarieno-v12'; // Switch to Cloudinary for faster uploads
 const ASSETS = [
     './',
     './index.html',

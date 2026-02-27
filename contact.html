@@ -6,7 +6,7 @@
     <meta name="description" content="تواصل مباشرة مع الدكتور وفريق الدعم الفني. مركز الرسائل والتنبيهات لطلاب الأحياء لمتابعة كل جديد.">
     <meta name="keywords" content="تواصل معنا, دعم فني, رسائل الدكتور, شات طلاب, استفسارات أحياء, متابعة الطلاب">
     <title>مركز رسائل الدكتور - 2028 Edition</title>
-    <link rel="stylesheet" href="style.css?v=11">
+    <link rel="stylesheet" href="style.css?v=12">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
     <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -299,7 +299,6 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
         import { getDatabase, ref, push, onChildAdded, onChildRemoved, serverTimestamp, remove, get, update } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
-        import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-storage.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyD092yeOowtCLW0fDcIzaEXrnxvrN4X5T8",
@@ -314,7 +313,6 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
         const auth = getAuth(app);
-        const storage = getStorage(app);
         const messagesRef = ref(db, 'broadcasts');
         let currentUserUid = null;
 
@@ -399,10 +397,16 @@
             btn.innerText = 'جاري الحفظ...';
 
             try {
-                // رفع الصورة
-                const fileRef = storageRef(storage, `profile_pictures/${currentUserUid}`);
-                const uploadResult = await uploadBytes(fileRef, file);
-                const photoURL = await getDownloadURL(uploadResult.ref);
+                // رفع الصورة على Cloudinary
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('upload_preset', UPLOAD_PRESET);
+                formData.append('cloud_name', CLOUD_NAME);
+
+                const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, { method: 'POST', body: formData });
+                const data = await res.json();
+                if (data.error) throw new Error(data.error.message);
+                const photoURL = data.secure_url;
 
                 const userRef = ref(db, 'users/' + currentUserUid);
                 await update(userRef, { 

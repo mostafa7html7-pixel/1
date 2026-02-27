@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>تسجيل الدخول - الدكتور</title>
-    <link rel="stylesheet" href="style.css?v=11">
+    <link rel="stylesheet" href="style.css?v=12">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700;900&display=swap" rel="stylesheet">
 </head>
@@ -82,14 +82,12 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
         import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
-        import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-storage.js";
 
         const firebaseConfig = { apiKey: "AIzaSyD092yeOowtCLW0fDcIzaEXrnxvrN4X5T8", authDomain: "abqarieno.firebaseapp.com", databaseURL: "https://abqarieno-default-rtdb.firebaseio.com", projectId: "abqarieno", storageBucket: "abqarieno.firebasestorage.app", messagingSenderId: "790682500839", appId: "1:790682500839:web:cd50b8e01729f821e06c42" };
         
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getDatabase(app);
-        const storage = getStorage(app);
         const googleProvider = new GoogleAuthProvider();
 
         // تفعيل الحفظ المحلي للجلسة لحل مشاكل الخروج المفاجئ
@@ -201,10 +199,16 @@
                     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
                     const user = userCredential.user;
 
-                    // رفع الصورة
-                    const fileRef = storageRef(storage, `profile_pictures/${user.uid}`);
-                    const uploadResult = await uploadBytes(fileRef, file);
-                    const photoURL = await getDownloadURL(uploadResult.ref);
+                    // رفع الصورة على Cloudinary (أسرع)
+                    const formData = new FormData();
+                    formData.append('file', file);
+                    formData.append('upload_preset', 'my_chat_preset'); // استخدام نفس البريست الموجود
+                    formData.append('cloud_name', 'dzwrz9qzb');
+
+                    const res = await fetch('https://api.cloudinary.com/v1_1/dzwrz9qzb/image/upload', { method: 'POST', body: formData });
+                    const data = await res.json();
+                    if (data.error) throw new Error("فشل رفع الصورة: " + data.error.message);
+                    const photoURL = data.secure_url;
 
                     // حفظ بيانات المستخدم في قاعدة البيانات
                     await set(ref(db, 'users/' + user.uid), {
