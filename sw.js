@@ -1,4 +1,4 @@
-const CACHE_NAME = 'abqarieno-v5'; // Update: Removed update toast logic
+const CACHE_NAME = 'abqarieno-v6'; // Update: Ready for GitHub deployment
 const ASSETS = [
     './',
     './index.html',
@@ -11,6 +11,8 @@ const ASSETS = [
     './schedule.html',
     './reviews.html',
     './contact.html',
+    './scientific-books.html',
+    './admin.html',
     './style.css',
     './main.js',
     './6.jpeg',
