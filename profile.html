@@ -28,44 +28,55 @@
             <li><a href="videos.html">الفيديوهات</a></li>
             <li><a href="schedule.html">الجدول</a></li>
             <li><a href="reviews.html">ورق الشرح</a></li>
+            <li><a href="scientific-books.html"><i class="fa-solid fa-flask"></i> الكتب العلمية</a></li>
             <li><a href="contact.html">تواصل معنا</a></li>
             <li style="margin-top: 20px; border-top: 1px solid #333; width: 100%; padding-top: 10px;"></li>
             <li><a href="profile.html" class="active"><i class="fa-solid fa-user"></i> الملف الشخصي</a></li>
             <li><a href="admin.html"><i class="fa-solid fa-user-shield"></i> لوحة المستر</a></li>
             <li><a href="#" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> تسجيل خروج</a></li>
         </ul>
-        <button id="themeToggle" class="theme-toggle" title="تبديل الوضع"><i class="fa-solid fa-moon"></i></button>
-        <div class="menu-btn"><i class="fa-solid fa-bars"></i></div>
+        <div style="display:flex; align-items:center; gap:5px;">
+            <button id="themeToggle" class="theme-toggle" title="تبديل الوضع"><i class="fa-solid fa-moon"></i></button>
+            <div class="menu-btn"><i class="fa-solid fa-bars"></i></div>
+        </div>
     </nav>
 
     <div class="container">
-        <div class="profile-container">
-            <div class="profile-header">
-                <div class="profile-avatar" onclick="document.getElementById('avatarInput').click()">
-                    <i class="fa-solid fa-user"></i>
+        <div class="profile-v2-container">
+            <div class="profile-v2-header">
+                <div class="profile-v2-avatar" onclick="document.getElementById('avatarInput').click()">
+                    <i class="fa-solid fa-user" style="font-size: 2.5rem;"></i>
                 </div>
                 <input type="file" id="avatarInput" hidden accept="image/*" onchange="handleAvatarUpload(event)">
-                <h2 class="profile-name" id="userName">جاري التحميل...</h2>
-                <p class="profile-email" id="userEmail">...</p>
+                <div class="profile-v2-info">
+                    <h2 id="userName">جاري التحميل...</h2>
+                    <p id="userEmail">...</p>
+                </div>
             </div>
 
-            <div class="profile-grid">
-                <div class="profile-card">
-                    <label class="profile-label">حالة الاشتراك</label>
-                    <div class="profile-value" id="subStatus">...</div>
+            <div class="profile-v2-details">
+                <div class="detail-item">
+                    <div class="detail-item-label"><i class="fa-solid fa-user-pen"></i><span>الاسم</span></div>
+                    <div class="detail-item-value"><input type="text" id="nameInput" placeholder="اسمك الثلاثي"></div>
                 </div>
-                <div class="profile-card">
-                    <label class="profile-label">تاريخ الانضمام</label>
-                    <div class="profile-value" id="joinDate">...</div>
+                <div class="detail-item">
+                    <div class="detail-item-label"><i class="fa-solid fa-phone"></i><span>رقم الهاتف</span></div>
+                    <div class="detail-item-value"><input type="text" id="phoneInput" placeholder="01xxxxxxxxx"></div>
                 </div>
-                <div class="profile-card" style="grid-column: 1 / -1;">
-                    <label class="profile-label">رقم الهاتف</label>
-                    <div class="edit-group">
-                        <input type="text" id="phoneInput" class="edit-input" placeholder="أدخل رقم هاتفك">
-                        <button onclick="savePhone()" class="save-btn">حفظ</button>
+                <div class="detail-item">
+                    <div class="detail-item-label"><i class="fa-solid fa-graduation-cap"></i><span>الصف الدراسي</span></div>
+                    <div class="detail-item-value">
+                        <select id="gradeInput">
+                            <option value="">اختر الصف</option>
+                            <option value="الصف الأول الثانوي">الصف الأول الثانوي</option>
+                            <option value="الصف الثاني الثانوي">الصف الثاني الثانوي</option>
+                            <option value="الصف الثالث الثانوي">الصف الثالث الثانوي</option>
+                        </select>
                     </div>
                 </div>
             </div>
+
+            <button onclick="saveProfileChanges()" class="profile-save-btn">حفظ التغييرات</button>
         </div>
     </div>
 
@@ -91,23 +102,17 @@
                     const data = snapshot.val();
                     document.getElementById('userName').innerText = data.username || 'بدون اسم';
                     document.getElementById('userEmail').innerText = data.email;
+                    document.getElementById('nameInput').value = data.username || '';
                     document.getElementById('phoneInput').value = data.phone || '';
+                    document.getElementById('gradeInput').value = data.grade || '';
                     
-                    const avatarContainer = document.querySelector('.profile-avatar');
+                    const avatarContainer = document.querySelector('.profile-v2-avatar');
                     if (data.photoURL) {
                         avatarContainer.innerHTML = `<img src="${data.photoURL}" alt="الصورة الشخصية">`;
                     } else {
-                        avatarContainer.innerHTML = '<i class="fa-solid fa-user"></i>';
+                        avatarContainer.innerHTML = '<i class="fa-solid fa-user" style="font-size: 2.5rem;"></i>';
                     }
                     avatarContainer.innerHTML += '<div class="upload-overlay"><i class="fa-solid fa-camera"></i> تغيير</div>';
-                    
-                    const subStatus = data.subscription === 'active' 
-                        ? `<span style="color:var(--neon-green)"><i class="fa-solid fa-check-circle"></i> مشترك (${data.plan || 'خطة غير محددة'})</span>` 
-                        : '<span style="color:#888">حساب مجاني</span>';
-                    document.getElementById('subStatus').innerHTML = subStatus;
-
-                    const date = data.joinedAt ? new Date(data.joinedAt).toLocaleDateString('ar-EG') : 'غير معروف';
-                    document.getElementById('joinDate').innerText = date;
                 }
                 document.getElementById('page-loader').classList.add('loader-hidden');
             } else {
@@ -115,14 +120,22 @@
             }
         });
 
-        window.savePhone = function() {
+        window.saveProfileChanges = function() {
+            const name = document.getElementById('nameInput').value;
             const phone = document.getElementById('phoneInput').value;
-            if (phone.length < 10) return alert("يرجى إدخال رقم هاتف صحيح");
+            const grade = document.getElementById('gradeInput').value;
+
+            if (!name || name.length < 5) return alert("يرجى كتابة الاسم الثلاثي على الأقل.");
+            if (!phone || phone.length < 10) return alert("يرجى إدخال رقم هاتف صحيح.");
+            if (!grade) return alert("يرجى اختيار الصف الدراسي.");
             
             update(ref(db, 'users/' + currentUserUid), {
-                phone: phone
+                username: name,
+                phone: phone,
+                grade: grade
             }).then(() => {
-                alert("تم حفظ رقم الهاتف بنجاح!");
+                alert("تم حفظ التغييرات بنجاح!");
+                document.getElementById('userName').innerText = name; // Update header immediately
             }).catch(err => {
                 alert("حدث خطأ: " + err.message);
             });
@@ -132,7 +145,7 @@
             const file = event.target.files[0];
             if (!file || !currentUserUid) return;
 
-            const avatarContainer = document.querySelector('.profile-avatar');
+            const avatarContainer = document.querySelector('.profile-v2-avatar');
             avatarContainer.innerHTML = '<i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem;"></i>';
 
             try {
@@ -152,7 +165,7 @@
                 alert("حدث خطأ أثناء رفع الصورة. حاول مرة أخرى.");
                 
                 // Restore default icon on error
-                avatarContainer.innerHTML = '<i class="fa-solid fa-user"></i>';
+                avatarContainer.innerHTML = '<i class="fa-solid fa-user" style="font-size: 2.5rem;"></i>';
                 avatarContainer.innerHTML += '<div class="upload-overlay"><i class="fa-solid fa-camera"></i> تغيير</div>';
             }
         }

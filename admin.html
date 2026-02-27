@@ -28,8 +28,7 @@
                 <h3 style="color:#fff; margin-top:10px;">الدكتور <span style="color:var(--neon-red); font-size:0.7rem;">ADMIN</span></h3>
             </div>
             <nav style="display:flex; flex-direction:column; gap:10px;">
-                <div class="admin-menu-item active" onclick="switchSection('overview', this)"><i class="fa-solid fa-chart-line"></i> <span>نظرة عامة</span></div>
-                <div class="admin-menu-item" onclick="switchSection('students', this)"><i class="fa-solid fa-users"></i> <span>الطلاب المسجلين</span></div>
+                <div class="admin-menu-item active" onclick="switchSection('students', this)"><i class="fa-solid fa-users"></i> <span>الطلاب المسجلين</span></div>
                 <div class="admin-menu-item" onclick="switchSection('messages', this)"><i class="fa-solid fa-bullhorn"></i> <span>مركز الرسائل</span></div>
                 <div class="admin-menu-item" onclick="switchSection('payments', this)"><i class="fa-solid fa-money-bill-wave"></i> <span>طلبات الاشتراك</span> <span id="payBadge" style="background:var(--neon-red); color:#fff; font-size:0.7rem; padding:2px 6px; border-radius:50%; display:none;">0</span></div>
                 <div class="admin-menu-item" onclick="switchSection('banlist', this)"><i class="fa-solid fa-ban"></i> <span>قائمة الحظر</span></div>
@@ -65,41 +64,8 @@
                 </div>
             </header>
 
-            <!-- SECTION: OVERVIEW -->
-            <div id="sec-overview" class="content-section">
-                <!-- Stats Grid -->
-                <div class="stat-grid">
-                    <div class="stat-card">
-                        <h3>إجمالي الطلاب</h3>
-                        <div class="number" id="totalUsers">0</div>
-                        <i class="fa-solid fa-users icon-bg"></i>
-                    </div>
-                    <div class="stat-card">
-                        <h3>المتصلين الآن</h3>
-                        <div class="number" style="color:var(--neon-green);" id="onlineUsers">0</div>
-                        <i class="fa-solid fa-globe icon-bg"></i>
-                    </div>
-                    <div class="stat-card red">
-                        <h3>تم حظرهم</h3>
-                        <div class="number" id="bannedCount">0</div>
-                        <i class="fa-solid fa-user-slash icon-bg"></i>
-                    </div>
-                    <div class="stat-card gold">
-                        <h3>رسائل مرسلة</h3>
-                        <div class="number" id="msgCount">0</div>
-                        <i class="fa-solid fa-paper-plane icon-bg"></i>
-                    </div>
-                </div>
-
-                <!-- Chart Section -->
-                <div class="chart-container">
-                    <h3 style="color:#fff; margin-bottom:15px;">معدل تسجيل الطلاب (آخر 7 أيام)</h3>
-                    <canvas id="usersChart"></canvas>
-                </div>
-            </div>
-
             <!-- SECTION: STUDENTS -->
-            <div id="sec-students" class="content-section" style="display:none;">
+            <div id="sec-students" class="content-section">
                 <div class="panel-section">
                     <div class="panel-header">
                         <div class="panel-title"><i class="fa-solid fa-user-secret" style="color:var(--neon-blue)"></i> مراقبة الطلاب (Live Monitor)</div>
@@ -111,10 +77,11 @@
                                 <tr>
                                     <th>اسم الطالب / الجهاز</th>
                                     <th>رقم الهاتف</th>
-                                    <th>IP Address</th>
+                                    <th>البريد الإلكتروني</th>
+                                    <th>الصف الدراسي</th>
                                     <th>الحالة</th>
                                     <th>آخر ظهور</th>
-                                    <th>المحافظة</th>
+                                    <th>الاشتراك</th>
                                     <th>إجراءات</th>
                                 </tr>
                             </thead>
@@ -200,6 +167,15 @@
                 <input type="text" id="editPhone" placeholder="01xxxxxxxxx">
             </div>
             <div class="modal-input-group">
+                <label>الصف الدراسي</label>
+                <select id="editGrade">
+                    <option value="">اختر الصف</option>
+                    <option value="الصف الأول الثانوي">الصف الأول الثانوي</option>
+                    <option value="الصف الثاني الثانوي">الصف الثاني الثانوي</option>
+                    <option value="الصف الثالث الثانوي">الصف الثالث الثانوي</option>
+                </select>
+            </div>
+            <div class="modal-input-group">
                 <label>حالة الاشتراك</label>
                 <select id="editSubscription">
                     <option value="free">مجاني (Free)</option>
@@ -233,7 +209,6 @@
         });
 
         let currentUserUid = null;
-        let usersChartInstance = null;
 
         // --- Admin Logic ---
         onAuthStateChanged(auth, async (user) => {
@@ -320,11 +295,7 @@
                 const banTableBody = document.getElementById('banTableBody');
                 usersTableBody.innerHTML = '';
                 banTableBody.innerHTML = '';
-                let total = 0;
-                let online = 0;
-                let banned = 0;
                 const now = Date.now();
-                const joinDates = {}; // لتخزين تواريخ الانضمام للرسم البياني
 
                 snapshot.forEach((childSnapshot) => {
                     const u = childSnapshot.val();
@@ -339,17 +310,8 @@
                         const diff = now - u.lastLogin;
                         if (diff < 5 * 60 * 1000) { // 5 دقائق
                             isOnline = true;
-                            online++;
                         }
                         lastSeenText = new Date(u.lastLogin).toLocaleString('ar-EG');
-                    }
-
-                    if (u.banned) banned++;
-
-                    // تجميع البيانات للرسم البياني
-                    if (u.joinedAt) {
-                        const dateKey = u.joinedAt.split('T')[0]; // YYYY-MM-DD
-                        joinDates[dateKey] = (joinDates[dateKey] || 0) + 1;
                     }
 
                     const avatarHTML = u.photoURL 
@@ -361,12 +323,13 @@
                             <td>${avatarHTML} <span style="vertical-align:middle;">${u.username || 'بدون اسم'}</span> ${u.role === 'admin' ? '<span style="color:gold; font-size:0.8rem;">(Admin)</span>' : ''}</td>
                             <td>${u.phone || '<span style="color:#555">غير مسجل</span>'}</td>
                             <td style="font-family:monospace; color:#888;">${u.email}</td>
+                            <td>${u.grade || '<span style="color:#555">غير محدد</span>'}</td>
                             <td><span class="user-status ${isOnline ? 'status-online' : 'status-offline'}"></span> ${isOnline ? 'متصل' : 'غير متصل'}</td>
                             <td>${isOnline ? 'الآن' : lastSeenText}</td>
                             <td>${u.subscription === 'active' ? '<span style="color:var(--neon-green)">مشترك</span>' : 'مجاني'}</td>
                             <td>
                                 ${u.role !== 'admin' ? `
-                                    <button class="action-btn btn-info" onclick="openEditModal('${uid}', '${u.username || ''}', '${u.phone || ''}', '${u.subscription || 'free'}', '${u.plan || ''}')"><i class="fa-solid fa-pen"></i></button>
+                                    <button class="action-btn btn-info" onclick="openEditModal('${uid}', '${u.username || ''}', '${u.phone || ''}', '${u.grade || ''}', '${u.subscription || 'free'}', '${u.plan || ''}')"><i class="fa-solid fa-pen"></i></button>
                                     <button class="action-btn btn-ban" onclick="banUser('${uid}', ${u.banned})">${u.banned ? 'فك الحظر' : 'حظر'}</button>
                                     <button class="action-btn btn-delete" onclick="deleteUser('${uid}')"><i class="fa-solid fa-trash"></i></button>
                                 ` : ''}
@@ -387,19 +350,6 @@
                     }
                 });
 
-                document.getElementById('totalUsers').innerText = total;
-                document.getElementById('onlineUsers').innerText = online;
-                document.getElementById('bannedCount').innerText = banned;
-
-                updateChart(joinDates);
-            });
-
-            // 3. Realtime Stats (Simulated + Real)
-            // جلب عدد الرسائل الحقيقي
-            onValue(ref(db, 'broadcasts'), (snapshot) => {
-                if(snapshot.exists()) {
-                    document.getElementById('msgCount').innerText = Object.keys(snapshot.val()).length;
-                }
             });
 
             // 4. Payment Requests Listener
@@ -445,11 +395,20 @@
                         const msg = child.val();
                         const key = child.key;
                         const date = new Date(msg.timestamp).toLocaleString('ar-EG');
+                        
+                        let mediaPreview = '';
+                        if (msg.media) {
+                            if (msg.mediaType === 'image' || msg.media.includes('data:image')) mediaPreview = '<i class="fa-solid fa-image" style="color:var(--neon-green); margin-right:5px;"></i> صورة';
+                            else if (msg.mediaType === 'video' || msg.media.includes('data:video')) mediaPreview = '<i class="fa-solid fa-video" style="color:var(--neon-red); margin-right:5px;"></i> فيديو';
+                            else if (msg.mediaType === 'audio' || msg.media.includes('data:audio')) mediaPreview = '<i class="fa-solid fa-microphone" style="color:var(--neon-gold); margin-right:5px;"></i> صوت';
+                            else mediaPreview = '<i class="fa-solid fa-paperclip" style="color:#888; margin-right:5px;"></i> ملف';
+                        }
+
                         const html = `
                             <div class="msg-list-item">
                                 <div class="msg-list-content">
                                     <span class="msg-list-date">${date}</span>
-                                    <div class="msg-list-text">${msg.text}</div>
+                                    <div class="msg-list-text">${msg.text} <small style="display:block; margin-top:5px;">${mediaPreview}</small></div>
                                 </div>
                                 <button class="msg-delete-btn" onclick="deleteBroadcast('${key}')"><i class="fa-solid fa-trash"></i> حذف</button>
                             </div>
@@ -458,43 +417,6 @@
                     });
                 } else {
                     list.innerHTML = '<p style="text-align:center; color:#666;">لا توجد رسائل</p>';
-                }
-            });
-        }
-
-        function updateChart(data) {
-            const ctx = document.getElementById('usersChart').getContext('2d');
-            
-            // ترتيب التواريخ
-            const sortedDates = Object.keys(data).sort().slice(-7); // آخر 7 أيام
-            const counts = sortedDates.map(date => data[date]);
-
-            if (usersChartInstance) {
-                usersChartInstance.destroy();
-            }
-
-            usersChartInstance = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: sortedDates,
-                    datasets: [{
-                        label: 'عدد الطلاب الجدد',
-                        data: counts,
-                        borderColor: '#00ff41',
-                        backgroundColor: 'rgba(0, 255, 65, 0.1)',
-                        borderWidth: 2,
-                        tension: 0.4,
-                        fill: true
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { labels: { color: '#fff' } } },
-                    scales: {
-                        y: { ticks: { color: '#888' }, grid: { color: '#222' } },
-                        x: { ticks: { color: '#888' }, grid: { color: '#222' } }
-                    }
                 }
             });
         }
@@ -543,10 +465,11 @@
         }
 
         // --- Edit User Functions ---
-        window.openEditModal = function(uid, name, phone, sub, plan) {
+        window.openEditModal = function(uid, name, phone, grade, sub, plan) {
             document.getElementById('editUserId').value = uid;
             document.getElementById('editUsername').value = name;
             document.getElementById('editPhone').value = phone;
+            document.getElementById('editGrade').value = grade;
             document.getElementById('editSubscription').value = sub;
             document.getElementById('editPlan').value = plan;
             document.getElementById('editUserModal').style.display = 'block';
@@ -560,12 +483,14 @@
             const uid = document.getElementById('editUserId').value;
             const name = document.getElementById('editUsername').value;
             const phone = document.getElementById('editPhone').value;
+            const grade = document.getElementById('editGrade').value;
             const sub = document.getElementById('editSubscription').value;
             const plan = document.getElementById('editPlan').value;
 
             update(ref(db, 'users/' + uid), {
                 username: name,
                 phone: phone,
+                grade: grade,
                 subscription: sub,
                 plan: plan
             }).then(() => {

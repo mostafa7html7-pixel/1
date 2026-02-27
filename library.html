@@ -121,24 +121,18 @@
             <div class="logo-text"><span>الدكتور</span><small>BIOLOGY MASTER</small></div>
         </div>
         <ul class="nav-links">
-            <li><a href="index.html"><i class="fa-solid fa-house"></i> الرئيسية</a></li>
+            <li><a href="index.html">الرئيسية</a></li>
             <li><a href="library.html" class="active">الكتب</a></li> 
             <li><a href="videos.html">الفيديوهات</a></li>
             <li><a href="schedule.html">الجدول</a></li>
             <li><a href="reviews.html">ورق الشرح</a></li>
             <li><a href="contact.html">تواصل معنا</a></li>
-            <li style="margin-top: 20px; border-top: 1px solid #333; width: 100%; padding-top: 10px;"></li>
-            <li><a href="profile.html"><i class="fa-solid fa-user"></i> الملف الشخصي</a></li>
-            <li><a href="admin.html"><i class="fa-solid fa-user-shield"></i> لوحة المستر</a></li>
-            <li><a href="#" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> تسجيل خروج</a></li>
         </ul>
-        <button id="themeToggle" class="theme-toggle" title="تبديل الوضع"><i class="fa-solid fa-moon"></i></button>
-        <button id="installAppBtn" class="btn-nav-install" style="display: none;">
-            <i class="fa-solid fa-download"></i>
-            <span>تثبيت التطبيق</span>
-        </button>
-        <a href="scientific-books.html" class="btn-nav-special">الكتب العلمية النادرة</a>
-        <div class="menu-btn"><i class="fa-solid fa-bars"></i></div>
+        <div style="display:flex; align-items:center; gap:5px;">
+            <button id="themeToggle" class="theme-toggle" title="تبديل الوضع"><i class="fa-solid fa-moon"></i></button>
+            <button id="installAppBtn" class="btn-nav-install" style="display: none;" title="تثبيت التطبيق"><i class="fa-solid fa-download"></i></button>
+            <div class="menu-btn"><i class="fa-solid fa-bars"></i></div>
+        </div>
     </nav>
 
     <div class="page-header">
@@ -196,7 +190,7 @@
                     <h3>   العلوم المتكاملة</h3>
                     <p style="color:#888; font-size:0.8rem">كتاب التفوق علوم متكاملة اولى ثانوى 2026</p>
                     <div class="download-footer">
-                        <a href="https://drive.google.com/file/d/1yuUNB36gDlju8MnfWVyuuEkRGisjsC_F/view?usp=sharing" download class="btn-download-book">
+                        <a href="https://drive.google.com/file/d/1uOuwOFtxNvrlsJ4nIWjVQ6X9x_75Sr7E/view?usp=sharing" download class="btn-download-book">
                             <i class="fa-solid fa-file-arrow-down"></i> تحميل الكتاب
                         </a>
                     </div>
@@ -274,27 +268,16 @@
         <i class="fa-solid fa-fire-flame-curved"></i>
         <div>
             <h4>تنبيه عاجل من الدكتور</h4>
-            <small id="fire-msg-text-library">رسالة جديدة...</small>
+            <small>اضغط للذهاب لمركز الرسائل</small>
         </div>
     </div>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
         import { getDatabase, ref, onChildAdded, query, limitToLast } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
-        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
 
         const firebaseConfig = { apiKey: "AIzaSyD092yeOowtCLW0fDcIzaEXrnxvrN4X5T8", authDomain: "abqarieno.firebaseapp.com", databaseURL: "https://abqarieno-default-rtdb.firebaseio.com", projectId: "abqarieno", storageBucket: "abqarieno.firebasestorage.app", messagingSenderId: "790682500839", appId: "1:790682500839:web:cd50b8e01729f821e06c42" };
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
-        const auth = getAuth(app);
-
-        // حماية الصفحة: التحقق من تسجيل الدخول
-        onAuthStateChanged(auth, (user) => {
-            if (!user) {
-                window.location.href = "auth.html";
-            }
-        });
-
-        window.logout = () => signOut(auth);
         
         const notif = document.getElementById('fire-notification');
         const contactLink = document.querySelector('a[href="contact.html"]');
@@ -303,8 +286,9 @@
         onChildAdded(query(ref(db, 'broadcasts'), limitToLast(1)), (snapshot) => {
             const msg = snapshot.val();
             if(msg.timestamp > loadTime) {
-                document.getElementById('fire-msg-text-library').textContent = msg.text;
                 notif.classList.add('show');
+                // تحديث حالة القراءة فوراً لأن المستخدم شاهد التنبيه
+                localStorage.setItem('biology_last_seen_news', msg.timestamp);
                 setTimeout(() => notif.classList.remove('show'), 6000);
                 if(contactLink) contactLink.classList.add('has-new');
             }

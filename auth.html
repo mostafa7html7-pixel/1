@@ -26,6 +26,16 @@
                 <i class="fa-solid fa-user"></i>
             </div>
 
+            <div class="input-group" id="gradeGroup" style="display:none;">
+                <select id="grade" required>
+                    <option value="" disabled selected>اختر الصف الدراسي</option>
+                    <option value="الصف الأول الثانوي">الصف الأول الثانوي</option>
+                    <option value="الصف الثاني الثانوي">الصف الثاني الثانوي</option>
+                    <option value="الصف الثالث الثانوي">الصف الثالث الثانوي</option>
+                </select>
+                <i class="fa-solid fa-graduation-cap"></i>
+            </div>
+
             <div class="input-group">
                 <input type="email" id="email" placeholder="البريد الإلكتروني" required>
                 <i class="fa-solid fa-envelope"></i>
@@ -108,6 +118,7 @@
             const toggleText = document.getElementById('toggleText');
             const toggleBtn = document.getElementById('toggleBtn');
             const nameGroup = document.getElementById('nameGroup');
+            const gradeGroup = document.getElementById('gradeGroup');
 
             if (isLogin) {
                 title.innerText = "أهلاً بك يا دكتور";
@@ -116,6 +127,7 @@
                 toggleText.innerText = "ليس لديك حساب؟";
                 toggleBtn.innerText = "إنشاء حساب جديد";
                 nameGroup.style.display = "none";
+                gradeGroup.style.display = "none";
             } else {
                 title.innerText = "انضم لعائلة الدكتور";
                 subtitle.innerText = "أنشئ حسابك الآن وابدأ رحلة التفوق";
@@ -123,6 +135,7 @@
                 toggleText.innerText = "لديك حساب بالفعل؟";
                 toggleBtn.innerText = "تسجيل الدخول";
                 nameGroup.style.display = "block";
+                gradeGroup.style.display = "block";
             }
         }
 
@@ -131,6 +144,7 @@
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
             const name = document.getElementById('fullName').value;
+            const grade = document.getElementById('grade').value;
             const errorBox = document.getElementById('errorBox');
             const btn = document.getElementById('submitBtn');
 
@@ -146,6 +160,7 @@
                 } else {
                     // إنشاء حساب جديد
                     if(name.length < 3) throw new Error("يرجى كتابة الاسم الثلاثي بشكل صحيح");
+                    if(!grade) throw new Error("يرجى اختيار الصف الدراسي");
                     
                     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
                     const user = userCredential.user;
@@ -155,6 +170,7 @@
                         username: name,
                         email: email,
                         role: 'student', // الافتراضي طالب
+                        grade: grade,
                         joinedAt: new Date().toISOString()
                     });
 

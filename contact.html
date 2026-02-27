@@ -126,6 +126,42 @@
         .preview-img { max-width: 150px; max-height: 150px; width: auto; height: auto; object-fit: contain; border-radius: 8px; border: 1px solid var(--master-neon); display: none; animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); background: rgba(0,0,0,0.3); margin: 0 10px; }
         @keyframes popIn { from { transform: scale(0); } to { transform: scale(1); } }
 
+        /* --- Progress Bar Styles --- */
+        .upload-progress-container {
+            width: 100%;
+            background-color: #1a2332;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 10px;
+            border: 1px solid var(--accent-glow);
+            display: none; /* Hidden by default */
+        }
+        .upload-progress-bar {
+            height: 8px;
+            width: 0%;
+            background-color: var(--master-neon);
+            box-shadow: 0 0 10px var(--master-neon);
+            border-radius: 8px;
+            transition: width 0.4s ease;
+        }
+
+        .btn-cancel-upload {
+            display: none;
+            margin-right: 10px;
+            padding: 8px 20px;
+            background: rgba(255, 51, 102, 0.2);
+            color: #ff3366;
+            border: 1px solid #ff3366;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn-cancel-upload:hover {
+            background: #ff3366;
+            color: #fff;
+        }
+
         /* --- الفوتر الجديد --- */
         footer {
             margin-top: 40px; padding: 30px 5%; background: #030508;
@@ -155,31 +191,46 @@
         </div>
     </div>
 
+    <div id="gate-overlay">
+        <div style="text-align: center; background: var(--glass-bg); padding: 40px; border-radius: 20px; border: 1px solid var(--accent-glow); width: 90%; max-width: 400px;">
+            <i class="fa-solid fa-user-graduate" style="font-size: 3rem; color: var(--master-neon); margin-bottom: 20px;"></i>
+            <h2>إكمال بيانات الطالب</h2>
+            <p style="color: #666; margin-bottom: 25px;">يرجى إدخال اسمك ورقم هاتفك للمتابعة</p>
+            
+            <input type="text" id="studentName" placeholder="الاسم بالكامل" style="width:100%; padding:12px; margin-bottom:10px; background:#1a2332; color:#fff; border:1px solid #333; border-radius:8px; outline:none; text-align:center;">
+            <input type="tel" id="studentPhone" placeholder="رقم الهاتف" style="width:100%; padding:12px; margin-bottom:15px; background:#1a2332; color:#fff; border:1px solid #333; border-radius:8px; outline:none; text-align:center;">
+            
+            <button onclick="registerStudent()" style="width:100%; padding:12px; background:var(--master-neon); color:#000; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">دخول</button>
+            
+            <p style="margin-top:15px; font-size:0.8rem; color:#444; cursor:pointer;" onclick="checkMaster()">دخول المستر (للمسؤولين فقط)</p>
+        </div>
+    </div>
+
     <nav class="navbar">
         <div class="logo">
             <i class="fa-solid fa-heart-pulse"></i>
             <div class="logo-text"><span>الدكتور</span><small>BIOLOGY MASTER</small></div>
         </div>
         <ul class="nav-links">
-            <li><a href="index.html"><i class="fa-solid fa-house"></i> الرئيسية</a></li>
+            <li><a href="index.html">الرئيسية</a></li>
             <li><a href="library.html">الكتب</a></li>
             <li><a href="videos.html">الفيديوهات</a></li>
             <li><a href="schedule.html">الجدول</a></li>
             <li><a href="reviews.html">ورق الشرح</a></li>
             <li><a href="contact.html" class="active">تواصل معنا</a></li>
-            <li style="margin-top: 20px; border-top: 1px solid #333; width: 100%; padding-top: 10px;"></li>
-            <li><a href="profile.html"><i class="fa-solid fa-user"></i> الملف الشخصي</a></li>
-            <li><a href="admin.html"><i class="fa-solid fa-user-shield"></i> لوحة المستر</a></li>
-            <li><a href="#" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> تسجيل خروج</a></li>
         </ul>
-        <button id="themeToggle" class="theme-toggle" title="تبديل الوضع"><i class="fa-solid fa-moon"></i></button>
-        <button id="installAppBtn" class="btn-nav-install" style="display: none;">
-            <i class="fa-solid fa-download"></i>
-            <span>تثبيت التطبيق</span>
-        </button>
-        <a href="scientific-books.html" class="btn-nav-special">الكتب العلمية النادرة</a>
-        <div class="menu-btn"><i class="fa-solid fa-bars"></i></div>
+        <div style="display:flex; align-items:center; gap:5px;">
+            <button id="themeToggle" class="theme-toggle" title="تبديل الوضع"><i class="fa-solid fa-moon"></i></button>
+            <button id="installAppBtn" class="btn-nav-install" style="display: none;" title="تثبيت التطبيق"><i class="fa-solid fa-download"></i></button>
+            <div class="menu-btn"><i class="fa-solid fa-bars"></i></div>
+        </div>
     </nav>
+
+    <!-- عارض الصور الاحترافي (Lightbox) -->
+    <div id="lightbox-overlay" class="lightbox-overlay">
+        <span class="close-lightbox">&times;</span>
+        <div class="lightbox-content" id="lightbox-content"></div>
+    </div>
 
     <div class="chat-wrapper">
         <div class="live-status">
@@ -190,6 +241,10 @@
         <div class="chat-container">
             <div id="master-panel">
                 <textarea id="msgInput" class="master-input" rows="2" placeholder="اكتب تعليماتك هنا يا دكتور..."></textarea>
+                <!-- شريط تقدم الرفع -->
+                <div class="upload-progress-container" id="uploadProgressContainer">
+                    <div class="upload-progress-bar" id="uploadProgressBar"></div>
+                </div>
                 <div class="upload-row">
                     <label class="file-btn">
                         <i class="fa-solid fa-paperclip"></i> رفع ملف/صورة
@@ -198,6 +253,7 @@
                     <img id="imgPreview" class="preview-img" alt="Preview">
                     <span id="fileName" style="font-size: 0.7rem; color: #888; display:none;"></span>
                     <button onclick="pushMessage()" style="margin-right:auto; padding:8px 20px; background:var(--master-neon); border:none; border-radius:6px; font-weight:bold; cursor:pointer;">نشر</button>
+                    <button id="cancelUploadBtn" class="btn-cancel-upload">إلغاء</button>
                 </div>
             </div>
 
@@ -219,12 +275,17 @@
         <div style="font-size: 0.8rem; color: #444;">
             تطوير وإدارة فريق <span style="color: var(--master-neon);">عبقرينو وكريم</span> &copy; 2026
         </div>
+        <div style="margin-top: 15px;">
+            <button onclick="switchRole()" style="background: transparent; border: 1px solid #333; color: #666; padding: 5px 15px; border-radius: 20px; cursor: pointer; font-size: 0.75rem; transition: 0.3s;">
+                <i class="fa-solid fa-user-shield"></i> دخول المستر (تبديل)
+            </button>
+        </div>
     </footer>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-        import { getDatabase, ref, push, onChildAdded, onChildRemoved, serverTimestamp, remove, get } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
-        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
+        import { getDatabase, ref, push, onChildAdded, onChildRemoved, serverTimestamp, remove, get, update } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyD092yeOowtCLW0fDcIzaEXrnxvrN4X5T8",
@@ -240,30 +301,93 @@
         const db = getDatabase(app);
         const auth = getAuth(app);
         const messagesRef = ref(db, 'broadcasts');
+        let currentUserUid = null;
 
-        let isMaster = false; // سيتم تحديدها من خلال Firebase
+        // --- نظام التحقق من الهوية الجديد (Firebase Auth + Master Code) ---
+        const sessionRole = sessionStorage.getItem('biology_user_role');
+        const isMaster = sessionRole === 'master';
 
-        // --- نظام المصادقة الموحد ---
-        onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                // المستخدم مسجل دخوله
-                document.getElementById('page-loader').classList.remove('loader-hidden'); // التأكد من إخفاء شاشة التحميل
-                
-                // التحقق من صلاحيات المستخدم (أدمن أم طالب)
-                const userRef = ref(db, 'users/' + user.uid);
-                const snapshot = await get(userRef);
-                if (snapshot.exists() && snapshot.val().role === 'admin') {
-                    isMaster = true;
-                    document.getElementById('master-panel').style.display = 'block';
+        if (isMaster) {
+            // إذا كان المستر مسجلاً، اعرض لوحة التحكم وأخفِ البوابة
+            document.getElementById('gate-overlay').style.display = 'none';
+            document.getElementById('master-panel').style.display = 'block';
+        } else {
+            // إذا لم يكن المستر، تحقق من هوية الطالب عبر Firebase Auth
+            onAuthStateChanged(auth, async (user) => {
+                if (user) {
+                    // الطالب مسجل دخوله في Firebase
+                    currentUserUid = user.uid;
+                    const userRef = ref(db, 'users/' + user.uid);
+                    const snapshot = await get(userRef);
+
+                    if (snapshot.exists() && snapshot.val().phone) {
+                        // الطالب أكمل بياناته (لديه رقم هاتف)، أخفِ البوابة
+                        document.getElementById('gate-overlay').style.display = 'none';
+                    } else {
+                        // الطالب لم يكمل بياناته، أظهر البوابة
+                        const gateOverlay = document.getElementById('gate-overlay');
+                        gateOverlay.style.display = 'flex';
+                        // املأ حقل الاسم تلقائياً إذا كان متاحاً
+                        const nameInput = document.getElementById('studentName');
+                        if (snapshot.exists() && snapshot.val().username) {
+                            nameInput.value = snapshot.val().username;
+                        } else if (user.displayName) {
+                            nameInput.value = user.displayName;
+                        }
+                    }
+                } else {
+                    // المستخدم غير مسجل دخوله، وجهه لصفحة التسجيل الرئيسية
+                    window.location.href = 'auth.html';
                 }
-            } else {
-                // لا يوجد مستخدم، توجيه لصفحة الدخول
-                window.location.href = 'auth.html';
-            }
-        });
+            });
+        }
 
-        // دالة تسجيل الخروج
-        window.logout = () => signOut(auth);
+        // التحقق
+        window.checkMaster = function() {
+            if(prompt("كود المستر:") === "222") {
+                sessionStorage.setItem('biology_user_role', 'master'); // حفظ مؤقت للجلسة فقط
+                location.reload(); 
+            } else alert("خطأ!");
+        }
+
+        window.registerStudent = async function() {
+            const name = document.getElementById('studentName').value;
+            const phone = document.getElementById('studentPhone').value;
+
+            if (!name || name.length < 5) {
+                alert("يرجى إدخال الاسم بالكامل.");
+                return;
+            }
+            // Regex for Egyptian phone numbers
+            if (!phone || !/^(01[0125])[0-9]{8}$/.test(phone)) {
+                alert("يرجى إدخال رقم هاتف مصري صحيح (11 رقم).");
+                return;
+            }
+
+            if (!currentUserUid) {
+                alert("حدث خطأ في التحقق من الهوية. يرجى إعادة تحميل الصفحة.");
+                return;
+            }
+
+            try {
+                const userRef = ref(db, 'users/' + currentUserUid);
+                await update(userRef, { username: name, phone: phone });
+                document.getElementById('gate-overlay').style.display = 'none';
+                alert("تم تسجيل بياناتك بنجاح. أهلاً بك!");
+            } catch (error) {
+                console.error("Error updating profile:", error);
+                alert("حدث خطأ أثناء حفظ البيانات: " + error.message);
+            }
+        }
+
+        window.switchRole = function() {
+            const code = prompt("أدخل كود المستر للتبديل:");
+            if(code === "222") {
+                localStorage.removeItem('biology_user_role'); // إزالة تسجيل الطالب
+                sessionStorage.setItem('biology_user_role', 'master'); // تفعيل المستر
+                location.reload();
+            } else if(code !== null) alert("الكود غير صحيح");
+        }
 
         window.handleFileSelect = () => {
             const file = document.getElementById('fileInput').files[0];
@@ -287,58 +411,145 @@
             }
         }
 
-        // دالة ضغط الصور
-        function compressImage(file) {
-            return new Promise((resolve) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.onload = (e) => {
-                    const img = new Image();
-                    img.src = e.target.result;
-                    img.onload = () => {
-                        const canvas = document.createElement('canvas');
-                        const MAX_WIDTH = 800; // أقصى عرض للصورة
-                        const scaleSize = MAX_WIDTH / img.width;
-                        canvas.width = MAX_WIDTH;
-                        canvas.height = img.height * scaleSize;
-                        const ctx = canvas.getContext('2d');
-                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                        resolve(canvas.toDataURL('image/jpeg', 0.7)); // ضغط الجودة إلى 70%
+        // --- المنطق الجديد لرفع الملفات باستخدام Cloudinary ---
+        
+        // بيانات Cloudinary الخاصة بك
+        const CLOUD_NAME = "dzwrz9qzb";
+        const UPLOAD_PRESET = "my_chat_preset"; 
+
+        // --- دالة مساعدة لرفع جزء واحد (Chunk) أو ملف كامل ---
+        function uploadChunk(formData, uniqueId, contentRange, onProgress, resourceType = 'auto') {
+            return new Promise((resolve, reject) => {
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/${resourceType}/upload`, true);
+
+                if (uniqueId) xhr.setRequestHeader('X-Unique-Upload-Id', uniqueId);
+                if (contentRange) xhr.setRequestHeader('Content-Range', contentRange);
+
+                if (onProgress) {
+                    xhr.upload.onprogress = function(event) {
+                        if (event.lengthComputable) {
+                            const percentComplete = (event.loaded / event.total) * 100;
+                            onProgress(percentComplete);
+                        }
                     };
+                }
+
+                xhr.onload = function() {
+                    if (this.status >= 200 && this.status < 300) {
+                        resolve(JSON.parse(this.response));
+                    } else {
+                        reject(new Error(`فشل الرفع: ${this.statusText} - ${this.response}`));
+                    }
                 };
+
+                xhr.onerror = function() {
+                    reject(new Error('فشل الاتصال بالشبكة.'));
+                };
+
+                xhr.send(formData);
             });
         }
 
-        // إرسال (معدلة للضغط)
-        window.pushMessage = async function() {
+         window.pushMessage = function() { // لم تعد async
             const text = document.getElementById('msgInput').value;
             const fileInput = document.getElementById('fileInput');
             const file = fileInput.files[0];
+            const pushBtn = document.querySelector('#master-panel button[onclick="pushMessage()"]');
+            const progressContainer = document.getElementById('uploadProgressContainer');
+            const progressBar = document.getElementById('uploadProgressBar');
             
-            if(!text && !file) return;
+            if (!text && !file) return;
 
-            let media = null;
-            if(file) {
-                if(file.type.startsWith('image/')) {
-                    media = await compressImage(file);
-                } else {
-                    media = await new Promise(resolve => {
-                        const reader = new FileReader();
-                        reader.onload = (e) => resolve(e.target.result);
-                        reader.readAsDataURL(file);
-                    });
-                }
+            // 1. تحديث الواجهة فوراً لمنع الإحساس بالتجميد
+            pushBtn.disabled = true;
+            pushBtn.innerHTML = '<i class="fa-solid fa-hourglass-start"></i> تجهيز الملف...';
+            if (file) {
+                progressContainer.style.display = 'block';
+                progressBar.style.width = '0%';
             }
-            send(text, media);
-        }
 
-        function send(t, m) {
-            push(messagesRef, { text: t, media: m, timestamp: serverTimestamp() });
-            document.getElementById('msgInput').value = '';
-            document.getElementById('fileInput').value = '';
-            document.getElementById('fileName').style.display = 'none';
-            document.getElementById('imgPreview').style.display = 'none';
-        }
+            // 2. بدء عملية الرفع بعد لحظة للسماح للواجهة بالتحديث
+            setTimeout(async () => {
+                 try {
+                    let mediaURL = null;
+                    let mediaType = null;
+
+                    // تحديد نوع الموارد بدقة لمنع حذف الفيديوهات
+                    let resourceType = 'auto';
+                    if (file && file.type.startsWith('video/')) resourceType = 'video';
+
+                    if (file) {
+                        const CHUNK_SIZE = 20 * 1024 * 1024; // 20MB
+                        const uniqueUploadId = `uqid-${Date.now()}`;
+                        let responseData;
+
+                        // 3. اختيار طريقة الرفع بناءً على الحجم
+                        if (file.size < CHUNK_SIZE) {
+                            // --- الطريقة العادية للملفات الصغيرة ---
+                            const formData = new FormData();
+                            formData.append('file', file);
+                            formData.append('upload_preset', UPLOAD_PRESET);
+                            
+                            responseData = await uploadChunk(formData, null, null, (progress) => {
+                                progressBar.style.width = progress + '%';
+                                pushBtn.innerHTML = `<i class="fa-solid fa-upload"></i> جاري الرفع... ${Math.round(progress)}%`;
+                            }, resourceType);
+                        } else {
+                            // --- طريقة التجزئة للملفات الكبيرة ---
+                            let start = 0;
+                            for (let chunkIndex = 0; ; chunkIndex++) {
+                                const end = Math.min(start + CHUNK_SIZE, file.size);
+                                const chunk = file.slice(start, end);
+                                
+                                const formData = new FormData();
+                                formData.append('file', chunk);
+                                formData.append('upload_preset', UPLOAD_PRESET);
+
+                                const progress = (end / file.size) * 100;
+                                progressBar.style.width = progress + '%';
+                                pushBtn.innerHTML = `<i class="fa-solid fa-server"></i> رفع الجزء ${chunkIndex + 1}... ${Math.round(progress)}%`;
+
+                                const contentRange = `bytes ${start}-${end - 1}/${file.size}`;
+                                responseData = await uploadChunk(formData, uniqueUploadId, contentRange, null, resourceType);
+
+                                start = end;
+                                if (start >= file.size) break; // اكتمل الرفع
+                            }
+                        }
+
+                        if (responseData.error) throw new Error(responseData.error.message);
+                        mediaURL = responseData.secure_url;
+                        
+                        if (responseData.resource_type === 'image') mediaType = 'image';
+                        else if (responseData.resource_type === 'video') mediaType = 'video';
+                        else if (responseData.resource_type === 'audio') mediaType = 'audio';
+                        else mediaType = 'file';
+                    }
+
+                    await push(messagesRef, { text: text, mediaURL: mediaURL, mediaType: mediaType, timestamp: serverTimestamp() });
+                    
+                    // تحديث الزر بدلاً من التنبيه المزعج
+                    pushBtn.innerHTML = '<i class="fa-solid fa-check"></i> تم النشر';
+                    setTimeout(() => { pushBtn.innerText = 'نشر'; }, 2000);
+
+                 } catch (error) {
+                     console.error("خطأ في الرفع:", error);
+                     alert("فشل الرفع. الخطأ: " + error.message);
+                 } finally {
+                pushBtn.disabled = false;
+                if(pushBtn.innerText !== 'نشر') setTimeout(() => pushBtn.innerText = 'نشر', 2000); // Reset if not already reset
+                document.getElementById('msgInput').value = '';
+                fileInput.value = '';
+                document.getElementById('fileName').style.display = 'none';
+                document.getElementById('imgPreview').style.display = 'none';
+                
+                // إخفاء وإعادة تعيين شريط التقدم
+                progressContainer.style.display = 'none';
+                progressBar.style.width = '0%';
+             }
+            }, 50); // تأخير بسيط للسماح للواجهة بالتحديث
+         }
 
         // عرض الرسائل (نظام سريع جداً)
         const flow = document.getElementById('messages-flow');
@@ -354,14 +565,27 @@
             const m = snapshot.val();
             const id = snapshot.key;
             const date = m.timestamp ? new Date(m.timestamp).toLocaleTimeString('ar-EG') : 'الآن';
-            let mediaTag = '';
             
-            if(m.media) {
-                if(m.media.includes('data:image')) {
-                    mediaTag = `<img src="${m.media}" class="msg-media">
-                                <a href="${m.media}" download="dr-image" class="download-btn"><i class="fa-solid fa-download"></i> حفظ الصورة</a>`;
+            // تحديث حالة القراءة (آخر ظهور) تلقائياً عند رؤية الرسائل
+            const currentLastSeen = parseInt(localStorage.getItem('biology_last_seen_news') || '0');
+            if (m.timestamp && m.timestamp > currentLastSeen) {
+                localStorage.setItem('biology_last_seen_news', m.timestamp);
+            }
+
+            let mediaHtml = '';
+            
+            if(m.mediaURL) {
+                if(m.mediaType === 'image') {
+                    mediaHtml = `<img src="${m.mediaURL}" class="msg-media" onclick="openLightbox('${m.mediaURL}', 'image')" style="cursor:pointer; max-width: 250px; border-radius: 8px; margin-top: 10px;">
+                                <a href="${m.mediaURL}" download="dr-image" target="_blank" class="download-btn"><i class="fa-solid fa-download"></i> حفظ الصورة</a>`;
+                } else if (m.mediaType === 'video') {
+                    mediaHtml = `<video src="${m.mediaURL}" controls class="msg-video" style="max-width:100%; border-radius: 8px; margin-top: 12px;"></video>
+                                <a href="${m.mediaURL}" download="dr-video.mp4" target="_blank" class="download-btn"><i class="fa-solid fa-download"></i> تحميل الفيديو</a>`;
+                } else if (m.mediaType === 'audio') {
+                    mediaHtml = `<audio src="${m.mediaURL}" controls class="msg-audio" style="width:100%; margin-top:10px;"></audio>
+                                <a href="${m.mediaURL}" download="dr-audio.mp3" target="_blank" class="download-btn"><i class="fa-solid fa-download"></i> تحميل الصوت</a>`;
                 } else {
-                    mediaTag = `<a href="${m.media}" download="file" class="download-btn"><i class="fa-solid fa-file-arrow-down"></i> تحميل المرفق</a>`;
+                    mediaHtml = `<a href="${m.mediaURL}" download target="_blank" class="download-btn"><i class="fa-solid fa-file-arrow-down"></i> تحميل المرفق</a>`;
                 }
             }
 
@@ -369,7 +593,7 @@
                 <div class="msg-block" id="msg-${id}">
                     <div class="msg-header"><span><i class="fa-solid fa-bullhorn" style="color:var(--master-neon)"></i> توجيه رسمي</span><span>${date}</span></div>
                     <div class="msg-content">${m.text}</div>
-                    ${mediaTag}
+                    ${mediaHtml}
                     ${isMaster ? `<button onclick="deleteMsg('${id}')" class="btn-delete"><i class="fa-solid fa-trash-can"></i> حذف الرسالة نهائياً</button>` : ''}
                 </div>
             `;
@@ -386,6 +610,42 @@
                 remove(ref(db, `broadcasts/${id}`)); 
             }
         }
+
+        // --- دوال عارض الصور (Lightbox) ---
+        window.openLightbox = function(src, type) {
+            const container = document.getElementById('lightbox-content');
+            const overlay = document.getElementById('lightbox-overlay');
+            
+            container.innerHTML = ''; // تنظيف المحتوى السابق
+            
+            if (type === 'video') {
+                container.innerHTML = `<video src="${src}" controls autoplay style="max-width:100%; max-height:90vh; border-radius:10px; box-shadow:0 0 50px rgba(0,255,65,0.2);"></video>`;
+            } else { // image
+                const img = document.createElement('img');
+                img.src = src;
+                img.style.maxWidth = '100%';
+                img.style.maxHeight = '90vh';
+                img.style.borderRadius = '10px';
+                container.appendChild(img);
+            }
+            
+            overlay.classList.add('active');
+        };
+
+        window.closeLightbox = function() {
+            const overlay = document.getElementById('lightbox-overlay');
+            overlay.classList.remove('active');
+            // إيقاف الفيديو عند الإغلاق
+            setTimeout(() => {
+                document.getElementById('lightbox-content').innerHTML = '';
+            }, 400);
+        };
+        
+        // إغلاق عند الضغط على الخلفية أو زر الإغلاق
+        document.querySelector('.close-lightbox').onclick = window.closeLightbox;
+        document.getElementById('lightbox-overlay').onclick = (e) => {
+            if(e.target.id === 'lightbox-overlay') window.closeLightbox();
+        };
 
         // عداد وهمي
         setInterval(() => {
