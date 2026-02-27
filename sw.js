@@ -1,4 +1,4 @@
-const CACHE_NAME = 'abqarieno-v6'; // Update: Ready for GitHub deployment
+const CACHE_NAME = 'abqarieno-v7'; // Update: Force refresh & Skip Waiting
 const ASSETS = [
     './',
     './index.html',
@@ -21,6 +21,7 @@ const ASSETS = [
 
 // تثبيت Service Worker
 self.addEventListener('install', (e) => {
+    self.skipWaiting(); // Force new SW to take over immediately
     e.waitUntil(
         caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS))
     );
