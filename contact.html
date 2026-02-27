@@ -6,7 +6,7 @@
     <meta name="description" content="تواصل مباشرة مع الدكتور وفريق الدعم الفني. مركز الرسائل والتنبيهات لطلاب الأحياء لمتابعة كل جديد.">
     <meta name="keywords" content="تواصل معنا, دعم فني, رسائل الدكتور, شات طلاب, استفسارات أحياء, متابعة الطلاب">
     <title>مركز رسائل الدكتور - 2028 Edition</title>
-    <link rel="stylesheet" href="style.css?v=17">
+    <link rel="stylesheet" href="style.css?v=18">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
     <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -191,42 +191,6 @@
         </div>
     </div>
 
-    <div id="gate-overlay">
-        <div style="text-align: center; background: var(--glass-bg); padding: 40px; border-radius: 20px; border: 1px solid var(--accent-glow); width: 90%; max-width: 400px;">
-            <i class="fa-solid fa-user-graduate" style="font-size: 3rem; color: var(--master-neon); margin-bottom: 20px;"></i>
-            <h2>إكمال الملف الشخصي</h2>
-            <p style="color: #666; margin-bottom: 25px;">نحتاج بعض البيانات الإضافية للمتابعة</p>
-            
-            <input type="text" id="studentName" placeholder="الاسم بالكامل" style="width:100%; padding:12px; margin-bottom:10px; background:#1a2332; color:#fff; border:1px solid #333; border-radius:8px; outline:none; text-align:center;">
-            <input type="tel" id="studentPhone" placeholder="رقم الهاتف" style="width:100%; padding:12px; margin-bottom:15px; background:#1a2332; color:#fff; border:1px solid #333; border-radius:8px; outline:none; text-align:center;">
-            
-            <div style="margin-bottom: 15px;">
-                <select id="gender" required style="width:100%; padding:12px; background:#1a2332; border:1px solid #333; border-radius:8px; color:#fff; text-align: center;">
-                    <option value="" disabled selected>اختر النوع (ولد / بنت)</option>
-                    <option value="male">ولد</option>
-                    <option value="female">بنت</option>
-                </select>
-            </div>
-
-            <div style="margin-bottom: 15px; text-align: right;">
-                <label for="profilePic" style="cursor:pointer; display:flex; align-items:center; gap:10px; background:#1a2332; border:1px solid #333; border-radius:8px; padding:10px;">
-                    <div id="gateImgPreview" style="width:40px; height:40px; border-radius:50%; background:#000; display:flex; align-items:center; justify-content:center; overflow:hidden;">
-                        <i class="fa-solid fa-camera" style="color:#666;"></i>
-                    </div>
-                    <span style="color:#ccc; font-size:0.9rem;">اضغط لرفع صورتك</span>
-                </label>
-                <input type="file" id="profilePic" accept="image/*" style="display:none;" onchange="previewGateImage(this)">
-                <div id="gateProgressContainer" style="display:none; width:100%; background:#222; height:5px; border-radius:3px; margin-top:8px; overflow:hidden;">
-                    <div id="gateProgressBar" style="width:0%; height:100%; background:var(--master-neon); transition:width 0.2s;"></div>
-                </div>
-            </div>
-            
-            <button onclick="registerStudent()" style="width:100%; padding:12px; background:var(--master-neon); color:#000; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">دخول</button>
-            
-            <p style="margin-top:15px; font-size:0.8rem; color:#444; cursor:pointer;" onclick="checkMaster()">دخول المستر (للمسؤولين فقط)</p>
-        </div>
-    </div>
-
     <nav class="navbar">
         <div class="logo">
             <i class="fa-solid fa-heart-pulse"></i>
@@ -330,32 +294,14 @@
 
         if (isMaster) {
             // إذا كان المستر مسجلاً، اعرض لوحة التحكم وأخفِ البوابة
-            document.getElementById('gate-overlay').style.display = 'none';
             document.getElementById('master-panel').style.display = 'block';
         } else {
             // إذا لم يكن المستر، تحقق من هوية الطالب عبر Firebase Auth
             onAuthStateChanged(auth, async (user) => {
                 if (user) {
-                    // الطالب مسجل دخوله في Firebase
                     currentUserUid = user.uid;
-                    const userRef = ref(db, 'users/' + user.uid);
-                    const snapshot = await get(userRef);
-
-                    if (snapshot.exists() && snapshot.val().phone && snapshot.val().gender && snapshot.val().photoURL) {
-                        // الطالب أكمل بياناته (لديه رقم هاتف)، أخفِ البوابة
-                        document.getElementById('gate-overlay').style.display = 'none';
-                    } else {
-                        // الطالب لم يكمل بياناته، أظهر البوابة
-                        const gateOverlay = document.getElementById('gate-overlay');
-                        gateOverlay.style.display = 'flex';
-                        // املأ حقل الاسم تلقائياً إذا كان متاحاً
-                        const nameInput = document.getElementById('studentName');
-                        if (snapshot.exists() && snapshot.val().username) {
-                            nameInput.value = snapshot.val().username;
-                        } else if (user.displayName) {
-                            nameInput.value = user.displayName;
-                        }
-                    }
+                    // The gate is removed, so no need to check for profile completion here.
+                    // The page is now accessible to all logged-in students.
                 } else {
                     // المستخدم غير مسجل دخوله، وجهه لصفحة التسجيل الرئيسية
                     window.location.href = 'auth.html';
@@ -369,19 +315,6 @@
                 sessionStorage.setItem('biology_user_role', 'master'); // حفظ مؤقت للجلسة فقط
                 location.reload(); 
             } else alert("خطأ!");
-        }
-
-        // دالة معاينة الصورة في البوابة
-        window.previewGateImage = function(input) {
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const box = document.getElementById('gateImgPreview');
-                    box.innerHTML = `<img src="${e.target.result}" style="width:100%; height:100%; object-fit:cover;">`;
-                    box.style.border = '1px solid var(--master-neon)';
-                }
-                reader.readAsDataURL(input.files[0]);
-            }
         }
 
         // دالة ضغط الصور
@@ -439,71 +372,6 @@
                 xhr.onerror = () => reject(new Error('Network error'));
                 xhr.send(formData);
             });
-        }
-
-        window.registerStudent = async function() {
-            const name = document.getElementById('studentName').value;
-            const phone = document.getElementById('studentPhone').value;
-            const gender = document.getElementById('gender').value;
-            const file = document.getElementById('profilePic').files[0];
-
-            if (!name || name.length < 5) {
-                alert("يرجى إدخال الاسم بالكامل.");
-                return;
-            }
-            // Regex for Egyptian phone numbers
-            if (!phone || !/^(01[0125])[0-9]{8}$/.test(phone)) {
-                alert("يرجى إدخال رقم هاتف مصري صحيح (11 رقم).");
-                return;
-            }
-            if (!gender) {
-                alert("يرجى اختيار النوع (ولد / بنت).");
-                return;
-            }
-            if (!file) {
-                alert("يرجى اختيار صورة شخصية.");
-                return;
-            }
-
-            if (!currentUserUid) {
-                alert("حدث خطأ في التحقق من الهوية. يرجى إعادة تحميل الصفحة.");
-                return;
-            }
-
-            const btn = document.querySelector('#gate-overlay button');
-            btn.disabled = true;
-            btn.innerText = 'جاري الحفظ...';
-            const progressContainer = document.getElementById('gateProgressContainer');
-            const progressBar = document.getElementById('gateProgressBar');
-
-            try {
-                // ضغط الصورة
-                const compressedFile = await compressImage(file);
-
-                // رفع الصورة مع شريط التقدم
-                progressContainer.style.display = 'block';
-                const data = await uploadImageXHR(compressedFile, (percent) => {
-                    progressBar.style.width = percent + '%';
-                });
-                
-                const photoURL = data.secure_url;
-
-                const userRef = ref(db, 'users/' + currentUserUid);
-                await update(userRef, { 
-                    username: name, 
-                    phone: phone,
-                    gender: gender,
-                    photoURL: photoURL
-                });
-                document.getElementById('gate-overlay').style.display = 'none';
-                alert("تم تسجيل بياناتك بنجاح. أهلاً بك!");
-            } catch (error) {
-                console.error("Error updating profile:", error);
-                alert("حدث خطأ أثناء حفظ البيانات: " + error.message);
-            } finally {
-                btn.disabled = false;
-                btn.innerText = 'دخول';
-            }
         }
 
         window.switchRole = function() {

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'abqarieno-v17'; // Fix CORS Error & Force Cloudinary
+const CACHE_NAME = 'abqarieno-v18'; // Optional Profile Completion
 const ASSETS = [
     './',
     './index.html',

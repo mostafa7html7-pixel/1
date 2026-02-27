@@ -1053,6 +1053,62 @@ audio::-webkit-media-controls-play-button { background-color: #fff; border-radiu
     border-radius: 10px;
     cursor: pointer;
     font-weight: bold;
+}
+
+/* --- Profile Completion Prompt --- */
+.profile-prompt {
+    background: linear-gradient(90deg, var(--neon-gold), #ffaa00);
+    color: #000;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 71px; /* Below navbar */
+    z-index: 999;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    font-weight: bold;
+}
+.profile-prompt p {
+    margin: 0;
+    font-size: 0.95rem;
+}
+.btn-prompt-complete {
+    background: #fff;
+    color: #000;
+    padding: 8px 15px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: 0.3s;
+    white-space: nowrap;
+}
+.btn-prompt-complete:hover {
+    background: #eee;
+}
+.btn-prompt-dismiss {
+    background: transparent;
+    border: none;
+    color: #000;
+    font-size: 1.8rem;
+    cursor: pointer;
+    margin-right: 15px; /* RTL */
+    opacity: 0.7;
+    padding: 0 5px;
+    line-height: 1;
+}
+.btn-prompt-dismiss:hover {
+    opacity: 1;
+}
+
+@media (max-width: 768px) {
+    .profile-prompt {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+        top: 60px; /* Adjust if navbar height changes on mobile */
+    }
+}
     font-size: 1rem;
     margin-top: 20px;
     transition: 0.3s;

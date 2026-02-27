@@ -6,7 +6,7 @@
     <meta name="description" content="منصة الدكتور التعليمية للأحياء - شرح مبسط، فيديوهات عالية الجودة، كتب وملازم مجانية، ومتابعة مستمرة لطلاب الثانوية العامة.">
     <meta name="keywords" content="أحياء, ثانوية عامة, دكتور عبدالله, منصة تعليمية, شرح أحياء, مراجعات, امتحانات, كتب pdf">
     <title>الرئيسية - الدكتور</title>
-    <link rel="stylesheet" href="style.css?v=17">
+    <link rel="stylesheet" href="style.css?v=18">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
     <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -79,6 +79,18 @@
         <div class="loader-content">
             <i class="fa-solid fa-heart-pulse loader-icon"></i>
             <div class="loader-text">الدكتور <small>جاري التحميل...</small></div>
+        </div>
+    </div>
+
+    <!-- Profile Completion Prompt -->
+    <div id="completeProfilePrompt" class="profile-prompt" style="display: none;">
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <i class="fa-solid fa-circle-exclamation" style="font-size: 1.5rem;"></i>
+            <p><strong>ملفك الشخصي غير مكتمل!</strong> أكمل بياناتك الآن للاستفادة من كل مميزات المنصة.</p>
+        </div>
+        <div>
+            <a href="profile.html" class="btn-prompt-complete">إكمال الملف الشخصي</a>
+            <button onclick="dismissPrompt()" class="btn-prompt-dismiss" title="تجاهل">&times;</button>
         </div>
     </div>
 
@@ -244,12 +256,29 @@
         }
 
         const auth = getAuth(app);
-        onAuthStateChanged(auth, (user) => {
-            if (!user) {
-                // If you want to protect the main page, uncomment the next line
-                // window.location.href = 'auth.html';
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                // --- New: Check for incomplete profile ---
+                const userRef = ref(db, 'users/' + user.uid);
+                const snapshot = await get(userRef);
+                if (snapshot.exists()) {
+                    const userData = snapshot.val();
+                    // Check if profile is incomplete AND if the prompt hasn't been dismissed in this session
+                    if ((!userData.phone || !userData.gender || !userData.photoURL) && sessionStorage.getItem('profilePromptDismissed') !== 'true') {
+                        const promptEl = document.getElementById('completeProfilePrompt');
+                        if (promptEl) promptEl.style.display = 'flex';
+                    }
+                }
+            } else {
+                // User is not logged in. You might want to hide elements or redirect.
+                // For now, we'll just let them browse the main page.
             }
         });
+
+        window.dismissPrompt = function() {
+            document.getElementById('completeProfilePrompt').style.display = 'none';
+            sessionStorage.setItem('profilePromptDismissed', 'true');
+        }
 
         window.logout = () => signOut(auth).then(() => window.location.href = 'auth.html');
 
